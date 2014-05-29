@@ -1,10 +1,10 @@
 require 'net/http'
 
 module ObsFactory
-  class Openqa
-    
-    def initialize
-      @base_url = "https://openqa.opensuse.org/api/v1/"
+  class OpenqaApi
+
+    def initialize(base_url)
+      @base_url = base_url.chomp('/') + '/api/v1/'
     end
 
     def get(url, params = {})
