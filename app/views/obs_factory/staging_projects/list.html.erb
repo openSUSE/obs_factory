@@ -1,0 +1,24 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Obsolete req.</th>
+      <th>OpenQA</th>
+      <th>DVD OpenQA</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%- @staging_projects.each do |project| %>
+      <tr>
+        <td><%=project.name %></td>
+        <td><%= project.obsolete_requests.count %></td>
+        <td><%= render project.openqa_jobs %></td>
+        <td>
+          <%- unless project.subprojects.empty? %>
+            <%= render project.subprojects.first.openqa_jobs %>
+          <%- end %>
+        </td>
+      </tr>
+    <%- end %>
+  </tbody>
+</table>

@@ -4,9 +4,10 @@ module ObsFactory
 
     def list
       @projects = Project.where(["name like ?", 'openSUSE:Factory:Staging:_'])
-      @staging_projects = @projects.map { |p| StagingProject.new(p) }
+      staging_projects = @projects.map { |p| StagingProject.new(p) }
       respond_to do |format|
-        format.json { render json: @staging_projects }
+        format.html { @staging_projects = StagingProjectPresenter.wrap(staging_projects) }
+        format.json { render json: staging_projects }
       end
     end
   end
