@@ -9,11 +9,22 @@
     <%= csrf_meta_tag %>
   </head>
   <body>
-    <%# render :partial => 'layouts/webui/header' %>
+
+    <!-- Start: Header -->
+    <div id="header">
+      <div id="header-content" class="container_12">
+        <%= link_to image_tag("obs-logo_small.png", :height => 26), main_app.root_path, { :id => "header-logo" } -%>
+        <ul id="global-navigation">
+          <li></li>
+        </ul>
+        <%# render :partial => "layouts/webui/watch_and_search" %>
+      </div>
+    </div>
+    <!-- End: Header -->
 
     <div id="subheader" class="container_16">
       <div id="breadcrump" class="grid_10 alpha">
-          <%# main_app.sprite_tag( "home_grey", title: 'Logo' ) %><%= link_to 'Open Build Service', main_app.root_path %>
+          <%= sprite_tag( "home_grey", title: 'Logo' ) %><%= link_to 'Open Build Service', main_app.root_path %>
       </div>
 
       <%# render :partial => "layouts/webui/personal_navigation"  %>
