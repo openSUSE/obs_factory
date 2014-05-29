@@ -13,8 +13,10 @@ module ObsFactory
     @@api = ObsFactory::OpenqaApi.new(openqa_base_url)
 
     def self.find_all_by(args)
-      if args[:iso_name]
-        jobs = @@api.get('jobs', iso: args[:iso_name], scope: 'current')['jobs']
+      if iso = args[:iso_name]
+        jobs = Rails.cache.fetch("jobs_for_iso_#{iso}", expires_in: 20.minutes) do
+          @@api.get('jobs', iso: args[:iso_name], scope: 'current')['jobs']
+        end
         jobs.map { |j| OpenqaJob.new(j.slice(*attributes)) }
       else
         nil
