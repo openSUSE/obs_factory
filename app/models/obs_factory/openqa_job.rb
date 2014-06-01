@@ -12,15 +12,24 @@ module ObsFactory
 
     @@api = ObsFactory::OpenqaApi.new(openqa_base_url)
 
-    def self.find_all_by(args)
+    def self.find_all_by(args = {}, opt = {})
+
+      # We are only interested in current results
+      get_params = {scope: 'current'}
+
       if iso = args[:iso_name]
-        jobs = Rails.cache.fetch("jobs_for_iso_#{iso}", expires_in: 20.minutes) do
-          @@api.get('jobs', iso: args[:iso_name], scope: 'current')['jobs']
-        end
-        jobs.map { |j| OpenqaJob.new(j.slice(*attributes)) }
+        get_params[:iso] = iso
+        cache_entry = "openqa_jobs_for_iso_#{iso}"
       else
-        nil
+        # FIXME: it's almost for sure too big for a single memcached entry
+        cache_entry = "openqa_jobs"
       end
+
+      Rails.cache.delete(cache_entry) if opt.symbolize_keys[:cache].to_s == 'refresh'
+      jobs = Rails.cache.fetch(cache_entry, expires_in: 20.minutes) do
+        @@api.get('jobs', get_params)['jobs']
+      end
+      jobs.map { |j| OpenqaJob.new(j.slice(*attributes)) }
     end
 
     def self.attributes
