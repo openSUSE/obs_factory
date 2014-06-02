@@ -19,6 +19,10 @@ module ObsFactory
       project.description
     end
 
+    def letter
+      name.split(':').detect {|i| i.length == 1 }
+    end
+
     def obsolete_requests
       @obsolete_requests ||= BsRequestCollection.new(project: name, states: OBSOLETE_STATES).relation
     end
@@ -28,12 +32,21 @@ module ObsFactory
     end
 
     def openqa_jobs
-      @openqa_jobs ||= OpenqaJob.find_all_by(iso_name: iso_name)
+      @openqa_jobs ||= iso.nil? ? [] : OpenqaJob.find_all_by(iso: iso)
     end
 
-    # TODO
-    def iso_name
-      'openSUSE-Staging:D-Staging-DVD-x86_64-Build92.4-Media.iso'
+    def iso
+      return @iso if @iso
+      buildresult = Buildresult.find_hashed(project: name, package: 'Test-DVD-x86_64',
+                                            repository: 'images', arch: 'x86_64',
+                                            view: 'binarylist')
+      binaries = buildresult['result']['binarylist']['binary']
+      return nil if binaries.nil?
+      binary = binaries.detect { |l| /\.iso$/ =~ l['filename'] }
+      return nil if binary.nil?
+      ending = binary['filename'][5..-1] # Everything but the initial 'Test-'
+      suffix = /DVD$/ =~ name ? 'Staging2' : 'Staging'
+      @iso = "openSUSE-Staging:#{letter}-#{suffix}-DVD-x86_64-#{ending}"
     end
 
     # Coming next: untracked_requests, unreviewed_requests, buildstatus
