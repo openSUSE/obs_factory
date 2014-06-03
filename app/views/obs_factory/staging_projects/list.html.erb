@@ -14,6 +14,12 @@
         <td><%= project.description_packages %></td>
       <%- end %>
     </tr>
+    <tr class="untracked-requests number">
+      <th>Untracked</th>
+      <%- @staging_projects.each do |project| %>
+        <td><span class="main">?</span></td>
+      <%- end %>
+    </tr>
     <tr class="obsolete-requests number">
       <th>Obsolete</th>
       <%- @staging_projects.each do |project| %>
@@ -26,6 +32,12 @@
             <%= render project.obsolete_requests %>
           </div>
         </td>
+      <%- end %>
+    </tr>
+    <tr class="unreviewed-requests number">
+      <th>Unreviewed</th>
+      <%- @staging_projects.each do |project| %>
+        <td><span class="main">?</span></td>
       <%- end %>
     </tr>
     <tr class="building-repositories number">
