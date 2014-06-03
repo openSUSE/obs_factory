@@ -1,0 +1,12 @@
+<%- count = project.building_repositories.count %>
+<%- id = project.letter %>
+<%- id += '-DVD-' if is_dvd %>
+<%= link_to count,
+            "javascript:window.toggle_display('building-list-#{id}')",
+            class: "#{(count.zero? ? 'ok' : 'alert')} main" %>
+<div style="display:none" id="building-list-<%= id %>">
+  <%- project.building_repositories.each do |repo| %>
+    <%= link_to "#{repo['repository']}-#{repo['arch']} (#{repo['state']})",
+                main_app.project_repository_state_url(project.name, repo['repository']) %>
+  <%- end %>
+</div>
