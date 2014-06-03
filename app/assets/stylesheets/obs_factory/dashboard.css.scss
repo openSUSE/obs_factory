@@ -1,0 +1,39 @@
+// Colors
+$success-color: #6EB927;
+$failure-color: #f00;
+$incomplete-color: #000;
+$running-color: #069;
+
+// Dashboard table
+.dashboard {
+  tr.number {
+    td {
+      text-align: center;
+
+      .main {
+        font-weight: bold;
+      }
+    }
+  }
+
+  .ok {
+    color: $success-color;
+  }
+  .alert {
+    color: $failure-color;
+  }
+}
+
+// OpenQA Jobs
+a.openqa-passed {
+  color: $success-color;
+}
+a.openqa-failed {
+  color: $failure-color;
+}
+a.openqa-none {
+  color: $running-color;
+}
+a.openqa-incomplete {
+  color: $incomplete-color;
+}

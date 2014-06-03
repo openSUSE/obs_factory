@@ -1,24 +1,51 @@
-<table>
+<table class="dashboard" id="staging-dashboard">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Obsolete req.</th>
-      <th>OpenQA</th>
-      <th>DVD OpenQA</th>
+      <th>&nbsp;</th>
+      <%- @staging_projects.each do |project| %>
+        <th>Staging:<%= project.letter %></th>
+      <%- end -%>
     </tr>
   </thead>
   <tbody>
-    <%- @staging_projects.each do |project| %>
-      <tr>
-        <td><%=project.name %></td>
-        <td><%= project.obsolete_requests.count %></td>
+    <tr class="packages">
+      <th>Packages</th>
+      <%- @staging_projects.each do |project| %>
+        <td><%= project.description_packages %></td>
+      <%- end %>
+    </tr>
+    <tr class="obsolete-requests number">
+      <th>Obsolete</th>
+      <%- @staging_projects.each do |project| %>
+        <%- count = project.obsolete_requests.count %>
+        <td>
+          <%= link_to count,
+                "javascript:window.toggle_display('obsolete_list_#{project.letter}')",
+                class: "#{(count.zero? ? 'ok' : 'alert')} main" %>
+          <div style="display:none" id="obsolete_list_<%= project.letter %>">
+            <%= render project.obsolete_requests %>
+          </div>
+        </td>
+      <%- end %>
+    </tr>
+    <tr class="openqa">
+      <th>OpenQA</th>
+      <%- @staging_projects.each do |project| %>
         <td><%= render project.openqa_jobs %></td>
+      <%- end %>
+    </tr>
+    <tr>
+      <th colspan="<%= @staging_projects.size + 1 %>">DVD subproject</th>
+    </tr>
+    <tr class="openqa">
+      <th>OpenQA</th>
+      <%- @staging_projects.each do |project| %>
         <td>
           <%- unless project.subprojects.empty? %>
             <%= render project.subprojects.first.openqa_jobs %>
           <%- end %>
         </td>
-      </tr>
-    <%- end %>
+      <%- end %>
+    </tr>
   </tbody>
 </table>
