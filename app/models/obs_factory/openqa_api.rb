@@ -1,5 +1,6 @@
 require 'net/http'
 
+# Commodity class to encapsulate calls to the openQA API.
 module ObsFactory
   class OpenqaApi
 
@@ -7,6 +8,11 @@ module ObsFactory
       @base_url = base_url.chomp('/') + '/api/v1/'
     end
 
+    # Performs a GET query on the openQA API
+    #
+    # @param [String] url     action to call
+    # @param [Hash]   params  query parameters
+    # @return [Object]  the response decoded (usually a Hash)
     def get(url, params = {})
       uri = URI.join(@base_url, url)
       req_path = uri.path

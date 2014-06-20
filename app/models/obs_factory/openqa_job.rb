@@ -1,4 +1,6 @@
 module ObsFactory
+  # Local representation of a job in the remote openQA. Uses a OpenqaApi (with a
+  # hardcoded base url) to read the information and the Rails cache to store it
   class OpenqaJob
     include ActiveModel::Model
     extend ActiveModel::Naming
@@ -12,7 +14,9 @@ module ObsFactory
 
     @@api = ObsFactory::OpenqaApi.new(openqa_base_url)
 
-    # Works in a similar way to ActiveRecord::Base#find_all_by
+    # Reads jobs from the openQA instance or the cache with an interface similar
+    # to ActiveRecord::Base#find_all_by
+    #
     # If searching by iso or getting the full list, caching comes into play. In
     # any other case, a GET query to openQA is always performed.
     # :cache == 'refresh' can be used in the 'opt' (second param) to force a
@@ -25,7 +29,9 @@ module ObsFactory
       get_params = {scope: 'current'}
 
       # If searching for the whole list of jobs, it caches the jobs
-      # per ISO name
+      # per ISO name. That caching is currently not working because openQA does
+      # not include an 'iso' attribute in the response. With the introduction of
+      # 'assets' in openQA, this point is under discussion.
       if filter.empty?
         Rails.cache.delete('openqa_isos') if refresh
         jobs = []
