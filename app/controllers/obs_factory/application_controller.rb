@@ -1,5 +1,5 @@
 module ObsFactory
-  class ApplicationController < ActionController::Base
-    helper Webui::WebuiHelper
+  class ApplicationController < ::Webui::WebuiController
+    layout 'obs_factory/application'
   end
 end
