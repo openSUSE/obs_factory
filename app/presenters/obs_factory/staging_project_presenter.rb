@@ -23,8 +23,12 @@ module ObsFactory
     #
     # @return [String] package names delimited by commas
     def description_packages
-      packages = YAML.load(description)["requests"].map {|i| i["package"] }
-      packages.sort.join(', ')
+      requests = meta["requests"]
+      if requests.blank?
+        ''
+      else
+        requests.map {|i| i["package"] }.sort.join(', ')
+      end
     end
   end
 end

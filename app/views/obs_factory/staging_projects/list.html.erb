@@ -17,7 +17,15 @@
     <tr class="untracked-requests number">
       <th>Untracked</th>
       <%- @staging_projects.each do |project| %>
-        <td><span class="main">?</span></td>
+        <%- count = project.untracked_requests.count %>
+        <td>
+          <%= link_to count,
+                "javascript:window.toggle_display('untracked-list-#{project.letter}')",
+                class: "#{(count.zero? ? 'ok' : 'alert')} main" %>
+          <div style="display:none" id="untracked-list-<%= project.letter %>">
+            <%= render project.untracked_requests %>
+          </div>
+        </td>
       <%- end %>
     </tr>
     <tr class="obsolete-requests number">
@@ -34,10 +42,20 @@
         </td>
       <%- end %>
     </tr>
-    <tr class="unreviewed-requests number">
+    <tr class="missing-reviews number">
       <th>Unreviewed</th>
       <%- @staging_projects.each do |project| %>
-        <td><span class="main">?</span></td>
+        <%- count = project.missing_reviews.count %>
+        <td>
+          <%= link_to count,
+                "javascript:window.toggle_display('reviews-list-#{project.letter}')",
+                class: "#{(count.zero? ? 'ok' : 'alert')} main" %>
+          <div style="display:none" id="reviews-list-<%= project.letter %>">
+            <%- project.missing_reviews.each do |rev| %>
+              <%= link_to "#{rev[:package]} by #{rev[:by]}", main_app.request_show_url(id: rev[:request]) %>
+            <%- end %>
+          </div>
+        </td>
       <%- end %>
     </tr>
     <tr class="building-repositories number">
