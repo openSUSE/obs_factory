@@ -6,7 +6,7 @@ module ObsFactory
     %w(root_path project_show_path search_path user_show_url user_show_path user_logout_path
        news_feed_path project_list_public_path monitor_path).each do |m|
       define_method(m) do |*args|
-        main_app.send(m, args)
+        main_app.send(m, *args)
       end
     end
   end
