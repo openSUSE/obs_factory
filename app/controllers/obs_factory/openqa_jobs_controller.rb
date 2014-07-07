@@ -2,7 +2,7 @@ module ObsFactory
   class OpenqaJobsController < ApplicationController
     respond_to :json, :html
 
-    def list
+    def index
       @q = params[:q] || {}
       @cache = params[:cache]
       openqa_jobs = OpenqaJob.find_all_by(@q, cache: @cache)

@@ -3,7 +3,7 @@
     <tr>
       <th>&nbsp;</th>
       <%- @staging_projects.each do |project| %>
-        <th>Staging:<%= project.letter %></th>
+        <th><%= link_to "Staging:#{project.letter}", staging_project_path(project.id) %></th>
       <%- end -%>
     </tr>
   </thead>

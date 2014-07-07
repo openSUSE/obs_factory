@@ -37,3 +37,32 @@ a.openqa-none {
 a.openqa-incomplete {
   color: $incomplete-color;
 }
+
+.content-wrapper .box .factory-summary {
+  dl {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  dt {
+    float: left;
+    clear: left;
+    width: 160px;
+    text-align: right;
+    font-weight: bold;
+//    color: #669900;
+    img {
+      float: left;
+    }
+  }
+  dt:after {
+    content: ":";
+  }
+  dd {
+    margin: 0 0 0 170px;
+    padding: 0 0 1em 0;
+  }
+  h3 {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+  }
+}

@@ -8,9 +8,29 @@ module ObsFactory
     attr_accessor :project
 
     OBSOLETE_STATES = %w(declined superseded revoked)
+    NAME_PREFIX = "openSUSE:Factory:Staging:"
 
     def initialize(project = nil)
       self.project = project
+    end
+
+    # Find all top-level staging projects
+    #
+    # @return [Array] array of StagingProject objects
+    def self.all
+      Project.where(["name like ?", "#{NAME_PREFIX}_"]).map {|p| StagingProject.new(p) }
+    end
+
+    # Find a staging project by id
+    #
+    # @return [StagingProject] the project
+    def self.find(id)
+      project = Project.find_by_name("#{NAME_PREFIX}#{id}")
+      if project
+        StagingProject.new(project)
+      else
+        nil
+      end
     end
 
     # Name of the associated project
@@ -31,7 +51,14 @@ module ObsFactory
     #
     # @return [String] just the letter
     def letter
-      name.split(':').detect {|i| i.length == 1 }
+      name[NAME_PREFIX.size, 1]
+    end
+
+    # Id of the staging project, extracted from its name
+    #
+    # @return [String] the name excluding the common prefix
+    def id
+      name[NAME_PREFIX.size..-1]
     end
 
     # Requests that are selected into the project but should be not longer valid
