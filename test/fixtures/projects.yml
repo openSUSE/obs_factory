@@ -1,0 +1,28 @@
+staging_A:
+  name: 'openSUSE:Factory:Staging:A'
+  title: 'openSUSE:Factory:Staging:A'
+staging_A_DVD:
+  name: 'openSUSE:Factory:Staging:A:DVD'
+  title: 'openSUSE:Factory:Staging:A:DVD'
+  description: 'DVD subproject for Staging:A'
+staging_B:
+  name: 'openSUSE:Factory:Staging:B'
+  title: 'openSUSE:Factory:Staging:B'
+staging_B_DVD:
+  name: 'openSUSE:Factory:Staging:B:DVD'
+  title: 'openSUSE:Factory:Staging:B:DVD'
+  description: 'DVD subproject for Staging:B'
+staging_C:
+  name: 'openSUSE:Factory:Staging:C'
+  title: 'openSUSE:Factory:Staging:C'
+staging_C_DVD:
+  name: 'openSUSE:Factory:Staging:C:DVD'
+  title: 'openSUSE:Factory:Staging:C:DVD'
+  description: 'DVD subproject for Staging:C'
+staging_D:
+  name: 'openSUSE:Factory:Staging:D'
+  title: 'openSUSE:Factory:Staging:D'
+staging_D_DVD:
+  name: 'openSUSE:Factory:Staging:D:DVD'
+  title: 'openSUSE:Factory:Staging:D:DVD'
+  description: 'DVD subproject for Staging:D'
