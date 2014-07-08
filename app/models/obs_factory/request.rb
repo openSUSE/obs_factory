@@ -47,7 +47,7 @@ module ObsFactory
     #
     # @return [Boolean] true if the request is declined, superseded or revoked
     def obsolete?
-      OBSOLETE_STATES.include? state
+      OBSOLETE_STATES.include? state.to_s
     end
 
     # Name of the original target package
