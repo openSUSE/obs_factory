@@ -1,0 +1,7 @@
+<td class="openqa-jobs">
+  <% if project.openqa_jobs.size.zero? %>
+    -
+  <% else %>
+    <%= render project.openqa_jobs %>
+  <% end %>
+</td>
