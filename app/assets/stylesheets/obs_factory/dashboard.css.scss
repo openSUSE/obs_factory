@@ -5,22 +5,27 @@ $incomplete-color: #000;
 $running-color: #069;
 
 // Dashboard table
-.dashboard {
-  tr.number {
-    td {
-      text-align: center;
+#staging-dashboard {
+  th.project {
+    text-align: right;
 
-      .main {
-        font-weight: bold;
-      }
+    div.packages-list {
+      font-weight: normal;
+      font-size: 11px;
     }
   }
 
-  .ok {
-    color: $success-color;
+  td {
+    text-align: center;
+
+    img {
+      margin-top: 4px;
+    }
   }
-  .alert {
-    color: $failure-color;
+
+  // To fix an issue with rowspans
+  tr:last-child td {
+    border-bottom: 1px dotted #CCCCCC;
   }
 }
 
