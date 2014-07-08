@@ -1,0 +1,43 @@
+#staging-dashboard th.project { text-align:right }
+
+#staging-dashboard th.project div.packages-list {
+  font-weight:normal;
+  font-size:11px;
+}
+
+#staging-dashboard td { text-align:center }
+
+#staging-dashboard td img { margin-top:4px }
+
+#staging-dashboard tr:last-child td { border-bottom:1px dotted #CCCCCC}
+
+a.openqa-passed { color:#6eb927 }
+a.openqa-failed { color:red }
+a.openqa-none { color:#006699 }
+a.openqa-incomplete { color:black }
+
+.content-wrapper .box .factory-summary dl {
+  margin-left:10px;
+  margin-right:10px;
+}
+.content-wrapper .box .factory-summary dt {
+  float:left;
+  clear:left;
+  width:160px;
+  text-align:right;
+  font-weight:bold;
+}
+
+.content-wrapper .box .factory-summary dt img { float:left }
+
+.content-wrapper .box .factory-summary dt:after { content:":" }
+
+.content-wrapper .box .factory-summary dd {
+  margin:0 0 0 170px;
+  padding:0 0 1em 0;
+}
+
+.content-wrapper .box .factory-summary h3 {
+  margin-top:0;
+  margin-bottom:0.5em
+}
