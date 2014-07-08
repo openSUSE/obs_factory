@@ -13,7 +13,7 @@
   <% if project.broken_packages.size.zero? %>
     <%= sprite_tag('accept', alt: 'None') %>
   <% else %>
-    <% broken = project.broken_packages.map do |repo| %>
+    <% broken = project.broken_packages.map do |pack| %>
       <% link_to "#{pack['package']} (#{pack['state']})".html_safe,
                 main_app.package_show_url(project.name, pack['package']) %>
     <% end %>
