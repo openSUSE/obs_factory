@@ -1,1 +1,10 @@
-<%= link_to openqa_job.result, openqa_job.url, class: 'openqa-'+openqa_job.result %>
+<%
+  if openqa_job.failing_modules.size.zero?
+    css = 'openqa-'+openqa_job.result
+    label = openqa_job.test
+  else
+    css = 'openqa-failed'
+    label = "#{openqa_job.test} (#{short_sentence(openqa_job.failing_modules)})"
+  end
+%>
+<%= link_to label, openqa_job.url, class: css %>
