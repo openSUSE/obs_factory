@@ -1,15 +1,49 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
- * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any styles
- * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
- * file per style scope.
- *
- *= require_tree .
- *= require_self
- */
+/* Staging projects dashboard table */
+#staging-dashboard th.project { text-align:right }
+
+#staging-dashboard th.project div.packages-list {
+  font-weight:normal;
+  font-size:11px;
+}
+
+#staging-dashboard td { text-align:center }
+
+#staging-dashboard td img { margin-top:4px }
+
+/* Fix an issue with rowspans */
+#staging-dashboard tr:last-child td { border-bottom:1px dotted #CCCCCC}
+
+/* openQA */
+a.openqa-passed { color:#6eb927 }
+a.openqa-failed { color:red }
+a.openqa-none { color:#006699 }
+a.openqa-incomplete { color:black }
+
+/* Proper formating for dl, dt and dd */
+.content-wrapper .box .factory-summary dl {
+  margin-left:10px;
+  margin-right:10px;
+}
+
+.content-wrapper .box .factory-summary dt {
+  float:left;
+  clear:left;
+  width:160px;
+  text-align:right;
+  font-weight:bold;
+}
+
+.content-wrapper .box .factory-summary dt img { float:left }
+
+.content-wrapper .box .factory-summary dt:after { content:":" }
+
+.content-wrapper .box .factory-summary dd {
+  margin:0 0 0 170px;
+  padding:0 0 1em 0;
+}
+
+/* More compact h3 */
+.content-wrapper .box .factory-summary h3 {
+  margin-top:0;
+  margin-bottom:0.5em
+}
