@@ -2,6 +2,7 @@
   <% if project.openqa_jobs.size.zero? %>
     -
   <% else %>
-    <%= render project.openqa_jobs %>
+    <% jobs = project.openqa_jobs.map {|j| render(j) } %>
+    <%= jobs.join(" / ").html_safe %>
   <% end %>
 </td>

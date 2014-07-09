@@ -42,6 +42,15 @@ a.openqa-incomplete { color:black }
   padding:0 0 1em 0;
 }
 
+/* Avoid excessive margin in nested ul */
+.content-wrapper .box .factory-summary dd ul {
+  margin: 0 0 0 0;
+}
+
+.content-wrapper .box .factory-summary dd ul li {
+  margin-left: 0;
+}
+
 /* More compact h3 */
 .content-wrapper .box .factory-summary h3 {
   margin-top:0;

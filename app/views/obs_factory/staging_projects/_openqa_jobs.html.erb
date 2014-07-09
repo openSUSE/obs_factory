@@ -4,6 +4,10 @@
 <% if project.openqa_jobs.size.zero? %>
   None.
 <% else %>
-  <%= render project.openqa_jobs %>
+  <ul>
+    <% project.openqa_jobs.each do |job| %>
+      <li><%= render job %></li>
+    <% end %>
+  </ul>
 <% end %>
 </dd>

@@ -25,9 +25,15 @@ module ObsFactory
     #
     # @param [String] url     action to call
     # @param [Hash]   params  query parameters
+    # @param [Hash]   options  additional options. Right now :base_url to
+    #                   overwrite the default one
     # @return [Object]  the response decoded (usually a Hash)
-    def get(url, params = {})
-      uri = URI.join(@base_url, url)
+    def get(url, params = {}, options = {})
+      if options[:base_url]
+        uri = URI.join(options[:base_url].chomp('/')+'/', url)
+      else
+        uri = URI.join(@base_url, url)
+      end
       uri.query = params.to_query
       resp = _get(uri)
       raise "OpenQA API GET failure: \"#{url}\" with \"#{params.to_query}\"" unless resp.code.to_i == 200
