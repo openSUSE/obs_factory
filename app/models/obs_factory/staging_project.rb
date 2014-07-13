@@ -215,23 +215,20 @@ module ObsFactory
       buildresult = Buildresult.find_hashed(project: name, code: %w(failed broken unresolvable))
       @broken_packages = []
       @building_repositories = []
-      buildresult['result'].each do |result|
+      buildresult.elements('result') do |result|
         building = false
         if !%w(published unpublished).include?(result['state']) || result['dirty'] == 'true'
           building = true
           @building_repositories << result.slice('repository', 'arch', 'code', 'state', 'dirty')
         end
-        if statuses = result['status']
-          statuses.each do |status|
-            if status.kind_of?(Hash) && code = status['code']
-              if %w(broken failed).include?(code) || (code == 'unresolvable' && !building)
-                @broken_packages << { 'package' => status['package'],
-                                      'state' => code,
-                                      'details' => status['details'],
-                                      'repository' => result['repository'],
-                                      'arch' => result['arch'] }
-              end
-            end
+        result.elements('status') do |status|
+          code = status.get('code')
+          if %w(broken failed).include?(code) || (code == 'unresolvable' && !building)
+             @broken_packages << { 'package' => status['package'],
+                                   'state' => code,
+                                   'details' => status['details'],
+                                   'repository' => result['repository'],
+                                   'arch' => result['arch'] }
           end
         end
       end
