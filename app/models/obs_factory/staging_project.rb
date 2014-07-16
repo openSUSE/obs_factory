@@ -200,7 +200,7 @@ module ObsFactory
 
     def self.attributes
       %w(name description obsolete_requests openqa_jobs building_repositories
-        broken_packages subprojects untracked_requests missing_reviews)
+        broken_packages subprojects untracked_requests missing_reviews selected_requests )
     end
 
     # Required by ActiveModel::Serializers
