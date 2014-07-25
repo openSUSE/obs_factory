@@ -1,60 +1,83 @@
 /* Staging projects dashboard table */
-#staging-dashboard th.project { text-align:right }
-
-#staging-dashboard th.project div.packages-list {
-  font-weight:normal;
-  font-size:11px;
+#staging-dashboard th.project {
+    text-align: right
 }
 
-#staging-dashboard td { text-align:center }
+#staging-dashboard th.project div.packages-list {
+    font-weight: normal;
+    font-size: 11px;
+}
 
-#staging-dashboard td img { margin-top:4px }
+#staging-dashboard td {
+    text-align: center
+}
+
+#staging-dashboard td img {
+    margin-top: 4px
+}
 
 /* Fix an issue with rowspans */
-#staging-dashboard tr:last-child td { border-bottom:1px dotted #CCCCCC}
+#staging-dashboard tr:last-child td {
+    border-bottom: 1px dotted #CCCCCC
+}
 
 /* openQA */
-a.openqa-passed { color:#6eb927 }
-a.openqa-failed { color:red }
-a.openqa-none { color:#006699 }
-a.openqa-incomplete { color:black }
+a.openqa-passed {
+    color: #6eb927
+}
+
+a.openqa-failed {
+    color: red
+}
+
+a.openqa-none {
+    color: #006699
+}
+
+a.openqa-incomplete {
+    color: black
+}
 
 /* Proper formating for dl, dt and dd */
 .content-wrapper .box .factory-summary dl {
-  margin-left:10px;
-  margin-right:10px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .content-wrapper .box .factory-summary dt {
-  float:left;
-  clear:left;
-  width:160px;
-  text-align:right;
-  font-weight:bold;
+    float: left;
+    clear: left;
+    width: 160px;
+    text-align: right;
+    font-weight: bold;
 }
 
-.content-wrapper .box .factory-summary dt img { float:left }
+.content-wrapper .box .factory-summary dt img {
+    float: left
+}
 
-.content-wrapper .box .factory-summary dt:after { content:":" }
+.content-wrapper .box .factory-summary dt:after {
+    content: ":"
+}
 
 .content-wrapper .box .factory-summary dd {
-  margin:0 0 0 170px;
-  padding:0 0 1em 0;
+    margin: 0 0 0 170px;
+    padding: 0 0 1em 0;
 }
 
 /* Avoid excessive margin in nested ul */
 .content-wrapper .box .factory-summary dd ul {
-  margin: 0 0 0 0;
+    margin: 0 0 0 0;
 }
 
 .content-wrapper .box .factory-summary dd ul li {
-  margin-left: 0;
+    margin-left: 0;
 }
 
 /* More compact h3 */
 .content-wrapper .box .factory-summary h3 {
-  margin-top:0;
-  margin-bottom:0.5em
+    margin-top: 0;
+    margin-bottom: 0.5em
 }
 
 #staging-dashboard .ok {
@@ -75,4 +98,12 @@ a.openqa-incomplete { color:black }
 #staging-dashboard .untracked {
     background-color: black;
     margin: 1ex;
+}
+
+#staging-dashboard progress.undone {
+    background-color: yellow;
+}
+
+#staging-dashboard progress.done {
+    background-color: lime;
 }

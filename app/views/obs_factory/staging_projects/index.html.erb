@@ -27,9 +27,10 @@
         <td class="building-repositories" rowspan="2">
           <% progress = project.build_progress %>
           <%= link_to main_app.project_monitor_url(progress[:subproject]) do %>
-              <progress value="<%= progress[:percentage] %>" max="100"></progress>
+              <progress value="<%= progress[:percentage] %>" max="100" class="<%= if progress[:percentage] == 100 then 'done' else 'undone' end %>"></progress>
           <% end %>
         </td>
+        <%= render partial: "buildinfo_cells", locals: { project: project } %>
         <%= render partial: "openqa_jobs_cells", locals: { project: project } %>
       </tr>
       <tr>
@@ -38,6 +39,7 @@
             <td>-</td>
             <td>-</td>
         <% else %>
+            <%= render partial: "buildinfo_cells", locals: { project: project } %>
             <%= render partial: "openqa_jobs_cells", locals: { project: project.subprojects.first } %>
         <% end %>
       </tr>
