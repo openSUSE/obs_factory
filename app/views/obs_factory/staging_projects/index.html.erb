@@ -1,15 +1,15 @@
 <table class="dashboard" id="staging-dashboard">
   <thead>
-    <tr>
-      <th>Project</th>
-      <th>Requests</th>
-      <th>Building repo.</th>
-      <th>Broken pack.</th>
-      <th>openQA</th>
-    </tr>
+  <tr>
+    <th>Project</th>
+    <th>Requests</th>
+    <th>Build progress</th>
+    <th>Broken pack.</th>
+    <th>openQA</th>
+  </tr>
   </thead>
   <tbody>
-    <%- @staging_projects.each do |project| %>
+  <%- @staging_projects.each do |project| %>
       <tr>
         <th rowspan="2" class="project">
           <%= link_to project.letter, staging_project_path(project.id) %>
@@ -24,19 +24,23 @@
             <% end -%>
           </div>
         </td>
-        <%= render partial: "buildinfo_cells", locals: {project: project} %>
-        <%= render partial: "openqa_jobs_cells", locals: {project: project} %>
+        <td class="building-repositories" rowspan="2">
+          <% progress = project.build_progress %>
+          <%= link_to main_app.project_monitor_url(progress[:subproject]) do %>
+              <progress value="<%= progress[:percentage] %>" max="100"></progress>
+          <% end %>
+        </td>
+        <%= render partial: "openqa_jobs_cells", locals: { project: project } %>
       </tr>
       <tr>
         <% if project.subprojects.empty? %>
-          <td>-</td>
-          <td>-</td>
-          <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
         <% else %>
-          <%= render partial: "buildinfo_cells", locals: {project: project.subprojects.first} %>
-          <%= render partial: "openqa_jobs_cells", locals: {project: project.subprojects.first} %>
+            <%= render partial: "openqa_jobs_cells", locals: { project: project.subprojects.first } %>
         <% end %>
       </tr>
-    <% end %>
+  <% end %>
   </tbody>
 </table>

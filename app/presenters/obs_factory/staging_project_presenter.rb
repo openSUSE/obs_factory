@@ -55,5 +55,27 @@ module ObsFactory
       end
       ret.sort { |x,y| x['package'] <=> y['package'] }
     end
+
+    # determine build progress as percentag
+    def build_progress
+      total = 0
+      final = 0
+      building_repositories.each do |r|
+        Rails.logger.debug "BR #{r.inspect}"
+        total += r[:tobuild] + r[:final]
+        final += r[:final]
+      end
+      ret = { subproject: name }
+      if total != 0
+        ret[:percentage] = final * 100 / total
+      else
+        ret[:percentage] = 100
+        subprojects.each do |prj|
+          # we only have one subprj or none
+          return prj.build_progress
+        end
+      end
+      ret
+    end
   end
 end
