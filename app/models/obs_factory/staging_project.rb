@@ -151,7 +151,7 @@ module ObsFactory
     #                 :request, :package and :by.
     def missing_reviews
       if @missing_reviews.nil?
-        @missing_reviews = []
+        @missing_reviews = Hash.new
         attribs = [:by_group, :by_user, :by_project, :by_package]
 
         (open_requests + selected_requests).uniq.each do |req|
@@ -164,7 +164,8 @@ module ObsFactory
               # who = rev.by_group || rev.by_user || rev.by_project || rev.by_package
               attribs.each do |att|
                 if who = rev.send(att)
-                  @missing_reviews << {id: rev.id, state: rev.state.to_s, request: req.id, package: req.package, by: who}
+                  @missing_reviews[req.id] ||= []
+                  @missing_reviews[req.id] << {review: rev.id, state: rev.state.to_s, package: req.package, by: who}
                 end
               end
             end

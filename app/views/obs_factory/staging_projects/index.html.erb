@@ -2,42 +2,27 @@
   <thead>
     <tr>
       <th>Project</th>
-      <th>Untracked req.</th>
-      <th>Obsolete req.</th>
-      <th>Missing rev.</th>
+      <th>Requests</th>
       <th>Building repo.</th>
       <th>Broken pack.</th>
       <th>openQA</th>
     </tr>
+  </thead>
+  <tbody>
     <%- @staging_projects.each do |project| %>
       <tr>
         <th rowspan="2" class="project">
-          <%= link_to "Staging:#{project.letter}", staging_project_path(project.id) %>
-          <div class="packages-list"><%= project.description_packages %></div>
+          <%= link_to project.letter, staging_project_path(project.id) %>
+
         </th>
-        <td rowspan="2" class="untracked-requests">
-          <% if project.untracked_requests.size.zero? %>
-            <%= sprite_tag('accept', alt: 'None') %>
-          <% else %>
-            <%= short_sentence project.untracked_requests %>
-          <% end %>
-        </td>
-        <td rowspan="2" class="obsolete-requests">
-          <% if project.obsolete_requests.size.zero? %>
-            <%= sprite_tag('accept', alt: 'None') %>
-          <% else %>
-            <%= short_sentence project.obsolete_requests %>
-          <% end %>
-        </td>
-        <td rowspan="2" class="missing-reviews">
-          <% if project.missing_reviews.size.zero? %>
-            <%= sprite_tag('accept', alt: 'None') %>
-          <% else %>
-            <% req = project.missing_reviews.group_by {|rev| rev[:request] }.map do |k, v| %>
-              <% link_to "##{k}", main_app.request_show_url(id: k) %>
-            <% end %>
-            <%= short_sentence req %>
-          <% end %>
+        <td rowspan="2">
+          <div class="packages-list">
+            <% project.classified_requests.each do |r| %>
+                <span class="<%= r[:css] %>">
+                  <%= link_to r[:package], main_app.request_show_path(r[:id]) %>
+                </span>
+            <% end -%>
+          </div>
         </td>
         <%= render partial: "buildinfo_cells", locals: {project: project} %>
         <%= render partial: "openqa_jobs_cells", locals: {project: project} %>

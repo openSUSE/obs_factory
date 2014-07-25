@@ -56,3 +56,23 @@ a.openqa-incomplete { color:black }
   margin-top:0;
   margin-bottom:0.5em
 }
+
+#staging-dashboard .ok {
+    background-color: green;
+    margin: 1ex;
+}
+
+#staging-dashboard .review {
+    background-color: orange;
+    margin: 1ex;
+}
+
+#staging-dashboard .obsolete {
+    background-color: blue;
+    margin: 1ex;
+}
+
+#staging-dashboard .untracked {
+    background-color: black;
+    margin: 1ex;
+}
