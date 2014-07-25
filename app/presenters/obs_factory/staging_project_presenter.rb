@@ -30,5 +30,52 @@ module ObsFactory
         requests.map {|i| i["package"] }.sort.join(', ')
       end
     end
+
+    # List of requests/packages tracked in the staging project
+    def classified_requests
+      requests = selected_requests
+      return [] unless requests
+      ret = []
+      requests.each do |req|
+        r = { id: req.id, package: req.package }
+        css = 'ok'
+        r[:missing_reviews] = missing_reviews[req.id]
+        unless r[:missing_reviews].blank?
+          css = 'review'
+        end
+        if req.obsolete?
+          css = 'obsolete'
+        end
+        r[:css] = css
+        ret << r
+      end
+      # now append untracked reqs
+      untracked_requests.each do |req|
+        ret << { id: req.id, package: req.package, css: 'untracked' }
+      end
+      ret.sort { |x,y| x['package'] <=> y['package'] }
+    end
+
+    # determine build progress as percentag
+    def build_progress
+      total = 0
+      final = 0
+      building_repositories.each do |r|
+        Rails.logger.debug "BR #{r.inspect}"
+        total += r[:tobuild] + r[:final]
+        final += r[:final]
+      end
+      ret = { subproject: name }
+      if total != 0
+        ret[:percentage] = final * 100 / total
+      else
+        ret[:percentage] = 100
+        subprojects.each do |prj|
+          # we only have one subprj or none
+          return prj.build_progress
+        end
+      end
+      ret
+    end
   end
 end

@@ -1,14 +1,3 @@
-<td class="building-repositories">
-  <% if project.building_repositories.size.zero? %>
-    <%= sprite_tag('accept', alt: 'None') %>
-  <% else %>
-    <% building = project.building_repositories.map do |repo| %>
-      <% link_to "#{repo['repository']}-#{repo['arch']}".html_safe,
-                  main_app.project_repository_state_url(project.name, repo['repository']) %>
-    <% end %>
-    <%= short_sentence building %>
-  <% end %>
-</td>
 <td class="broken-packages">
   <% if project.broken_packages.size.zero? %>
     <%= sprite_tag('accept', alt: 'None') %>

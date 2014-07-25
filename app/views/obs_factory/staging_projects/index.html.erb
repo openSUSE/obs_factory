@@ -1,57 +1,46 @@
 <table class="dashboard" id="staging-dashboard">
   <thead>
-    <tr>
-      <th>Project</th>
-      <th>Untracked req.</th>
-      <th>Obsolete req.</th>
-      <th>Missing rev.</th>
-      <th>Building repo.</th>
-      <th>Broken pack.</th>
-      <th>openQA</th>
-    </tr>
-    <%- @staging_projects.each do |project| %>
+  <tr>
+    <th>Project</th>
+    <th>Requests</th>
+    <th>Build progress</th>
+    <th>Broken pack.</th>
+    <th>openQA</th>
+  </tr>
+  </thead>
+  <tbody>
+  <%- @staging_projects.each do |project| %>
       <tr>
         <th rowspan="2" class="project">
-          <%= link_to "Staging:#{project.letter}", staging_project_path(project.id) %>
-          <div class="packages-list"><%= project.description_packages %></div>
+          <%= link_to project.letter, staging_project_path(project.id) %>
+
         </th>
-        <td rowspan="2" class="untracked-requests">
-          <% if project.untracked_requests.size.zero? %>
-            <%= sprite_tag('accept', alt: 'None') %>
-          <% else %>
-            <%= short_sentence project.untracked_requests %>
+        <td rowspan="2">
+          <div class="packages-list">
+            <% project.classified_requests.each do |r| %>
+                <span class="<%= r[:css] %>">
+                  <%= link_to r[:package], main_app.request_show_path(r[:id]) %>
+                </span>
+            <% end -%>
+          </div>
+        </td>
+        <td class="building-repositories" rowspan="2">
+          <% progress = project.build_progress %>
+          <%= link_to main_app.project_monitor_url(progress[:subproject]) do %>
+              <progress value="<%= progress[:percentage] %>" max="100"></progress>
           <% end %>
         </td>
-        <td rowspan="2" class="obsolete-requests">
-          <% if project.obsolete_requests.size.zero? %>
-            <%= sprite_tag('accept', alt: 'None') %>
-          <% else %>
-            <%= short_sentence project.obsolete_requests %>
-          <% end %>
-        </td>
-        <td rowspan="2" class="missing-reviews">
-          <% if project.missing_reviews.size.zero? %>
-            <%= sprite_tag('accept', alt: 'None') %>
-          <% else %>
-            <% req = project.missing_reviews.group_by {|rev| rev[:request] }.map do |k, v| %>
-              <% link_to "##{k}", main_app.request_show_url(id: k) %>
-            <% end %>
-            <%= short_sentence req %>
-          <% end %>
-        </td>
-        <%= render partial: "buildinfo_cells", locals: {project: project} %>
-        <%= render partial: "openqa_jobs_cells", locals: {project: project} %>
+        <%= render partial: "openqa_jobs_cells", locals: { project: project } %>
       </tr>
       <tr>
         <% if project.subprojects.empty? %>
-          <td>-</td>
-          <td>-</td>
-          <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
         <% else %>
-          <%= render partial: "buildinfo_cells", locals: {project: project.subprojects.first} %>
-          <%= render partial: "openqa_jobs_cells", locals: {project: project.subprojects.first} %>
+            <%= render partial: "openqa_jobs_cells", locals: { project: project.subprojects.first } %>
         <% end %>
       </tr>
-    <% end %>
+  <% end %>
   </tbody>
 </table>
