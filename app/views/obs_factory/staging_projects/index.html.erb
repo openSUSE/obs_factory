@@ -13,7 +13,7 @@
       <tr>
         <th class="project">
           <%= link_to project.letter, staging_project_path(project.id) %>
-
+          <%= project.overall_state %>
         </th>
         <td >
           <div class="packages-list">
@@ -24,6 +24,11 @@
             <% end -%>
           </div>
         </td>
+        <% if project.overall_state == :empty %>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <% else %>
         <td class="building-repositories" >
           <% progress = project.build_progress %>
           <%= link_to main_app.project_monitor_url(progress[:subproject]) do %>
@@ -33,6 +38,7 @@
         </td>
         <%= render partial: "buildinfo_cells", locals: { project: project } %>
         <%= render partial: "openqa_jobs_cells", locals: { project: project } %>
+        <% end %>
       </tr>
   <% end %>
   </tbody>

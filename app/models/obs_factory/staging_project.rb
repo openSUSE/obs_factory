@@ -207,6 +207,17 @@ module ObsFactory
       Hash[self.class.attributes.map { |a| [a, nil] }]
     end
 
+    # calculate the overall state of the project
+    def overall_state
+      return @state unless @state.nil?
+      @state = :empty
+  
+      if open_requests.empty? && selected_requests.empty?
+        return @state
+      end 
+      @state = :review
+    end
+
     protected
 
     # Used internally to calculate #broken_packages and #building_repositories
