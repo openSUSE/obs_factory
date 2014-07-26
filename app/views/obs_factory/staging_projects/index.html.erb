@@ -12,8 +12,8 @@
   <%- @staging_projects.each do |project| %>
       <tr>
         <th class="project">
-          <%= link_to project.letter, staging_project_path(project.id) %>
-          <%= project.overall_state %>
+          <div><%= link_to project.letter, staging_project_path(project.id) %></div>
+          <div><%= project.overall_state %></div>
         </th>
         <td >
           <div class="packages-list">

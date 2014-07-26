@@ -106,7 +106,8 @@ module ObsFactory
     #
     # @return [Array] Array of hashes
     def building_repositories
-      @building_repositories || set_buildinfo
+      set_buildinfo if @building_repositories.nil?
+      @building_repositories
     end
 
     # Requests with open reviews but that are not selected into the staging
@@ -199,7 +200,7 @@ module ObsFactory
 
     def self.attributes
       %w(name description obsolete_requests openqa_jobs building_repositories
-        broken_packages subprojects untracked_requests missing_reviews selected_requests )
+        broken_packages subprojects untracked_requests missing_reviews selected_requests overall_state )
     end
 
     # Required by ActiveModel::Serializers
@@ -212,10 +213,35 @@ module ObsFactory
       return @state unless @state.nil?
       @state = :empty
   
-      if open_requests.empty? && selected_requests.empty?
+      if selected_requests.empty?
         return @state
-      end 
-      @state = :review
+      end
+
+      # base state
+      if building_repositories.present?
+        @state = :building
+      elsif missing_reviews.present?
+        @state = :review
+      else
+        @state = :acceptable
+      end
+
+      # now check failure reasons
+      if untracked_requests.present? || broken_packages.present? || obsolete_requests.present?
+        @state = :broken
+      elsif @state != :building
+        # check openQA jobs for all projects not building right now - or that are known to be broken
+        openqa_jobs.each do |job|
+          if job.failing_modules.present?
+            @state = :failed
+            break
+          elsif job.result != 'ok'
+            @state = :testing
+          end
+        end
+      end
+
+      @state
     end
 
     protected
@@ -261,7 +287,6 @@ module ObsFactory
           @building_repositories << current_repo 
         end
       end
-      @building_repositories
     end
   end
 end
