@@ -4,7 +4,7 @@
     label = openqa_job.test
   else
     css = 'openqa-failed'
-    label = "#{openqa_job.test} (#{short_sentence(openqa_job.failing_modules)})"
+    label = openqa_job.failing_modules.first
   end
 %>
 <%= link_to label, openqa_job.url, class: css %>

@@ -126,3 +126,12 @@ a.openqa-incomplete {
 #staging-dashboard tr:nth-child(odd)               { background-color:#fff; }
 #staging-dashboard tr:nth-child(even)              { background-color:#eee; }
 
+#staging-dashboard li.openqa_job {
+   white-space: nowrap;
+   margin-left: 0px;
+} 
+
+#staging-dashboard ul.openqa_list {
+   text-align: left;
+   margin-top: 0px;
+}

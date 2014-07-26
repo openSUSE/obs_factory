@@ -228,14 +228,14 @@ module ObsFactory
 
       # now check failure reasons
       if untracked_requests.present? || broken_packages.present? || obsolete_requests.present?
-        @state = :broken
+        @state = :unacceptable
       elsif @state != :building
         # check openQA jobs for all projects not building right now - or that are known to be broken
         openqa_jobs.each do |job|
           if job.failing_modules.present?
             @state = :failed
             break
-          elsif job.result != 'ok'
+          elsif job.result != 'passed'
             @state = :testing
           end
         end
