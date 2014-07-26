@@ -211,19 +211,14 @@ module ObsFactory
 
     # Used internally to calculate #broken_packages and #building_repositories
     def set_buildinfo
-      buildresult = Rails.cache.fetch(["staging_build", name], expires_in: 2.minutes) do
-        Buildresult.find_hashed(project: name)
-      end
+      buildresult = Buildresult.find_hashed(project: name, code: %w(failed broken unresolvable))
       @broken_packages = []
       @building_repositories = []
       buildresult.elements('result') do |result|
-        current_repo = result.slice('repository', 'arch', 'code', 'state', 'dirty')
         building = false
         if !%w(published unpublished).include?(result['state']) || result['dirty'] == 'true'
           building = true
         end
-        current_repo[:tobuild] = 0
-        current_repo[:final] = 0
         result.elements('status') do |status|
           code = status.get('code')
           if %w(broken failed).include?(code) || (code == 'unresolvable' && !building)
@@ -233,17 +228,27 @@ module ObsFactory
                                   'details' => status['details'],
                                   'repository' => result['repository'],
                                   'arch' => result['arch'] }
-          elsif building
-            if %w(broken failed unresolvable succeeded excluded disabled).include?(code)
-              current_repo[:final] += 1
-            elsif %w(finished building scheduled dispatching signing blocked).include?(code)
-              current_repo[:tobuild] += 1
-            else
-              raise "unmapped code #{code}"
-            end
           end
         end
-        @building_repositories << current_repo if building
+        if building
+          # determine build summary
+          current_repo = result.slice('repository', 'arch', 'code', 'state', 'dirty')
+          current_repo[:tobuild] = 0
+          current_repo[:final] = 0
+
+          buildresult = Buildresult.find_hashed(project: name,  view: 'summary', repository: current_repo['repository'], arch: current_repo['arch'])
+          buildresult = buildresult.get('result').get('summary')
+          buildresult.elements('statuscount') do |sc|
+            if %w(broken failed unresolvable succeeded excluded disabled).include?(sc['code'])
+              current_repo[:final] += sc['count'].to_i
+            elsif %w(finished building scheduled dispatching signing blocked).include?(sc['code'])
+              current_repo[:tobuild] += sc['count'].to_i
+            else
+              raise "unmapped code #{sc['code']}"
+            end
+          end
+          @building_repositories << current_repo 
+        end
       end
       @building_repositories
     end
