@@ -106,7 +106,8 @@ module ObsFactory
     #
     # @return [Array] Array of hashes
     def building_repositories
-      @building_repositories || set_buildinfo
+      set_buildinfo if @building_repositories.nil?
+      @building_repositories
     end
 
     # Requests with open reviews but that are not selected into the staging
@@ -150,7 +151,7 @@ module ObsFactory
     #                 :request, :package and :by.
     def missing_reviews
       if @missing_reviews.nil?
-        @missing_reviews = Hash.new
+        @missing_reviews = []
         attribs = [:by_group, :by_user, :by_project, :by_package]
 
         (open_requests + selected_requests).uniq.each do |req|
@@ -163,8 +164,7 @@ module ObsFactory
               # who = rev.by_group || rev.by_user || rev.by_project || rev.by_package
               attribs.each do |att|
                 if who = rev.send(att)
-                  @missing_reviews[req.id] ||= []
-                  @missing_reviews[req.id] << { review: rev.id, state: rev.state.to_s, package: req.package, by: who }
+                  @missing_reviews << { id: rev.id, request: req.id, state: rev.state.to_s, package: req.package, by: who }
                 end
               end
             end
@@ -200,7 +200,7 @@ module ObsFactory
 
     def self.attributes
       %w(name description obsolete_requests openqa_jobs building_repositories
-        broken_packages subprojects untracked_requests missing_reviews selected_requests )
+        broken_packages subprojects untracked_requests missing_reviews selected_requests overall_state )
     end
 
     # Required by ActiveModel::Serializers
@@ -208,44 +208,85 @@ module ObsFactory
       Hash[self.class.attributes.map { |a| [a, nil] }]
     end
 
+    # calculate the overall state of the project
+    def overall_state
+      return @state unless @state.nil?
+      @state = :empty
+  
+      if selected_requests.empty?
+        return @state
+      end
+
+      # base state
+      if building_repositories.present?
+        @state = :building
+      elsif missing_reviews.present?
+        @state = :review
+      else
+        @state = :acceptable
+      end
+
+      # now check failure reasons
+      if untracked_requests.present? || broken_packages.present? || obsolete_requests.present?
+        @state = :unacceptable
+      elsif @state != :building
+        # check openQA jobs for all projects not building right now - or that are known to be broken
+        openqa_jobs.each do |job|
+          if job.failing_modules.present?
+            @state = :failed
+            break
+          elsif job.result != 'passed'
+            @state = :testing
+          end
+        end
+      end
+
+      @state
+    end
+
     protected
 
     # Used internally to calculate #broken_packages and #building_repositories
     def set_buildinfo
-      buildresult = Rails.cache.fetch(["staging_buildresult", name]) do
-        Buildresult.find_hashed(project: name)
-      end
+      buildresult = Buildresult.find_hashed(project: name, code: %w(failed broken unresolvable))
       @broken_packages = []
       @building_repositories = []
       buildresult.elements('result') do |result|
-        current_repo = result.slice('repository', 'arch', 'code', 'state', 'dirty')
         building = false
         if !%w(published unpublished).include?(result['state']) || result['dirty'] == 'true'
           building = true
         end
-        current_repo[:tobuild] = 0
-        current_repo[:final] = 0
         result.elements('status') do |status|
           code = status.get('code')
           if %w(broken failed).include?(code) || (code == 'unresolvable' && !building)
             @broken_packages << { 'package' => status['package'],
+                                  'project' => name,
                                   'state' => code,
                                   'details' => status['details'],
                                   'repository' => result['repository'],
                                   'arch' => result['arch'] }
-          elsif building
-            if %w(broken failed unresolvable succeeded excluded disabled).include?(code)
-              current_repo[:final] += 1
-            elsif %w(finished building scheduled dispatching signing blocked).include?(code)
-              current_repo[:tobuild] += 1
-            else
-              raise "unmapped code #{code}"
-            end
           end
         end
-        @building_repositories << current_repo if building
+        if building
+          # determine build summary
+          current_repo = result.slice('repository', 'arch', 'code', 'state', 'dirty')
+          current_repo[:tobuild] = 0
+          current_repo[:final] = 0
+
+          buildresult = Buildresult.find_hashed(project: name,  view: 'summary', repository: current_repo['repository'], arch: current_repo['arch'])
+          buildresult = buildresult.get('result').get('summary')
+          buildresult.elements('statuscount') do |sc|
+            if %w(broken failed unresolvable succeeded excluded disabled).include?(sc['code'])
+              current_repo[:final] += sc['count'].to_i
+            elsif %w(finished building scheduled dispatching signing blocked).include?(sc['code'])
+              current_repo[:tobuild] += sc['count'].to_i
+            else
+              raise "unmapped code #{sc['code']}"
+            end
+          end
+          @building_repositories << current_repo 
+        end
       end
-      @building_repositories
     end
   end
 end

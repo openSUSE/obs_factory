@@ -95,15 +95,43 @@ a.openqa-incomplete {
     margin: 1ex;
 }
 
+#staging-dashboard span.request a {
+   color: white;
+}
+
+#staging-dashboard .packages-list {
+   text-align: left;
+}
+
+#staging-dashboard span.request {
+   padding-left: 3px;
+   padding-right: 3px;
+   margin-right: .5ex;
+   border-radius: 3px;
+}
+
 #staging-dashboard .untracked {
     background-color: black;
-    margin: 1ex;
 }
 
 #staging-dashboard progress.undone {
     background-color: yellow;
+    color: white;
 }
 
 #staging-dashboard progress.done {
     background-color: lime;
+}
+
+#staging-dashboard tr:nth-child(odd)               { background-color:#fff; }
+#staging-dashboard tr:nth-child(even)              { background-color:#eee; }
+
+#staging-dashboard li.openqa_job {
+   white-space: nowrap;
+   margin-left: 0px;
+} 
+
+#staging-dashboard ul.openqa_list {
+   text-align: left;
+   margin-top: 0px;
 }

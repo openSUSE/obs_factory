@@ -1,8 +1,11 @@
 <td class="openqa-jobs">
-  <% if project.openqa_jobs.size.zero? %>
+  <% if project.openqa_jobs.empty? %>
     -
   <% else %>
-    <% jobs = project.openqa_jobs.map {|j| render(j) } %>
-    <%= jobs.join(" / ").html_safe %>
+    <ul class='openqa_list'>
+    <% project.openqa_jobs.each do |j| %>
+      <li class='openqa_job'><%= render(j) %></li>
+    <% end %>
+    </ul>
   <% end %>
 </td>
