@@ -36,10 +36,15 @@ module ObsFactory
       requests = selected_requests
       return [] unless requests
       ret = []
+      reviews = Hash.new
+      missing_reviews.each do |r|
+        reviews[r[:request]] ||= []
+        reviews[r[:request]] << r
+      end
       requests.each do |req|
         r = { id: req.id, package: req.package }
         css = 'ok'
-        r[:missing_reviews] = missing_reviews[req.id]
+        r[:missing_reviews] = reviews[req.id]
         unless r[:missing_reviews].blank?
           css = 'review'
         end
