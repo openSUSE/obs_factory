@@ -51,7 +51,7 @@ module ObsFactory
       untracked_requests.each do |req|
         ret << { id: req.id, package: req.package, css: 'untracked' }
       end
-      ret.sort { |x,y| x['package'] <=> y['package'] }
+      ret.sort { |x,y| x[:package] <=> y[:package] }
     end
 
     # determine build progress as percentage 
