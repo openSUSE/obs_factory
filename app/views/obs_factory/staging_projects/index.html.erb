@@ -11,37 +11,28 @@
   <tbody>
   <%- @staging_projects.each do |project| %>
       <tr>
-        <th rowspan="2" class="project">
+        <th class="project">
           <%= link_to project.letter, staging_project_path(project.id) %>
 
         </th>
-        <td rowspan="2">
+        <td >
           <div class="packages-list">
             <% project.classified_requests.each do |r| %>
-                <span class="<%= r[:css] %>">
+                <span class="<%= r[:css] %> request">
                   <%= link_to r[:package], main_app.request_show_path(r[:id]) %>
                 </span>
             <% end -%>
           </div>
         </td>
-        <td class="building-repositories" rowspan="2">
+        <td class="building-repositories" >
           <% progress = project.build_progress %>
           <%= link_to main_app.project_monitor_url(progress[:subproject]) do %>
               <progress value="<%= progress[:percentage] %>" max="100" class="<%= if progress[:percentage] == 100 then 'done' else 'undone' end %>"></progress>
+              <%= progress[:percentage] %>%
           <% end %>
         </td>
         <%= render partial: "buildinfo_cells", locals: { project: project } %>
         <%= render partial: "openqa_jobs_cells", locals: { project: project } %>
-      </tr>
-      <tr>
-        <% if project.subprojects.empty? %>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        <% else %>
-            <%= render partial: "buildinfo_cells", locals: { project: project } %>
-            <%= render partial: "openqa_jobs_cells", locals: { project: project.subprojects.first } %>
-        <% end %>
       </tr>
   <% end %>
   </tbody>

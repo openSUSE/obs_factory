@@ -211,7 +211,7 @@ module ObsFactory
 
     # Used internally to calculate #broken_packages and #building_repositories
     def set_buildinfo
-      buildresult = Rails.cache.fetch(["staging_buildresult", name]) do
+      buildresult = Rails.cache.fetch(["staging_build", name], expires_in: 2.minutes) do
         Buildresult.find_hashed(project: name)
       end
       @broken_packages = []
@@ -228,6 +228,7 @@ module ObsFactory
           code = status.get('code')
           if %w(broken failed).include?(code) || (code == 'unresolvable' && !building)
             @broken_packages << { 'package' => status['package'],
+                                  'project' => name,
                                   'state' => code,
                                   'details' => status['details'],
                                   'repository' => result['repository'],

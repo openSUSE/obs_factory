@@ -1,10 +1,10 @@
 <td class="broken-packages">
-  <% if project.broken_packages.size.zero? %>
+  <% if project.broken_packages.empty? %>
     <%= sprite_tag('accept', alt: 'None') %>
   <% else %>
     <% broken = project.broken_packages.map do |pack| %>
       <% link_to "#{pack['package']} (#{pack['state']})".html_safe,
-                main_app.package_show_url(project.name, pack['package']) %>
+                main_app.package_show_url(pack['project'], pack['package']) %>
     <% end %>
     <%= short_sentence broken %>
   <% end %>

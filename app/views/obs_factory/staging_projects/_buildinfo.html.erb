@@ -1,4 +1,4 @@
-<% ok = project.building_repositories.size.zero? -%>
+<% ok = project.building_repositories.empty? -%>
 <dt><%= sprite_tag(ok ? 'accept' : 'error', alt: ok ? 'Ok' : 'Fail') %>Building repositories</dt>
 <dd>
 <% if ok %>
