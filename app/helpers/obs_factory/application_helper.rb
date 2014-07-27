@@ -29,5 +29,14 @@ module ObsFactory
       out << " and #{collection.size-2} more".html_safe if collection.size > 2
       out
     end
+
+    def review_icon(reviewer)
+      case reviewer
+        when 'opensuse-review-team' then 'eye'
+        when 'factory-repo-checker' then 'monitor'
+        when 'legal-team' then 'script'
+        else 'exclamation'
+      end
+    end
   end
 end
