@@ -208,6 +208,20 @@ module ObsFactory
       Hash[self.class.attributes.map { |a| [a, nil] }]
     end
 
+    def build_state
+      return :building if building_repositories.present?
+      return :unacceptable if broken_packages.present? 
+      # check openQA jobs for all projects not building right now - or that are known to be broken
+      openqa_jobs.each do |job|
+        if job.failing_modules.present?
+          return :failed
+        elsif job.result != 'passed'
+          return :testing
+        end
+      end
+      return :acceptable
+    end
+
     # calculate the overall state of the project
     def overall_state
       return @state unless @state.nil?
@@ -218,26 +232,18 @@ module ObsFactory
       end
 
       # base state
-      if building_repositories.present?
-        @state = :building
-      elsif missing_reviews.present?
+      if missing_reviews.present?
         @state = :review
+      elsif untracked_requests.present? || obsolete_requests.present?
+        @state = :unacceptable
       else
-        @state = :acceptable
+        @state = build_state
       end
 
-      # now check failure reasons
-      if untracked_requests.present? || broken_packages.present? || obsolete_requests.present?
-        @state = :unacceptable
-      elsif @state != :building
-        # check openQA jobs for all projects not building right now - or that are known to be broken
-        openqa_jobs.each do |job|
-          if job.failing_modules.present?
-            @state = :failed
-            break
-          elsif job.result != 'passed'
-            @state = :testing
-          end
+      if @state == :acceptable
+        subprojects.each do |prj|
+          # we only have one subprj, so we don't have to worry overwriting 
+          @state = prj.build_state
         end
       end
 
@@ -276,7 +282,9 @@ module ObsFactory
           buildresult = Buildresult.find_hashed(project: name,  view: 'summary', repository: current_repo['repository'], arch: current_repo['arch'])
           buildresult = buildresult.get('result').get('summary')
           buildresult.elements('statuscount') do |sc|
-            if %w(broken failed unresolvable succeeded excluded disabled).include?(sc['code'])
+            if %w(excluded).include?(sc['code'])
+              # ignore
+            elsif %w(broken failed unresolvable succeeded excluded disabled).include?(sc['code'])
               current_repo[:final] += sc['count'].to_i
             elsif %w(finished building scheduled dispatching signing blocked).include?(sc['code'])
               current_repo[:tobuild] += sc['count'].to_i
