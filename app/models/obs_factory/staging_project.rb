@@ -282,14 +282,10 @@ module ObsFactory
           buildresult = Buildresult.find_hashed(project: name,  view: 'summary', repository: current_repo['repository'], arch: current_repo['arch'])
           buildresult = buildresult.get('result').get('summary')
           buildresult.elements('statuscount') do |sc|
-            if %w(excluded).include?(sc['code'])
-              # ignore
-            elsif %w(broken failed unresolvable succeeded excluded disabled).include?(sc['code'])
+            if %w(excluded broken failed unresolvable succeeded excluded disabled).include?(sc['code'])
               current_repo[:final] += sc['count'].to_i
-            elsif %w(finished building scheduled dispatching signing blocked).include?(sc['code'])
-              current_repo[:tobuild] += sc['count'].to_i
             else
-              raise "unmapped code #{sc['code']}"
+              current_repo[:tobuild] += sc['count'].to_i
             end
           end
           @building_repositories << current_repo 
