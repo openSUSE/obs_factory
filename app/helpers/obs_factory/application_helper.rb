@@ -11,25 +11,6 @@ module ObsFactory
       end
     end
 
-    # Outputs the first elements of a colection calling to its partial when
-    # needed
-    #
-    # @param [Enumerable]  collection  collection of strings or objects
-    # @param [Integer]  length  number of elements to print
-    # @return [String]  the first elements and the count of skipped ones
-    def short_sentence(collection, length = 2)
-      list = collection[0,2].map do |i|
-        if i.kind_of? String
-          i
-        else
-          render(i).chomp
-        end
-      end
-      out = list.join(", ").html_safe
-      out << " and #{collection.size-2} more".html_safe if collection.size > 2
-      out
-    end
-
     def review_icon(reviewer)
       case reviewer
         when 'opensuse-review-team' then 'eye'

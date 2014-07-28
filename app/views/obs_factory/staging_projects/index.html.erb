@@ -1,48 +1,97 @@
-<table class="dashboard" id="staging-dashboard">
-  <thead>
-  <tr>
-    <th>Project</th>
-    <th>Requests</th>
-    <th>Build progress</th>
-    <th>Broken pack.</th>
-    <th>openQA</th>
-  </tr>
-  </thead>
-  <tbody>
-  <%- @staging_projects.each do |project| %>
+<div class="grid_13 alpha">
+  <div class="box box-shadow">
+
+    <table class="dashboard" id="staging-dashboard">
+      <thead>
       <tr>
-        <th class="project">
-          <div><%= link_to project.letter, staging_project_path(project.id) %></div>
-          <div><%= project.overall_state %></div>
-        </th>
-        <td >
-          <div class="packages-list">
-            <% project.classified_requests.each do |r| %>
+        <th>Project</th>
+        <th>Requests</th>
+        <th>Problems</th>
+      </tr>
+      </thead>
+      <tbody>
+      <%- @staging_projects.each do |project| %>
+          <% next if project.overall_state == :empty %>
+          <tr>
+            <th>
+              <div class="project state-<%= project.overall_state %>">
+                <div class="letter"><%= link_to project.letter, staging_project_path(project.id) %></div>
+                <div class="state"><%= project.overall_state %></div>
+                <div class="progress">
+                  <% if project.overall_state == :building %>
+                      <% progress = project.build_progress %>
+                      <%= link_to main_app.project_monitor_url(progress[:subproject]) do %>
+                          <%= progress[:percentage] %>%
+                      <% end %>
+                  <% elsif project.overall_state == :review %>
+                      <%= project.review_percentage %>%
+                  <% elsif project.overall_state == :testing %>
+                      <%= link_to project.first_running_openqa_job_link do %>
+                          <%= project.testing_percentage %>%
+                      <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </th>
+            <td>
+              <div class="packages-list">
+                <% project.classified_requests.each do |r| %>
                 <span class="<%= r[:css] %> request">
                   <%= link_to r[:package], main_app.request_show_path(r[:id]) %>
                 </span>
-                <% r[:missing_reviews].each do |mr| %>
-                   <%= link_to sprite_tag(review_icon(mr[:by])), main_app.request_show_path(r[:id]) %>
-                <% end if r[:missing_reviews].present? %>
-            <% end -%>
-          </div>
-        </td>
-        <% if project.overall_state == :empty %>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <% else %>
-        <td class="building-repositories" >
-          <% progress = project.build_progress %>
-          <%= link_to main_app.project_monitor_url(progress[:subproject]) do %>
-              <progress value="<%= progress[:percentage] %>" max="100" class="<%= if progress[:percentage] == 100 then 'done' else 'undone' end %>"></progress>
-              <%= progress[:percentage] %>%
-          <% end %>
-        </td>
-        <%= render partial: "buildinfo_cells", locals: { project: project } %>
-        <%= render partial: "openqa_jobs_cells", locals: { project: project } %>
-        <% end %>
-      </tr>
-  <% end %>
-  </tbody>
-</table>
+                    <% r[:missing_reviews].each do |mr| %>
+                        <%= link_to sprite_tag(review_icon(mr[:by])), main_app.request_show_path(r[:id]) %>
+                    <% end if r[:missing_reviews].present? %>
+                <% end -%>
+              </div>
+
+            </td>
+            <td class="broken-packages">
+              <% problems = project.failed_openqa_jobs.map { |j| "<li class='openqa_job'>QA: " + render(j) + "</li>" } %>
+
+              <% project.broken_packages.each do |pack|
+                line = "<li class='failed_pkg status_#{pack['state']}'>"
+                if pack['state'] == 'failed'
+                  link = main_app.package_live_build_log_url(project: pack['project'], package: pack['package'], repository: pack['repository'], arch: pack['arch'])
+                else
+                  link = main_app.package_show_url(pack['project'], pack['package'])
+                end
+                line += link_to "Build #{pack['state']}: #{pack['package']}", link
+                line += "</li>"
+                problems << line
+              end -%>
+
+              <% if problems.present? %>
+                  <% counter = 0 %>
+                  <ul class='problem_list'>
+                    <% problems.sort.each do |p| %>
+                        <%= p.html_safe %>
+                        <% counter += 1 %>
+                        <% if counter > 3 && problems.size != 4 %>
+                            <li>...<%= problems.size - counter %> more problems</li>
+                        <% end %>
+                    <% end %>
+                  </ul>
+              <% else %>
+                  <%= sprite_tag('accept', alt: 'OK') %>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<div class="grid_3 omega">
+  <div class="box box-shadow">
+    <h2 class="box-header">Legend</h2>
+    <ul class="color-legend">
+      <li>Green: Ready</li>
+      <li>Orange: In review</li>
+      <li>Blue: Obsolete</li>
+      <li>Black: Untracked</li>
+    </ul>
+  </div>
+</div>

@@ -20,15 +20,18 @@ module ObsFactory
       if requests.blank?
         ''
       else
-        requests.map {|i| i["package"] }.sort.join(', ')
+        requests.map { |i| i["package"] }.sort.join(', ')
       end
     end
 
     # List of requests/packages tracked in the staging project
     def classified_requests
+      return @classified_requests if @classified_requests
+
+      @classified_requests = []
       requests = selected_requests
-      return [] unless requests
-      ret = []
+      return @classified_requests unless requests
+
       reviews = Hash.new
       missing_reviews.each do |r|
         reviews[r[:request]] ||= []
@@ -45,13 +48,14 @@ module ObsFactory
           css = 'obsolete'
         end
         r[:css] = css
-        ret << r
+        @classified_requests << r
       end
       # now append untracked reqs
       untracked_requests.each do |req|
-        ret << { id: req.id, package: req.package, css: 'untracked' }
+        @classified_requests << { id: req.id, package: req.package, css: 'untracked' }
       end
-      ret.sort { |x,y| x[:package] <=> y[:package] }
+      @classified_requests.sort! { |x, y| x[:package] <=> y[:package] }
+      @classified_requests
     end
 
     # determine build progress as percentage 
@@ -61,7 +65,6 @@ module ObsFactory
       total = 0
       final = 0
       building_repositories.each do |r|
-        Rails.logger.debug "BR #{r.inspect}"
         total += r[:tobuild] + r[:final]
         final += r[:final]
       end
@@ -79,23 +82,64 @@ module ObsFactory
     end
 
     # collect the broken packages of all subprojects
-   def broken_packages
-     ret = model.broken_packages
-     subprojects.each do |prj|
-       ret += prj.broken_packages
-     end
-     ret
-   end
+    def broken_packages
+      ret = model.broken_packages
+      subprojects.each do |prj|
+        ret += prj.broken_packages
+      end
+      ret
+    end
+
+    # @return [Array] Array of OpenqaJob objects for all subprojects
+    def all_openqa_jobs
+      ret = model.openqa_jobs
+      subprojects.each do |prj|
+        ret += prj.openqa_jobs
+      end
+      ret
+    end
 
     # Wraps the associated openqa_jobs with the corresponding decorator.
     #
     # @return [Array] Array of OpenqaJobPresenter objects for all subprojects
-   def openqa_jobs
-     ret = model.openqa_jobs
-     subprojects.each do |prj|
-       ret += prj.openqa_jobs
-     end
-     ObsFactory::OpenqaJobPresenter.wrap(ret)
-   end
+    def openqa_jobs
+      ObsFactory::OpenqaJobPresenter.wrap(all_openqa_jobs)
+    end
+
+    # Wraps the failed openqa_jobs with the corresponding decorator.
+    #
+    # @return [Array] Array of OpenqaJobPresenter objects for all subprojects
+    def failed_openqa_jobs
+      ObsFactory::OpenqaJobPresenter.wrap(all_openqa_jobs.select {|job| job.failing_modules.present? })
+    end
+
+    # return a percentage counting the reviewed requests / total requests
+    def review_percentage
+      total = classified_requests.size
+      missing = 0
+      classified_requests.each do |rq|
+        missing +=1 if rq[:missing_reviews]
+      end
+      100 - missing * 100 / total
+    end
+
+    def testing_percentage
+      jobs = all_openqa_jobs
+      notdone = 0
+      jobs.each do |job|
+        notdone += 1 unless %w(passed failed).include?(job.result)
+      end
+      100 - notdone * 100 / jobs.size
+    end
+
+    def first_running_openqa_job_link
+      all_openqa_jobs.each do |job|
+        unless %w(passed failed).include?(job.result)
+          return ObsFactory::OpenqaJobPresenter.new(job).url
+        end
+      end
+      ''
+    end
+
   end
 end

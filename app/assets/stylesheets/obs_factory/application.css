@@ -96,18 +96,18 @@ a.openqa-incomplete {
 }
 
 #staging-dashboard span.request a {
-   color: white;
+    color: white;
 }
 
 #staging-dashboard .packages-list {
-   text-align: left;
+    text-align: left;
 }
 
 #staging-dashboard span.request {
-   padding-left: 3px;
-   padding-right: 3px;
-   margin-right: .5ex;
-   border-radius: 3px;
+    padding-left: 3px;
+    padding-right: 3px;
+    margin-right: .5ex;
+    border-radius: 3px;
 }
 
 #staging-dashboard .untracked {
@@ -123,15 +123,43 @@ a.openqa-incomplete {
     background-color: lime;
 }
 
-#staging-dashboard tr:nth-child(odd)               { background-color:#fff; }
-#staging-dashboard tr:nth-child(even)              { background-color:#eee; }
-
-#staging-dashboard li.openqa_job {
-   white-space: nowrap;
-   margin-left: 0px;
-} 
-
-#staging-dashboard ul.openqa_list {
-   text-align: left;
-   margin-top: 0px;
+#staging-dashboard tr:nth-child(odd) {
+    background-color: #fff;
 }
+
+#staging-dashboard tr:nth-child(even) {
+    background-color: #eee;
+}
+
+#staging-dashboard ul.problem_list {
+    white-space: nowrap;
+    margin-left: 0px;
+    text-align: left;
+    margin-top: 0px;
+}
+
+#staging-dashboard .project {
+    border-radius: 3px;
+    margin: 5px;
+}
+
+#staging-dashboard .project.state-building {
+    background-color: yellow;
+}
+
+#staging-dashboard .project.state-review {
+    background-color: orange;
+}
+
+#staging-dashboard .project.state-testing {
+    background-color: lightgoldenrodyellow;
+}
+
+#staging-dashboard .project.state-unacceptable {
+    background-color: deeppink;
+}
+
+#staging-dashboard .project.state-failed {
+    background-color: red;
+}
+
