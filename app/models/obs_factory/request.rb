@@ -35,11 +35,11 @@ module ObsFactory
 
     # Requests in 'review' state that have new reviews for the given project
     #
-    # @param [String]  project_name  the name of the associated project
+    # @param [Hash] can contain by_project, by_group, by_user or by_package
     # @return [Array]  Array of Request objects
-    def self.with_open_reviews_for(project_name)
+    def self.with_open_reviews_for(props)
       reviews = Review.includes(:bs_request => [:reviews, :bs_request_actions])
-      reviews = reviews.where(by_project: project_name, state: 'new', "bs_requests.state" => 'review')
+      reviews = reviews.where(props.merge(state: 'new', "bs_requests.state" => 'review'))
       reviews.map {|r| Request.new(r.bs_request) }
     end
 

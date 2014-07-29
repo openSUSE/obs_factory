@@ -122,7 +122,7 @@ module ObsFactory
     #
     # @return [Array] Array of BsRequest objects
     def open_requests
-      @open_requests ||= Request.with_open_reviews_for(name)
+      @open_requests ||= Request.with_open_reviews_for(by_project: name)
     end
 
     # Requests selected in the project

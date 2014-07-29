@@ -5,7 +5,11 @@ module ObsFactory
     def index
       staging_projects = StagingProject.all
       respond_to do |format|
-        format.html { @staging_projects = StagingProjectPresenter.wrap(staging_projects) }
+        format.html do
+          @staging_projects = StagingProjectPresenter.wrap(staging_projects)
+          @backlog_requests = Request.with_open_reviews_for(by_group: 'factory-staging')
+          @backlog_requests.sort! { |x,y| x.package <=> y.package }
+        end
         format.json { render json: staging_projects }
       end
     end

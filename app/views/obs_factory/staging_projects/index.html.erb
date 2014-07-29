@@ -87,6 +87,7 @@
 <div class="grid_3 omega">
   <div class="box box-shadow">
     <h2 class="box-header">Legend</h2>
+
     <p>Requests</p>
     <ul class="color-legend">
       <li>Green: Ready</li>
@@ -104,5 +105,37 @@
       <li>Unacceptable</li>
       <li>Failed</li>
     </ul>
+  </div>
+
+  <div class="box box-shadow">
+    <h2 class="box-header">Infos</h2>
+
+    <p>Empty Projects:</p>
+    <% empties = @staging_projects.select { |p| p.overall_state == :empty }.map { |p| p.letter } %>
+
+    <% if empties.empty? %>
+        <div class="centered">none</div>
+    <% else %>
+        <div class="centered"><%= empties.sort.join(',') %></div>
+    <% end %>
+
+    <p>Backlog:</p>
+    <% if @backlog_requests.empty? %>
+        <p><i>Empty</i></p>
+    <% else %>
+        <ul>
+          <% counter = 0
+             @backlog_requests.each do |req| %>
+              <li>
+                <%= link_to elide(req.package, length = 14), main_app.request_show_path(req.id) %>
+              </li>
+              <% counter += 1
+                 if counter > 5 %>
+                  <li>... <%= @backlog_requests.size - counter %> more</li>
+                  <% break %>
+              <% end %>
+          <% end %>
+        </ul>
+    <% end %>
   </div>
 </div>
