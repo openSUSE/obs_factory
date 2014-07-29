@@ -24,6 +24,16 @@ module ObsFactory
       end
     end
 
+    # engine helpers are troublesome, so we avoid them
+    def review_icon(reviewer)
+      case reviewer
+        when 'opensuse-review-team' then 'eye'
+        when 'factory-repo-checker' then 'monitor'
+        when 'legal-team' then 'script'
+        else 'exclamation'
+      end
+    end
+
     # List of requests/packages tracked in the staging project
     def classified_requests
       return @classified_requests if @classified_requests
@@ -35,6 +45,7 @@ module ObsFactory
       reviews = Hash.new
       missing_reviews.each do |r|
         reviews[r[:request]] ||= []
+        r[:icon] = review_icon(r[:by])
         reviews[r[:request]] << r
       end
       requests.each do |req|
