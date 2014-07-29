@@ -81,7 +81,8 @@ module ObsFactory
       end
       ret = { subproject: name }
       if total != 0
-        ret[:percentage] = final * 100 / total
+        # if we have building repositories, make sure we don't exceed 99
+        ret[:percentage] = [final * 100 / total, 99].min
       else
         ret[:percentage] = 100
         subprojects.each do |prj|
