@@ -1,11 +1,11 @@
 /* Staging projects dashboard table */
 #staging-dashboard th.project {
-    text-align: right
+    text-align: right;
 }
 
-#staging-dashboard th.project div.packages-list {
-    font-weight: normal;
-    font-size: 11px;
+#staging-dashboard .packages-list {
+    text-align: left;
+    margin: 6px;
 }
 
 #staging-dashboard td {
@@ -80,23 +80,47 @@ a.openqa-incomplete {
     margin-bottom: 0.5em
 }
 
-#staging-dashboard .ok {
-    background-color: green;
+#staging-dashboard .request {
+    white-space: nowrap;
     margin: 1ex;
+    padding: 3px;
+}
+
+#staging-dashboard .ok {
+    background-color: #53b25f;
+}
+.color-legend span.ok {
+    background-color: #53b25f;
 }
 
 #staging-dashboard .review {
-    background-color: orange;
-    margin: 1ex;
+    background-color: #d9b200;
+}
+.color-legend span.review {
+    background-color: #d9b200;
 }
 
+
 #staging-dashboard .obsolete {
-    background-color: blue;
-    margin: 1ex;
+    background-color: #42a2cc;
 }
+.color-legend span.obsolete {
+    background-color: #42a2cc;
+}
+
+#staging-dashboard .untracked {
+    background-color: #666;
+}
+
+.color-legend span.untracked {
+    background-color: #666;
+}
+
 
 #staging-dashboard span.request a {
     color: white;
+    margin: 4px;
+    line-height: 2.2em;
 }
 
 #staging-dashboard .packages-list {
@@ -108,10 +132,6 @@ a.openqa-incomplete {
     padding-right: 3px;
     margin-right: .5ex;
     border-radius: 3px;
-}
-
-#staging-dashboard .untracked {
-    background-color: black;
 }
 
 #staging-dashboard progress.undone {
@@ -136,30 +156,97 @@ a.openqa-incomplete {
     margin-left: 0px;
     text-align: left;
     margin-top: 0px;
+    list-style-type: none;
+}
+
+#staging-dashboard ul.problem_list li {
+    margin-left: 8px;
+    line-height: 170%;
 }
 
 #staging-dashboard .project {
-    border-radius: 3px;
+    border-radius: 8px;
     margin: 5px;
+    padding: 4px;
 }
 
 #staging-dashboard .project.state-building {
-    background-color: yellow;
+    background-color: #ff7242;
+}
+.color-legend span.project.state-building {
+    background-color: #ff7242;
 }
 
 #staging-dashboard .project.state-review {
-    background-color: orange;
+    background-color: #6a98cc;
+}
+.color-legend span.project.state-review {
+    background-color: #6a98cc;
 }
 
 #staging-dashboard .project.state-testing {
-    background-color: lightgoldenrodyellow;
+    background-color: #6ab4cc;
 }
+.color-legend span.project.state-testing {
+    background-color: #6ab4cc;
+}
+
 
 #staging-dashboard .project.state-unacceptable {
-    background-color: deeppink;
+    background-color: #333;
 }
+.color-legend span.project.state-unacceptable {
+    background-color: #333;
+}
+
 
 #staging-dashboard .project.state-failed {
-    background-color: red;
+    background-color: #ff4e46;
+}
+.color-legend span.project.state-failed {
+    background-color: #ff4e46;
 }
 
+
+#staging-dashboard .project.state-acceptable {
+    background-color: #7de85d;
+}
+.color-legend span.project.state-acceptable {
+    background-color: #fde85d;
+}
+
+
+#staging-dashboard .letter {
+    font-size: 150%;
+    margin: 5px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 26px;
+    box-shadow: 0px -2px 2px #999;
+}
+
+#staging-dashboard .state {
+    color: white;
+}
+
+ul.color-legend {
+    list-style-type: none;
+    margin-left: 24px;
+    margin-right: 10px;
+}
+
+ul.color-legend li {
+    margin-left: 8px;
+}
+
+.color-legend span {
+    border: 1px #ccc solid;
+    min-width: 15px;
+    min-height: 15px;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.staging_backlog li {
+    margin-left: 8px;
+}

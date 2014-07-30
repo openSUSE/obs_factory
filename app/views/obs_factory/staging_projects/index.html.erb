@@ -13,7 +13,7 @@
       <%- @staging_projects.each do |project| %>
           <% next if project.overall_state == :empty %>
           <tr>
-            <th>
+            <td>
               <div class="project state-<%= project.overall_state %>">
                 <div class="letter"><%= link_to project.letter, staging_project_path(project.id) %></div>
                 <div class="state"><%= project.overall_state %></div>
@@ -32,16 +32,17 @@
                   <% end %>
                 </div>
               </div>
-            </th>
+            </td>
             <td>
               <div class="packages-list">
                 <% project.classified_requests.each do |r| %>
                 <span class="<%= r[:css] %> request">
                   <%= link_to r[:package], main_app.request_show_path(r[:id]) %>
+
+                  <% r[:missing_reviews].each do |mr| %>
+                   <%= link_to sprite_tag(mr[:icon]), main_app.request_show_path(r[:id]) %>
+                <% end if r[:missing_reviews].present? %>
                 </span>
-                    <% r[:missing_reviews].each do |mr| %>
-                        <%= link_to sprite_tag(mr[:icon]), main_app.request_show_path(r[:id]) %>
-                    <% end if r[:missing_reviews].present? %>
                 <% end -%>
               </div>
 
@@ -94,20 +95,20 @@
 
     <p>Requests</p>
     <ul class="color-legend">
-      <li>Green: Ready</li>
-      <li>Orange: In review</li>
-      <li>Blue: Obsolete</li>
-      <li>Black: Untracked</li>
+      <li><span class="ok"></span>Ready</li>
+      <li><span class="review"></span>In review</li>
+      <li><span class="obsolete"></span>Obsolete</li>
+      <li><span class="untracked"></span>Untracked</li>
     </ul>
 
     <p>Projects</p>
-    <ul>
-      <li>Building</li>
-      <li>Testing</li>
-      <li>Review</li>
-      <li>Acceptable</li>
-      <li>Unacceptable</li>
-      <li>Failed</li>
+    <ul class="color-legend">
+      <li><span class="project state-building"></span>Building</li>
+      <li><span class="project state-testing"></span>Testing</li>
+      <li><span class="project state-review"></span>Review</li>
+      <li><span class="project state-acceptable"></span>Acceptable</li>
+      <li><span class="project state-unacceptable"></span>Unacceptable</li>
+      <li><span class="project state-failed"></span>Failed</li>
     </ul>
   </div>
 
@@ -127,11 +128,11 @@
     <% if @backlog_requests.empty? %>
         <p><i>Empty</i></p>
     <% else %>
-        <ul>
+        <ul class="staging_backlog">
           <% counter = 0
              @backlog_requests.each do |req| %>
               <li>
-                <%= link_to elide(req.package, length = 14), main_app.request_show_path(req.id) %>
+                <%= link_to elide(req.package, length = 16), main_app.request_show_path(req.id) %>
               </li>
               <% counter += 1
                  if counter > 5 %>
