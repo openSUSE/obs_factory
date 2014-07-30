@@ -40,7 +40,7 @@
                       <%= link_to r[:package], main_app.request_show_path(r[:id]) %>
 
                       <% r[:missing_reviews].each do |mr| %>
-                          <%= link_to fa_icon(mr[:icon], class: 'missing_review'), main_app.request_show_path(r[:id]) %>
+                          <%= link_to content_tag(:i, nil, class: "fa-#{mr[:icon]} fa missing_review"), main_app.request_show_path(r[:id]) %>
                       <% end if r[:missing_reviews].present? %>
                     </li>
                 <% end -%>
@@ -78,7 +78,7 @@
                     <% end %>
                   </ul>
               <% else %>
-                  <%= fa_icon 'check-circle 2x', class: 'ok-checkbox' %>
+                  <i class='fa-check-circle fa fa-2x ok-checkbox'></i>
               <% end %>
             </td>
           </tr>
