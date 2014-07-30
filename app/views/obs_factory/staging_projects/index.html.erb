@@ -47,7 +47,11 @@
 
             </td>
             <td class="broken-packages">
-              <% problems = project.failed_openqa_jobs.map { |j| "<li class='openqa_job'>QA: " + render(j) + "</li>" } %>
+              <% problems = []
+                 if project.overall_state != :building
+                   problems += project.failed_openqa_jobs.map { |j| "<li class='openqa_job'>QA: " + render(j) + "</li>" }
+                 end
+              -%>
 
               <% project.broken_packages.each do |pack|
                 line = "<li class='failed_pkg status_#{pack['state']}'>"

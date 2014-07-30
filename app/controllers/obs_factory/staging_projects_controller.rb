@@ -6,7 +6,7 @@ module ObsFactory
       staging_projects = StagingProject.all
       respond_to do |format|
         format.html do
-          @staging_projects = StagingProjectPresenter.wrap(staging_projects)
+          @staging_projects = StagingProjectPresenter.sort(staging_projects)
           @backlog_requests = Request.with_open_reviews_for(by_group: 'factory-staging')
           @backlog_requests.sort! { |x,y| x.package <=> y.package }
         end

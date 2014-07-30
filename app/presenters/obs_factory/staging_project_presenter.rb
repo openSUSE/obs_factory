@@ -9,6 +9,11 @@ module ObsFactory
       ObsFactory::StagingProjectPresenter.wrap(model.subprojects)
     end
 
+    def self.sort(collection)
+      prjs = wrap(collection)
+      prjs.sort_by! { |a| a.sort_key }
+    end
+
     # List of packages included in the staging_project.
     #
     # The names are extracted from the description (that is in fact a yaml
@@ -27,10 +32,14 @@ module ObsFactory
     # engine helpers are troublesome, so we avoid them
     def review_icon(reviewer)
       case reviewer
-        when 'opensuse-review-team' then 'eye'
-        when 'factory-repo-checker' then 'monitor'
-        when 'legal-team' then 'script'
-        else 'exclamation'
+      when 'opensuse-review-team' then
+        'eye'
+      when 'factory-repo-checker' then
+        'monitor'
+      when 'legal-team' then
+        'script'
+      else
+        'exclamation'
       end
     end
 
@@ -122,7 +131,7 @@ module ObsFactory
     #
     # @return [Array] Array of OpenqaJobPresenter objects for all subprojects
     def failed_openqa_jobs
-      ObsFactory::OpenqaJobPresenter.wrap(all_openqa_jobs.select {|job| job.failing_modules.present? })
+      ObsFactory::OpenqaJobPresenter.wrap(all_openqa_jobs.select { |job| job.failing_modules.present? })
     end
 
     # return a percentage counting the reviewed requests / total requests
@@ -153,5 +162,28 @@ module ObsFactory
       ''
     end
 
+    # returns a number presenting how high it should be in the list of staging prjs
+    # the lower the number, the earlier it is in the list - acceptable A first
+    def sort_key
+      main = case overall_state
+      when :acceptable then
+        0
+      when :review then
+        10000 + review_percentage * 100
+      when :testing then
+        20000 + testing_percentage * 100
+      when :building then
+        30000 + build_progress[:percentage] * 100
+      when :failed then
+        40000
+      when :unacceptable then
+        50000
+      when :empty
+        60000
+      else
+        raise "untracked #{overall_state}"
+      end
+      main + letter.ord()
+    end
   end
 end
