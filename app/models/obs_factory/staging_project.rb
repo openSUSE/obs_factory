@@ -122,7 +122,7 @@ module ObsFactory
     #
     # @return [Array] Array of BsRequest objects
     def open_requests
-      @open_requests ||= Request.with_open_reviews_for(name)
+      @open_requests ||= Request.with_open_reviews_for(by_project: name)
     end
 
     # Requests selected in the project
@@ -210,7 +210,7 @@ module ObsFactory
 
     def build_state
       return :building if building_repositories.present?
-      return :unacceptable if broken_packages.present? 
+      return :unacceptable if broken_packages.present?
       # check openQA jobs for all projects not building right now - or that are known to be broken
       openqa_jobs.each do |job|
         if job.failing_modules.present?
@@ -226,15 +226,13 @@ module ObsFactory
     def overall_state
       return @state unless @state.nil?
       @state = :empty
-  
+
       if selected_requests.empty?
         return @state
       end
 
       # base state
-      if missing_reviews.present?
-        @state = :review
-      elsif untracked_requests.present? || obsolete_requests.present?
+      if untracked_requests.present? || obsolete_requests.present?
         @state = :unacceptable
       else
         @state = build_state
@@ -245,6 +243,10 @@ module ObsFactory
           # we only have one subprj, so we don't have to worry overwriting 
           @state = prj.build_state
         end
+      end
+
+      if @state == :acceptable && missing_reviews.present?
+        @state = :review
       end
 
       @state
@@ -279,7 +281,7 @@ module ObsFactory
           current_repo[:tobuild] = 0
           current_repo[:final] = 0
 
-          buildresult = Buildresult.find_hashed(project: name,  view: 'summary', repository: current_repo['repository'], arch: current_repo['arch'])
+          buildresult = Buildresult.find_hashed(project: name, view: 'summary', repository: current_repo['repository'], arch: current_repo['arch'])
           buildresult = buildresult.get('result').get('summary')
           buildresult.elements('statuscount') do |sc|
             if %w(excluded broken failed unresolvable succeeded excluded disabled).include?(sc['code'])
@@ -288,8 +290,11 @@ module ObsFactory
               current_repo[:tobuild] += sc['count'].to_i
             end
           end
-          @building_repositories << current_repo 
+          @building_repositories << current_repo
         end
+      end
+      if @building_repositories.present?
+        @broken_packages = @broken_packages.select { |p| p['state'] != 'unresolvable' }
       end
     end
   end

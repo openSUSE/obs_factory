@@ -1,11 +1,11 @@
 /* Staging projects dashboard table */
 #staging-dashboard th.project {
-    text-align: right
+    text-align: right;
 }
 
-#staging-dashboard th.project div.packages-list {
-    font-weight: normal;
-    font-size: 11px;
+#staging-dashboard .packages-list {
+    text-align: left;
+    margin: 6px;
 }
 
 #staging-dashboard td {
@@ -80,38 +80,60 @@ a.openqa-incomplete {
     margin-bottom: 0.5em
 }
 
-#staging-dashboard .ok {
-    background-color: green;
+#staging-dashboard .request {
+    white-space: nowrap;
     margin: 1ex;
+    padding: 3px;
+}
+
+#staging-dashboard .ok {
+    background-color: #53b25f;
+}
+.color-legend .ok {
+    background-color: #53b25f;
 }
 
 #staging-dashboard .review {
-    background-color: orange;
-    margin: 1ex;
+    background-color: #d9b200;
 }
+.color-legend .review {
+    background-color: #d9b200;
+}
+
 
 #staging-dashboard .obsolete {
-    background-color: blue;
-    margin: 1ex;
+    background-color: #42a2cc;
 }
-
-#staging-dashboard span.request a {
-   color: white;
-}
-
-#staging-dashboard .packages-list {
-   text-align: left;
-}
-
-#staging-dashboard span.request {
-   padding-left: 3px;
-   padding-right: 3px;
-   margin-right: .5ex;
-   border-radius: 3px;
+.color-legend .obsolete {
+    background-color: #42a2cc;
 }
 
 #staging-dashboard .untracked {
-    background-color: black;
+    background-color: #666;
+}
+
+.color-legend .untracked {
+    background-color: #666;
+}
+
+
+#staging-dashboard .request a {
+    color: white;
+    margin: 0;
+    line-height: 1em;
+}
+
+#staging-dashboard .packages-list {
+    text-align: left;
+    list-style-type: none;
+}
+
+#staging-dashboard .request {
+    padding-left: 2px;
+    padding-right: 3px;
+    margin-right: .5ex;
+    border-radius: 3px;
+    float: left;
 }
 
 #staging-dashboard progress.undone {
@@ -123,15 +145,120 @@ a.openqa-incomplete {
     background-color: lime;
 }
 
-#staging-dashboard tr:nth-child(odd)               { background-color:#fff; }
-#staging-dashboard tr:nth-child(even)              { background-color:#eee; }
+#staging-dashboard tr:nth-child(odd) {
+    background-color: #fff;
+}
 
-#staging-dashboard li.openqa_job {
-   white-space: nowrap;
-   margin-left: 0px;
-} 
+#staging-dashboard tr:nth-child(even) {
+    background-color: #eee;
+}
 
-#staging-dashboard ul.openqa_list {
-   text-align: left;
-   margin-top: 0px;
+#staging-dashboard ul.problem_list {
+    white-space: nowrap;
+    margin-left: 0px;
+    text-align: left;
+    margin-top: 0px;
+    list-style-type: none;
+}
+
+#staging-dashboard ul.problem_list li {
+    margin-left: 8px;
+    line-height: 170%;
+}
+
+#staging-dashboard .project {
+    border-radius: 8px;
+    margin: 5px;
+    padding: 4px;
+}
+
+#staging-dashboard .project.state-building {
+    background-color: #cca66a;
+}
+
+.color-legend span.project.state-building {
+    background-color: #cca66a;
+}
+
+#staging-dashboard .project.state-review {
+    background-color: #6a98cc;
+}
+.color-legend span.project.state-review {
+    background-color: #6a98cc;
+}
+
+#staging-dashboard .project.state-testing {
+    background-color: #6ab4cc;
+}
+.color-legend span.project.state-testing {
+    background-color: #6ab4cc;
+}
+
+#staging-dashboard .project.state-unacceptable {
+    background-color: #333;
+}
+.color-legend span.project.state-unacceptable {
+    background-color: #333;
+}
+
+
+#staging-dashboard .project.state-failed {
+    background-color: #ff4e46;
+}
+.color-legend span.project.state-failed {
+    background-color: #ff4e46;
+}
+
+
+#staging-dashboard .project.state-acceptable {
+    background-color: #75c195;
+}
+.color-legend span.project.state-acceptable {
+    background-color: #75c195;
+}
+
+
+#staging-dashboard .letter {
+    font-size: 150%;
+    margin: 5px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 26px;
+    box-shadow: 0px -2px 2px #999;
+}
+
+#staging-dashboard .state a {
+    color: white;
+}
+
+ul.color-legend {
+    list-style-type: none;
+    margin-left: 4px;
+    margin-right: 10px;
+}
+
+ul.color-legend li {
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.color-legend span {
+    vertical-align: top;
+    border: 1px #ccc solid;
+    min-width: 15px;
+    min-height: 15px;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.staging_backlog li {
+    margin-left: 8px;
+}
+
+.ok-checkbox {
+   color: #53B25F;
+}
+
+.fa.missing-review {
+  color: white;
 }
