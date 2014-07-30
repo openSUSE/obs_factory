@@ -16,7 +16,7 @@
             <td>
               <div class="project state-<%= project.overall_state %>">
                 <div class="letter"><%= link_to project.letter, staging_project_path(project.id) %></div>
-                <div class="state"><%= project.overall_state %></div>
+                <div class="state"><%= link_to project.overall_state, main_app.project_show_path(project.name) %></div>
                 <div class="progress">
                   <% if project.overall_state == :building %>
                       <% progress = project.build_progress %>
@@ -34,17 +34,17 @@
               </div>
             </td>
             <td>
-              <div class="packages-list">
+              <ul class="packages-list">
                 <% project.classified_requests.each do |r| %>
-                <span class="<%= r[:css] %> request">
-                  <%= link_to r[:package], main_app.request_show_path(r[:id]) %>
+                    <li class="<%= r[:css] %> request">
+                      <%= link_to r[:package], main_app.request_show_path(r[:id]) %>
 
-                  <% r[:missing_reviews].each do |mr| %>
-                   <%= link_to sprite_tag(mr[:icon]), main_app.request_show_path(r[:id]) %>
-                <% end if r[:missing_reviews].present? %>
-                </span>
+                      <% r[:missing_reviews].each do |mr| %>
+                          <%= link_to sprite_tag(mr[:icon]), main_app.request_show_path(r[:id]) %>
+                      <% end if r[:missing_reviews].present? %>
+                    </li>
                 <% end -%>
-              </div>
+              </ul>
 
             </td>
             <td class="broken-packages">
@@ -118,11 +118,13 @@
     <p>Empty Projects:</p>
     <% empties = @staging_projects.select { |p| p.overall_state == :empty }.map { |p| p.letter } %>
 
-    <% if empties.empty? %>
-        <div class="centered">none</div>
-    <% else %>
-        <div class="centered"><%= empties.sort.join(',') %></div>
-    <% end %>
+    <p>
+      <% if empties.empty? %>
+          none
+      <% else %>
+          <%= empties.sort.join(' &dash; ').html_safe %>
+      <% end %>
+    </p>
 
     <p>Backlog:</p>
     <% if @backlog_requests.empty? %>
@@ -132,7 +134,7 @@
           <% counter = 0
              @backlog_requests.each do |req| %>
               <li>
-                <%= link_to elide(req.package, length = 16), main_app.request_show_path(req.id) %>
+                <%= link_to elide(req.package, length = 19), main_app.request_show_path(req.id) %>
               </li>
               <% counter += 1
                  if counter > 5 %>

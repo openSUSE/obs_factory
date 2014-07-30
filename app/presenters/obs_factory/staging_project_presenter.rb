@@ -169,11 +169,11 @@ module ObsFactory
       when :acceptable then
         0
       when :review then
-        10000 + review_percentage * 100
+        10000 - review_percentage * 100
       when :testing then
-        20000 + testing_percentage * 100
+        20000 - testing_percentage * 100
       when :building then
-        30000 + build_progress[:percentage] * 100
+        30000 - build_progress[:percentage] * 100
       when :failed then
         40000
       when :unacceptable then

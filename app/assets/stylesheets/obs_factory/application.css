@@ -89,14 +89,14 @@ a.openqa-incomplete {
 #staging-dashboard .ok {
     background-color: #53b25f;
 }
-.color-legend span.ok {
+.color-legend .ok {
     background-color: #53b25f;
 }
 
 #staging-dashboard .review {
     background-color: #d9b200;
 }
-.color-legend span.review {
+.color-legend .review {
     background-color: #d9b200;
 }
 
@@ -104,7 +104,7 @@ a.openqa-incomplete {
 #staging-dashboard .obsolete {
     background-color: #42a2cc;
 }
-.color-legend span.obsolete {
+.color-legend .obsolete {
     background-color: #42a2cc;
 }
 
@@ -112,26 +112,28 @@ a.openqa-incomplete {
     background-color: #666;
 }
 
-.color-legend span.untracked {
+.color-legend .untracked {
     background-color: #666;
 }
 
 
-#staging-dashboard span.request a {
+#staging-dashboard .request a {
     color: white;
-    margin: 4px;
-    line-height: 2.2em;
+    margin: 0;
+    line-height: 1em;
 }
 
 #staging-dashboard .packages-list {
     text-align: left;
+    list-style-type: none;
 }
 
-#staging-dashboard span.request {
-    padding-left: 3px;
+#staging-dashboard .request {
+    padding-left: 2px;
     padding-right: 3px;
     margin-right: .5ex;
     border-radius: 3px;
+    float: left;
 }
 
 #staging-dashboard progress.undone {
@@ -171,10 +173,11 @@ a.openqa-incomplete {
 }
 
 #staging-dashboard .project.state-building {
-    background-color: #ff7242;
+    background-color: #cca66a;
 }
+
 .color-legend span.project.state-building {
-    background-color: #ff7242;
+    background-color: #cca66a;
 }
 
 #staging-dashboard .project.state-review {
@@ -190,7 +193,6 @@ a.openqa-incomplete {
 .color-legend span.project.state-testing {
     background-color: #6ab4cc;
 }
-
 
 #staging-dashboard .project.state-unacceptable {
     background-color: #333;
@@ -209,10 +211,10 @@ a.openqa-incomplete {
 
 
 #staging-dashboard .project.state-acceptable {
-    background-color: #7de85d;
+    background-color: #75c195;
 }
 .color-legend span.project.state-acceptable {
-    background-color: #fde85d;
+    background-color: #75c195;
 }
 
 
@@ -225,13 +227,13 @@ a.openqa-incomplete {
     box-shadow: 0px -2px 2px #999;
 }
 
-#staging-dashboard .state {
+#staging-dashboard .state a {
     color: white;
 }
 
 ul.color-legend {
     list-style-type: none;
-    margin-left: 24px;
+    margin-left: 4px;
     margin-right: 10px;
 }
 
