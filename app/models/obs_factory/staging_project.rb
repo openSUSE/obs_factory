@@ -293,6 +293,9 @@ module ObsFactory
           @building_repositories << current_repo
         end
       end
+      if @building_repositories.present?
+        @broken_packages = @broken_packages.select { |p| p['state'] != 'unresolvable' }
+      end
     end
   end
 end

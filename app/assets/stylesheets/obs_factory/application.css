@@ -239,9 +239,11 @@ ul.color-legend {
 
 ul.color-legend li {
     margin-left: 8px;
+    vertical-align: middle;
 }
 
 .color-legend span {
+    vertical-align: top;
     border: 1px #ccc solid;
     min-width: 15px;
     min-height: 15px;
@@ -251,4 +253,12 @@ ul.color-legend li {
 
 .staging_backlog li {
     margin-left: 8px;
+}
+
+.ok-checkbox {
+   color: #53B25F;
+}
+
+.fa.missing-review {
+  color: white;
 }

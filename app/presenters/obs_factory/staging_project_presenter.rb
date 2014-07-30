@@ -33,13 +33,13 @@ module ObsFactory
     def review_icon(reviewer)
       case reviewer
       when 'opensuse-review-team' then
-        'eye'
+        'users'
       when 'factory-repo-checker' then
-        'monitor'
+        'flag'
       when 'legal-team' then
-        'script'
+        'graduation-cap'
       else
-        'exclamation'
+        'ban'
       end
     end
 
