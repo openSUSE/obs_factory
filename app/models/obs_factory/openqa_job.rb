@@ -36,7 +36,7 @@ module ObsFactory
         Rails.cache.delete('openqa_isos') if refresh
         jobs = []
         cached = true
-        isos = Rails.cache.fetch('openqa_isos', expires_in: 20.minutes) do
+        isos = Rails.cache.fetch('openqa_isos', expires_in: 2.minutes) do
           cached = false
           jobs = @@api.get('jobs', get_params)['jobs']
           jobs.group_by {|j| (j['assets']['iso'].first rescue nil)}.each do |iso, iso_jobs|
@@ -57,7 +57,7 @@ module ObsFactory
         get_params[:iso] = filter[:iso]
         cache_entry = "openqa_jobs_for_iso_#{filter[:iso]}"
         Rails.cache.delete(cache_entry) if refresh
-        jobs = Rails.cache.fetch(cache_entry, expires_in: 20.minutes) do
+        jobs = Rails.cache.fetch(cache_entry, expires_in: 2.minutes) do
           iso_jobs = @@api.get('jobs', get_params)['jobs']
           iso_jobs.map {|job| job.merge('modules' => modules_for(job['id'])) }
         end
