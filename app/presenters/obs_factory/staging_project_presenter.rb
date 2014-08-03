@@ -30,12 +30,12 @@ module ObsFactory
     end
 
     # engine helpers are troublesome, so we avoid them
-    def review_icon(reviewer)
+    def self.review_icon(reviewer)
       case reviewer
       when 'opensuse-review-team' then
-        'users'
+        'search'
       when 'factory-repo-checker' then
-        'flag'
+        'cog'
       when 'legal-team' then
         'graduation-cap'
       else
@@ -54,7 +54,7 @@ module ObsFactory
       reviews = Hash.new
       missing_reviews.each do |r|
         reviews[r[:request]] ||= []
-        r[:icon] = review_icon(r[:by])
+        r[:icon] = self.class.review_icon(r[:by])
         reviews[r[:request]] << r
       end
       requests.each do |req|

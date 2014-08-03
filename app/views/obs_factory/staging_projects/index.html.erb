@@ -72,7 +72,7 @@
                     <% problems.sort.each do |p| %>
                         <%= p.html_safe %>
                         <% counter += 1 %>
-                        <% if counter > 3 && problems.size != 4 %>
+                        <% if counter > 3 && problems.size > counter + 1 %>
                             <li>...<%= problems.size - counter %> more problems</li>
                         <% end %>
                     <% end %>
@@ -90,7 +90,7 @@
 </div>
 
 <div class="grid_3 omega">
-  <div class="box box-shadow">
+  <div class="box box-shadow" id="legends">
     <h2 class="box-header">Legend</h2>
 
     <p>Requests</p>
@@ -109,6 +109,13 @@
       <li><span class="project state-acceptable"></span>Acceptable</li>
       <li><span class="project state-unacceptable"></span>Unacceptable</li>
       <li><span class="project state-failed"></span>Failed</li>
+    </ul>
+
+    <p>Reviews</p>
+    <ul class="color-legend">
+      <li><i class="fa fa-<%= ObsFactory::StagingProjectPresenter.review_icon('opensuse-review-team') %>"></i><%= link_to 'Source Review', main_app.group_show_path('opensuse-review-team') %></li>
+      <li><i class="fa fa-<%= ObsFactory::StagingProjectPresenter.review_icon('factory-repo-checker') %>"></i><%= link_to 'Installation Check', main_app.user_show_path('factory-repo-checker') %></li>
+      <li><i class="fa fa-<%= ObsFactory::StagingProjectPresenter.review_icon('legal-team') %>"></i><%= link_to 'Legal Review', main_app.group_show_path('legal-team') %></li>
     </ul>
   </div>
 
@@ -137,7 +144,7 @@
                 <%= link_to elide(req.package, length = 19), main_app.request_show_path(req.id) %>
               </li>
               <% counter += 1
-                 if counter > 5 %>
+                 if counter > 5 && @backlog_requests.size > counter + 1 %>
                   <li>... <%= @backlog_requests.size - counter %> more</li>
                   <% break %>
               <% end %>

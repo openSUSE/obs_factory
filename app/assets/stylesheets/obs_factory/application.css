@@ -235,6 +235,12 @@ ul.color-legend {
     list-style-type: none;
     margin-left: 4px;
     margin-right: 10px;
+    margin-top: 0.5em;
+}
+
+#legends p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 ul.color-legend li {
@@ -245,6 +251,13 @@ ul.color-legend li {
 .color-legend span {
     vertical-align: top;
     border: 1px #ccc solid;
+    min-width: 15px;
+    min-height: 15px;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.color-legend .fa {
     min-width: 15px;
     min-height: 15px;
     display: inline-block;
@@ -262,3 +275,4 @@ ul.color-legend li {
 .fa.missing-review {
   color: white;
 }
+
