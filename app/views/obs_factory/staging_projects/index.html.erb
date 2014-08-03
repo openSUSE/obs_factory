@@ -123,7 +123,8 @@
     <h2 class="box-header">Infos</h2>
 
     <p>Empty Projects:</p>
-    <% empties = @staging_projects.select { |p| p.overall_state == :empty }.map { |p| p.letter } %>
+    <% empties = @staging_projects.select { |p| p.overall_state == :empty } -%>
+    <% empties = empties.map { |p| link_to(p.letter, main_app.project_show_path(p.name)) } -%>
 
     <p>
       <% if empties.empty? %>
