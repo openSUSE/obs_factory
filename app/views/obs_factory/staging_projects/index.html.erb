@@ -14,24 +14,7 @@
           <% next if project.overall_state == :empty %>
           <tr>
             <td>
-              <div class="project state-<%= project.overall_state %>">
-                <div class="letter"><%= link_to project.letter, staging_project_path(project.id) %></div>
-                <div class="state"><%= link_to project.overall_state, main_app.project_show_path(project.name) %></div>
-                <div class="progress">
-                  <% if project.overall_state == :building %>
-                      <% progress = project.build_progress %>
-                      <%= link_to main_app.project_monitor_url(progress[:subproject]) do %>
-                          <%= progress[:percentage] %>%
-                      <% end %>
-                  <% elsif project.overall_state == :review %>
-                      <%= project.review_percentage %>%
-                  <% elsif project.overall_state == :testing %>
-                      <%= link_to "https://openqa.opensuse.org/tests?hoursfresh=24&match=staging:#{project.letter}" do %>
-                          <%= project.testing_percentage %>%
-                      <% end %>
-                  <% end %>
-                </div>
-              </div>
+              <%= render partial: 'overall_state', locals: { project: project } %>
             </td>
             <td>
               <ul class="packages-list">
@@ -103,12 +86,12 @@
 
     <p>Projects</p>
     <ul class="color-legend">
-      <li><span class="project state-building"></span>Building</li>
-      <li><span class="project state-testing"></span>Testing</li>
-      <li><span class="project state-review"></span>Review</li>
-      <li><span class="project state-acceptable"></span>Acceptable</li>
-      <li><span class="project state-unacceptable"></span>Unacceptable</li>
-      <li><span class="project state-failed"></span>Failed</li>
+      <li><span class="staging-project state-building"></span>Building</li>
+      <li><span class="staging-project state-testing"></span>Testing</li>
+      <li><span class="staging-project state-review"></span>Review</li>
+      <li><span class="staging-project state-acceptable"></span>Acceptable</li>
+      <li><span class="staging-project state-unacceptable"></span>Unacceptable</li>
+      <li><span class="staging-project state-failed"></span>Failed</li>
     </ul>
 
     <p>Reviews</p>

@@ -1,5 +1,5 @@
 /* Staging projects dashboard table */
-#staging-dashboard th.project {
+#staging-dashboard th.staging-project {
     text-align: right;
 }
 
@@ -136,15 +136,6 @@ a.openqa-incomplete {
     float: left;
 }
 
-#staging-dashboard progress.undone {
-    background-color: yellow;
-    color: white;
-}
-
-#staging-dashboard progress.done {
-    background-color: lime;
-}
-
 #staging-dashboard tr:nth-child(odd) {
     background-color: #fff;
 }
@@ -166,59 +157,39 @@ a.openqa-incomplete {
     line-height: 170%;
 }
 
-#staging-dashboard .project {
+.overall-state.staging-project {
     border-radius: 8px;
     margin: 5px;
     padding: 4px;
+    text-align: center;
+    min-width: 5em;
 }
 
-#staging-dashboard .project.state-building {
+.staging-project.state-building {
     background-color: #cca66a;
 }
 
-.color-legend span.project.state-building {
-    background-color: #cca66a;
-}
-
-#staging-dashboard .project.state-review {
-    background-color: #6a98cc;
-}
-.color-legend span.project.state-review {
+.staging-project.state-review {
     background-color: #6a98cc;
 }
 
-#staging-dashboard .project.state-testing {
-    background-color: #6ab4cc;
-}
-.color-legend span.project.state-testing {
+.staging-project.state-testing {
     background-color: #6ab4cc;
 }
 
-#staging-dashboard .project.state-unacceptable {
-    background-color: #333;
-}
-.color-legend span.project.state-unacceptable {
+.staging-project.state-unacceptable {
     background-color: #333;
 }
 
-
-#staging-dashboard .project.state-failed {
-    background-color: #ff4e46;
-}
-.color-legend span.project.state-failed {
+.staging-project.state-failed {
     background-color: #ff4e46;
 }
 
-
-#staging-dashboard .project.state-acceptable {
-    background-color: #75c195;
-}
-.color-legend span.project.state-acceptable {
+.staging-project.state-acceptable {
     background-color: #75c195;
 }
 
-
-#staging-dashboard .letter {
+.staging-project .letter {
     font-size: 150%;
     margin: 5px;
     padding: 16px;
@@ -227,7 +198,7 @@ a.openqa-incomplete {
     box-shadow: 0px -2px 2px #999;
 }
 
-#staging-dashboard .state a {
+.staging-project .state a {
     color: white;
 }
 
@@ -276,3 +247,10 @@ ul.color-legend li {
   color: white;
 }
 
+#main-dashboard .overall-state {
+  float: left;
+  min-height: 8em;
+}
+ul#main-dashboard {
+  list-style-type: none
+}
