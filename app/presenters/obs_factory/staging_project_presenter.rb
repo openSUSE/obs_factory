@@ -153,15 +153,6 @@ module ObsFactory
       100 - notdone * 100 / jobs.size
     end
 
-    def first_running_openqa_job_link
-      all_openqa_jobs.each do |job|
-        unless %w(passed failed).include?(job.result)
-          return ObsFactory::OpenqaJobPresenter.new(job).url
-        end
-      end
-      ''
-    end
-
     # returns a number presenting how high it should be in the list of staging prjs
     # the lower the number, the earlier it is in the list - acceptable A first
     def sort_key

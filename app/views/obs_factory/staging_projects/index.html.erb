@@ -26,7 +26,7 @@
                   <% elsif project.overall_state == :review %>
                       <%= project.review_percentage %>%
                   <% elsif project.overall_state == :testing %>
-                      <%= link_to project.first_running_openqa_job_link do %>
+                      <%= link_to "https://openqa.opensuse.org/tests?hoursfresh=24&match=staging:#{project.letter}" do %>
                           <%= project.testing_percentage %>%
                       <% end %>
                   <% end %>
