@@ -24,7 +24,16 @@ module ObsFactory
       @images.exclusive_repository = 'images'
       @images = ObsProjectPresenter.new(@images)
 
+      calculate_reviews
     end
 
+    def calculate_reviews
+      @reviews = {}
+      @reviews[:review_team] = Request.with_open_reviews_for(by_group: 'opensuse-review-team').size
+      @reviews[:repo_checker] = Request.with_open_reviews_for(by_user: 'factory-repo-checker').size
+      @reviews[:factory_auto] = Request.with_open_reviews_for(by_group: 'factory-auto').size
+      @reviews[:legal_auto] = Request.with_open_reviews_for(by_group: 'legal-auto').size
+      @reviews[:legal_team] = Request.with_open_reviews_for(by_group: 'legal-team').size
+    end
   end
 end

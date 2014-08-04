@@ -34,4 +34,32 @@
       %li{class: "project-result-#{@images.summary[0]}"}
         = link_to @images.summary[1], main_app.project_monitor_path(@images.build_and_failed_params)
 
-    %div{class: 'clear'}
+
+    %p{class: 'clear'}
+
+    %h2
+      %i{class: "fa fa-2 fa-building"}
+      = link_to "Open Reviews", "/project/requests/openSUSE:Factory"
+
+    %ul
+      - if @reviews[:legal_auto] > 0
+        %li
+          Legal Auto:
+          = @reviews[:legal_auto]
+
+      - if @reviews[:factory_auto] > 0
+        %li
+          Factory Auto:
+          = @reviews[:factory_auto]
+
+      %li
+        openSUSE Review Team:
+        = @reviews[:review_team]
+
+      %li
+        Factory Repo Checker:
+        = @reviews[:repo_checker]
+
+      %li
+        Legal Team:
+        = @reviews[:legal_team]
