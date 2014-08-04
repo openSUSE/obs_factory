@@ -9,16 +9,29 @@
         %li
           = render partial: 'obs_factory/staging_projects/overall_state', locals: { project: project }
 
-    %div{class: 'clear'}
+    %p{class: 'clear'}
 
     %h2
       %i{class: "fa fa-2 fa-circle-o"}
       = link_to "Ring Projects", main_app.project_subprojects_path(project: 'openSUSE:Factory:Rings')
 
-    %ul{id: 'ring-projects'}
+    %ul{id: 'ring-projects', class: 'project-results'}
       - @ring_prjs.each do |rp|
-        - summary = rp.summary
-        %li{class: "ring-project-#{summary[0]}"}
-          = link_to summary[1], main_app.project_monitor_path(rp.build_and_failed_params)
+        %li{class: "project-result-#{rp.summary[0]}"}
+          = link_to rp.summary[1], main_app.project_monitor_path(rp.build_and_failed_params)
+
+    %p{class: 'clear'}
+
+    %h2
+      %i{class: "fa fa-2 fa-building"}
+      = link_to "Repositories of openSUSE:Factory", main_app.project_show_path(project: 'openSUSE:Factory')
+
+    %ul{id: 'factory-build-Status', class: 'project-results'}
+      %li{class: "project-result-#{@standard.summary[0]} "}
+        = link_to @standard.summary[1], main_app.project_monitor_path(@standard.build_and_failed_params)
+      %li{class: "project-result-#{@live.summary[0]}"}
+        = link_to @live.summary[1], main_app.project_monitor_path(@live.build_and_failed_params)
+      %li{class: "project-result-#{@images.summary[0]}"}
+        = link_to @images.summary[1], main_app.project_monitor_path(@images.build_and_failed_params)
 
     %div{class: 'clear'}

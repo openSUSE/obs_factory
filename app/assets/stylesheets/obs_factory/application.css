@@ -257,26 +257,26 @@ ul#main-dashboard {
     list-style-type: none
 }
 
-ul#ring-projects {
+ul.project-results {
     list-style-type: none
 }
 
-#ring-projects a {
+.project-results a {
     color: white;
 }
 
-#ring-projects li {
+.project-results li {
     float: left
 }
 
-#ring-projects li.ring-project-succeeded {
+.project-results li.project-result-succeeded {
     background-color: #53b25f
 }
 
-#ring-projects li.ring-project-building {
-    background-color: #53b25f
+.project-results li.project-result-building {
+    background-color: #cca66a
 }
 
-#ring-projects li.ring-project-failed {
+.project-results li.project-result-failed {
     background-color: #ff4e46
 }

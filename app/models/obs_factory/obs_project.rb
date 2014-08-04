@@ -1,7 +1,7 @@
 module ObsFactory
   class ObsProject
 
-    attr_accessor :project, :nickname
+    attr_accessor :project, :nickname, :exclusive_repository
 
     def initialize(name, nick)
       self.project = Project.find_by_name(name)
