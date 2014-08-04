@@ -1,6 +1,8 @@
 %div{class: "grid_16 alpha"}
   %div{class: "box box-shadow"}
-    %p= link_to "Staging Projects", controller: 'staging_projects', action: :index
+    %h2
+      %i{class: "fa fa-2 fa-tasks"}
+      = link_to "Staging Projects", controller: 'staging_projects', action: :index
     %ul{id: 'main-dashboard'}
       - @staging_projects.each do |project|
         - next if project.overall_state == :empty
@@ -9,5 +11,14 @@
 
     %div{class: 'clear'}
 
-    %p Ring Projects
+    %h2
+      %i{class: "fa fa-2 fa-circle-o"}
+      = link_to "Ring Projects", main_app.project_subprojects_path(project: 'openSUSE:Factory:Rings')
 
+    %ul{id: 'ring-projects'}
+      - @ring_prjs.each do |rp|
+        - summary = rp.summary
+        %li{class: "ring-project-#{summary[0]}"}
+          = link_to summary[1], main_app.project_monitor_path(rp.build_and_failed_params)
+
+    %div{class: 'clear'}

@@ -1,0 +1,32 @@
+<% problems = []
+   if project.overall_state != :building
+     problems += project.failed_openqa_jobs.map { |j| "<li class='openqa_job'>QA: " + render(j) + "</li>" }
+   end
+-%>
+
+<% project.broken_packages.each do |pack|
+  line = "<li class='failed_pkg status_#{pack['state']}'>"
+  if pack['state'] == 'failed'
+    link = main_app.package_live_build_log_url(project: pack['project'], package: pack['package'], repository: pack['repository'], arch: pack['arch'])
+  else
+    link = main_app.package_show_url(pack['project'], pack['package'])
+  end
+  line += link_to "Build #{pack['state']}: #{pack['package']}", link
+  line += "</li>"
+  problems << line
+end -%>
+
+<% if problems.present? %>
+    <% counter = 0 %>
+    <ul class='problem_list'>
+      <% problems.sort.each do |p| %>
+          <%= p.html_safe %>
+          <% counter += 1 %>
+          <% if counter > 3 && problems.size > counter + 1 %>
+              <li>...<%= problems.size - counter %> more problems</li>
+          <% end %>
+      <% end %>
+    </ul>
+<% else %>
+    <i class='fa-check-circle fa fa-2x ok-checkbox'></i>
+<% end %>

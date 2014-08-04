@@ -89,6 +89,7 @@ a.openqa-incomplete {
 #staging-dashboard .ok {
     background-color: #53b25f;
 }
+
 .color-legend .ok {
     background-color: #53b25f;
 }
@@ -96,14 +97,15 @@ a.openqa-incomplete {
 #staging-dashboard .review {
     background-color: #d9b200;
 }
+
 .color-legend .review {
     background-color: #d9b200;
 }
 
-
 #staging-dashboard .obsolete {
     background-color: #42a2cc;
 }
+
 .color-legend .obsolete {
     background-color: #42a2cc;
 }
@@ -115,7 +117,6 @@ a.openqa-incomplete {
 .color-legend .untracked {
     background-color: #666;
 }
-
 
 #staging-dashboard .request a {
     color: white;
@@ -210,8 +211,8 @@ ul.color-legend {
 }
 
 #legends p {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 ul.color-legend li {
@@ -240,17 +241,42 @@ ul.color-legend li {
 }
 
 .ok-checkbox {
-   color: #53B25F;
+    color: #53B25F;
 }
 
 .fa.missing-review {
-  color: white;
+    color: white;
 }
 
 #main-dashboard .overall-state {
-  float: left;
-  min-height: 8em;
+    float: left;
+    min-height: 8em;
 }
+
 ul#main-dashboard {
-  list-style-type: none
+    list-style-type: none
+}
+
+ul#ring-projects {
+    list-style-type: none
+}
+
+#ring-projects a {
+    color: white;
+}
+
+#ring-projects li {
+    float: left
+}
+
+#ring-projects li.ring-project-succeeded {
+    background-color: #53b25f
+}
+
+#ring-projects li.ring-project-building {
+    background-color: #53b25f
+}
+
+#ring-projects li.ring-project-failed {
+    background-color: #ff4e46
 }

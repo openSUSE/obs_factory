@@ -1,0 +1,28 @@
+%div{class: "grid_13 alpha"}
+  %div{class: "box box-shadow"}
+
+    %table{class: "dashboard", id: "staging-dashboard"}
+      %thead
+      %tr
+        %th Project
+        %th Requests
+        %th Problems
+
+      %tbody
+      - @staging_projects.each do |project|
+        - next if project.overall_state == :empty
+        %tr
+          %td
+            = render partial: 'overall_state', locals: { project: project }
+
+          %td
+            = render partial: 'packages_list', locals: { project: project }
+
+          %td{class: "broken-packages"}
+            = render partial: 'problems', locals: { project: project }
+
+
+%div{class: "grid_3 omega"}
+  = render 'legend'
+  = render 'infos'
+

@@ -18,14 +18,14 @@ module ObsFactory
     #
     # @return [Array] array of StagingProject objects
     def self.all
-      Project.where(["name like ?", "#{NAME_PREFIX}_"]).map { |p| StagingProject.new(p) }
+      ::Project.where(["name like ?", "#{NAME_PREFIX}_"]).map { |p| StagingProject.new(p) }
     end
 
     # Find a staging project by id
     #
     # @return [StagingProject] the project
     def self.find(id)
-      project = Project.find_by_name("#{NAME_PREFIX}#{id}")
+      project = ::Project.find_by_name("#{NAME_PREFIX}#{id}")
       if project
         StagingProject.new(project)
       else
@@ -75,7 +75,7 @@ module ObsFactory
     #
     # @return [Array] Array of StagingProject objects
     def subprojects
-      @subprojects ||= Project.where(["name like ?", "#{name}:%"]).map { |p| StagingProject.new(p) }
+      @subprojects ||= ::Project.where(["name like ?", "#{name}:%"]).map { |p| StagingProject.new(p) }
     end
 
     # Associated openQA jobs.
