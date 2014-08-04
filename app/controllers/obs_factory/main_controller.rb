@@ -1,3 +1,5 @@
+require 'open-uri'
+
 module ObsFactory
   class MainController < ApplicationController
     respond_to :html
@@ -25,6 +27,9 @@ module ObsFactory
       @images = ObsProjectPresenter.new(@images)
 
       calculate_reviews
+      gather_versions
+      openqa_summary(@versions[:totest])
+
     end
 
     def calculate_reviews
@@ -34,6 +39,49 @@ module ObsFactory
       @reviews[:factory_auto] = Request.with_open_reviews_for(by_group: 'factory-auto').size
       @reviews[:legal_auto] = Request.with_open_reviews_for(by_group: 'legal-auto').size
       @reviews[:legal_team] = Request.with_open_reviews_for(by_group: 'legal-team').size
+    end
+
+    def gather_versions
+      @versions = Rails.cache.fetch('versions', expires_in: 10.minutes) do
+        { source: parse_product,
+          totest: check_totest,
+          published: check_download_server }
+      end
+    end
+
+    def check_totest
+      d = Xmlhash.parse(ActiveXML::backend.direct_http '/build/openSUSE:Factory:ToTest/images/local/_product:openSUSE-cd-mini-x86_64')
+      d.elements('binary') do |b|
+        matchdata = %r{.*Snapshot(.*)-Media\.iso$}.match(b['filename'])
+        return matchdata[1] if matchdata
+      end
+    end
+
+    def check_download_server
+      uri = URI.parse("http://download.opensuse.org/factory/iso/openSUSE-Factory-DVD-x86_64-Current.iso")
+      req = Net::HTTP::Head.new(uri.path)
+      resp = Net::HTTP.start(uri.host, use_ssl: uri.scheme == "https") { |http| http.request(req) }
+      if resp.code.to_i == 302 or resp.code.to_i == 301
+        matchdata = %r{.*Snapshot(.*)-Media\.iso$}.match(resp.header['location'])
+        return matchdata[1]
+      end
+      'unknown'
+    end
+
+    def parse_product
+      p = Xmlhash.parse(ActiveXML::backend.direct_http '/source/openSUSE:Factory/_product/openSUSE.product')
+      p.get('products').get('product').get('version')
+    end
+
+    def openqa_summary(build)
+      @openqa = {build: build, passed: 0, failed: 0, unknown: 0, incomplete: 0, none: 0}
+
+      f = open("http://openqa.opensuse.org/api/v1/jobs?version=FTT&distri=opensuse&build=#{build}&scope=current")
+      json = Yajl::Parser.new.parse(f)
+      json['jobs'].each do |job|
+        next if job['clone_id']
+        @openqa[job['result'].to_sym] += 1
+      end
     end
   end
 end

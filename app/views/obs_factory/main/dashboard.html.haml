@@ -38,7 +38,7 @@
     %p{class: 'clear'}
 
     %h2
-      %i{class: "fa fa-2 fa-building"}
+      %i{class: "fa fa-2 fa-check"}
       = link_to "Open Reviews", "/project/requests/openSUSE:Factory"
 
     %ul
@@ -63,3 +63,40 @@
       %li
         Legal Team:
         = @reviews[:legal_team]
+
+    %h2
+      %i{class: "fa fa-2 fa-tag"}
+      = link_to "Versions", "http://download.opensuse.org/factory/iso"
+
+    %ul
+      %li
+        Source:
+        = link_to @versions[:source], main_app.package_show_path(project: 'openSUSE:Factory', package: '_product')
+
+      %li
+        Testing:
+        = link_to @versions[:totest], "https://openqa.opensuse.org/tests/overview?distri=opensuse&version=FTT"
+
+      %li
+        Pulished:
+        = link_to @versions[:published], "http://download.opensuse.org/factory/iso"
+
+    %h2
+      %i{class: "fa fa-2 fa-tag"}
+      = link_to "openQA results for #{@versions[:totest]}", "https://openqa.opensuse.org/tests/overview?distri=opensuse&version=FTT&build=#{@openqa[:build]}"
+
+    %p
+      %b passed:
+      = @openqa[:passed]
+      ,
+      %b failed:
+      = @openqa[:failed]
+      ,
+      %b unknown:
+      = @openqa[:unknown]
+      ,
+      %b incomplete:
+      = @openqa[:incomplete]
+      ,
+      %b none:
+      = @openqa[:none]
