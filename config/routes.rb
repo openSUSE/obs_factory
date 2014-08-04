@@ -3,4 +3,6 @@ ObsFactory::Engine.routes.draw do
   resources :staging_projects, only: [:index, :show]
   # Used to enforce the refresh of the cache of jobs (using cache=refresh)
   get '/openqa_jobs' => 'openqa_jobs#index'
+  # Summary view
+  get '/dashboard' => 'main#dashboard'
 end
