@@ -42,7 +42,7 @@ module ObsFactory
     end
 
     def gather_versions
-      @versions = Rails.cache.fetch('versions', expires_in: 10.minutes) do
+      @versions = Rails.cache.fetch('versions2', expires_in: 10.minutes) do
         { source: parse_product,
           totest: check_totest,
           published: check_download_server }
@@ -58,14 +58,9 @@ module ObsFactory
     end
 
     def check_download_server
-      uri = URI.parse("http://download.opensuse.org/factory/iso/openSUSE-Factory-DVD-x86_64-Current.iso")
-      req = Net::HTTP::Head.new(uri.path)
-      resp = Net::HTTP.start(uri.host, use_ssl: uri.scheme == "https") { |http| http.request(req) }
-      if resp.code.to_i == 302 or resp.code.to_i == 301
-        matchdata = %r{.*Snapshot(.*)-Media\.iso$}.match(resp.header['location'])
-        return matchdata[1]
-      end
-      'unknown'
+      f = open("http://download.opensuse.org/factory/repo/oss/media.1/build")
+      matchdata = %r{openSUSE-(.*)-i586-.*}.match(f.read)
+      return matchdata[1]
     end
 
     def parse_product
