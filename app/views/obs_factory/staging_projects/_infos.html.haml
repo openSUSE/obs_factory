@@ -14,7 +14,8 @@
 
   %p Backlog:
   - if @backlog_requests.empty?
-    %p %i Empty
+    %p 
+      %i Empty
   - else
     %ul{class: "staging_backlog"}
       - counter = 0
