@@ -66,7 +66,7 @@ module ObsFactory
           end
           if %w(broken failed).include?(code)
             failed += count
-          else
+          elsif %w(succeeded disabled).include?(code)
             final += count
           end
         end
