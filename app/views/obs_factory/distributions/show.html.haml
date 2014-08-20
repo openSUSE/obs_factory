@@ -2,7 +2,7 @@
   %div{class: "box box-shadow"}
     %h2
       %i{class: "fa fa-2 fa-tasks"}
-      = link_to "Staging Projects", controller: 'staging_projects', action: :index
+      = link_to "Staging Projects", distribution_staging_projects_path(@distribution.id)
     %ul{id: 'main-dashboard'}
       - @staging_projects.each do |project|
         - next if project.overall_state == :empty
@@ -29,8 +29,9 @@
     %ul{id: 'factory-build-Status', class: 'project-results'}
       %li{class: "project-result-#{@standard.summary[0]} "}
         = link_to @standard.summary[1], main_app.project_monitor_path(@standard.build_and_failed_params)
-      %li{class: "project-result-#{@live.summary[0]}"}
-        = link_to @live.summary[1], main_app.project_monitor_path(@live.build_and_failed_params)
+      - if @live
+        %li{class: "project-result-#{@live.summary[0]}"}
+          = link_to @live.summary[1], main_app.project_monitor_path(@live.build_and_failed_params)
       %li{class: "project-result-#{@images.summary[0]}"}
         = link_to @images.summary[1], main_app.project_monitor_path(@images.build_and_failed_params)
 
@@ -39,7 +40,7 @@
 
     %h2
       %i{class: "fa fa-2 fa-check"}
-      = link_to "Open Reviews", "/project/requests/openSUSE:Factory"
+      = link_to "Open Reviews", "/project/requests/#{@distribution.name}"
 
     %ul
       - if @reviews[:legal_auto] > 0
@@ -69,34 +70,26 @@
       = link_to "Versions", "http://download.opensuse.org/factory/iso"
 
     %ul
-      %li
-        Source:
-        = link_to @versions[:source], main_app.package_show_path(project: 'openSUSE:Factory', package: '_product')
+      - if @versions[:source]
+        %li
+          Source:
+          = link_to @versions[:source], main_app.package_show_path(project: 'openSUSE:Factory', package: '_product')
 
-      %li
-        Testing:
-        = link_to @versions[:totest], "https://openqa.opensuse.org/tests/overview?distri=opensuse&version=FTT"
+      - if @versions[:totest]
+        %li
+          Testing:
+          = link_to @versions[:totest], "https://openqa.opensuse.org/tests/overview?distri=opensuse&version=FTT"
 
-      %li
-        Pulished:
-        = link_to @versions[:published], "http://download.opensuse.org/factory/iso"
+      - if @versions[:published]
+        %li
+          Pulished:
+          = link_to @versions[:published], "http://download.opensuse.org/factory/iso"
 
     %h2
       %i{class: "fa fa-2 fa-wrench"}
-      = link_to "openQA results for #{@versions[:totest]}", "https://openqa.opensuse.org/tests/overview?distri=opensuse&version=FTT&build=#{@openqa[:build]}"
+      = link_to "openQA results for #{@versions[:totest]}", "https://openqa.opensuse.org/tests/overview?distri=opensuse&version=FTT&build=#{@versions[:totest]}"
 
     %p
-      %b passed:
-      = @openqa[:passed]
-      ,
-      %b failed:
-      = @openqa[:failed]
-      ,
-      %b unknown:
-      = @openqa[:unknown]
-      ,
-      %b incomplete:
-      = @openqa[:incomplete]
-      ,
-      %b none:
-      = @openqa[:none]
+      - @openqa_jobs.group_by(&:result_or_state).each do |label, jobs|
+        %b= "#{label}:"
+        = jobs.size

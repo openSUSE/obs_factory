@@ -35,11 +35,17 @@ module ObsFactory
 
     # Requests in 'review' state that have new reviews for the given project
     #
-    # @param [Hash] can contain by_project, by_group, by_user or by_package
+    # @param [Hash] props can contain :by_project, :by_group, :by_user, :by_package
+    #               or :target_project
     # @return [Array]  Array of Request objects
     def self.with_open_reviews_for(props)
       reviews = Review.includes(:bs_request => [:reviews, :bs_request_actions])
-      reviews = reviews.where(props.merge(state: 'new', "bs_requests.state" => 'review'))
+      conds = props.dup
+      target_project = conds.delete(:target_project)
+      reviews = reviews.where(conds.merge(state: 'new', "bs_requests.state" => 'review'))
+      if target_project
+        reviews = reviews.where("bs_request_actions.target_project" => target_project)
+      end
       reviews.map {|r| Request.new(r.bs_request) }
     end
 
@@ -55,6 +61,13 @@ module ObsFactory
     # return [String] the name
     def package
       bs_request.bs_request_actions.first.target_package
+    end
+
+    # Name of the original target project
+    #
+    # return [String] the name
+    def project
+      bs_request.bs_request_actions.first.target_project
     end
 
     # Id of the superseding request

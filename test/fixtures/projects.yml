@@ -1,3 +1,6 @@
+factory:
+  name: 'openSUSE:Factory'
+  title: 'openSUSE:Factory'
 staging_A:
   name: 'openSUSE:Factory:Staging:A'
   title: 'openSUSE:Factory:Staging:A'
