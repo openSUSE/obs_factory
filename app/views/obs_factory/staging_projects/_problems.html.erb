@@ -1,32 +1,52 @@
 <% problems = []
    if project.overall_state != :building
-     problems += project.failed_openqa_jobs.map { |j| "<li class='openqa_job'>QA: " + render(j) + "</li>" }
+     problems += project.failed_openqa_jobs.map do |j|
+       content_tag(:li, "QA: #{render(j)}".html_safe, class: "openqa_job")
+     end
    end
 -%>
 
+<%# Failed packages are grouped by name %>
+<% failed_packages = {} %>
+<% other_broken_packages = [] %>
 <% project.broken_packages.each do |pack|
-  line = "<li class='failed_pkg status_#{pack['state']}'>"
+  name = pack['package']
   if pack['state'] == 'failed'
-    link = main_app.package_live_build_log_url(project: pack['project'], package: pack['package'], repository: pack['repository'], arch: pack['arch'])
+    version = {arch: pack['arch'], project: pack['project']}
+    if failed_packages[name]
+      failed_packages[name][:versions] << version
+    else
+      failed_packages[name] = {repository: pack['repository'], versions: [version]}
+    end
   else
-    link = main_app.package_show_url(pack['project'], pack['package'])
+    other_broken_packages << {name: pack['package'], state: pack['state'], project: pack['project'] }
   end
-  line += link_to "Build #{pack['state']}: #{pack['package']}", link
-  line += "</li>"
-  problems << line
 end -%>
 
-<% if problems.present? %>
-    <% counter = 0 %>
-    <ul class='problem_list'>
-      <% problems.sort.each do |p| %>
-          <%= p.html_safe %>
-          <% counter += 1 %>
-          <% if counter > 3 && problems.size > counter + 1 %>
-              <li>...<%= problems.size - counter %> more problems</li>
-          <% end %>
-      <% end %>
-    </ul>
+<% problems += failed_packages.map do |name, attrs|
+  versions = attrs[:versions].map do |v|
+    link_to(v[:arch], main_app.package_live_build_log_url(v.merge(package: name, repository: attrs[:repository])))
+  end
+  label = "Build failed #{name} (" + versions.join(", ") + ")"
+  content_tag(:li, label.html_safe, class: "failed_pkg status_failed")
+end -%>
+
+<% problems += other_broken_packages.map do |pack|
+  st = pack[:state]
+  name = pack[:name]
+  label = "Build #{st}: #{name}"
+  content_tag(:li, link_to(label.html_safe, main_app.package_show_url(pack[:project], name)), class: "failed_pkg status_#{st}")
+end -%>
+
+<% if problems.empty? %>
+  <i class='fa-check-circle fa fa-2x ok-checkbox'></i>
 <% else %>
-    <i class='fa-check-circle fa fa-2x ok-checkbox'></i>
+  <ul class='problem_list'>
+    <% problems.sort[0,5].each do |p| %>
+      <%= p %>
+    <% end %>
+    <% if problems.size > 5 %>
+      <li>...<%= problems.size - 5 %> more problems</li>
+    <% end %>
+  </ul>
 <% end %>
