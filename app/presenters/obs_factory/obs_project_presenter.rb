@@ -3,11 +3,6 @@ module ObsFactory
   # View decorator for a Project
   class ObsProjectPresenter < BasePresenter
 
-    def build_summary_
-      @build_summary ||= Rails.cache.fetch("build_summary_#{name}", expires_in: 5.minutes) do
-        Buildresult.find_hashed(project: name, view: 'summary')
-      end
-    end
 
     def build_and_failed_params
       params = { project: self.name, defaults: 0 }
@@ -27,13 +22,6 @@ module ObsFactory
       params
     end
 
-    def repos
-      ret = {}
-      build_summary_.elements('result') do |r|
-        ret[r['repository']] = 1
-      end
-      ret.keys
-    end
 
     def summary
       return @summary if @summary
@@ -44,10 +32,10 @@ module ObsFactory
 
       # first calculate the building state - and filter the results
       results = []
-      build_summary_.elements('result') do |result|
+      build_summary.elements('result') do |result|
         next if exclusive_repository && result['repository'] != exclusive_repository
         Rails.logger.debug "RRR #{result.inspect}"
-        if !%w(published unpublished).include?(result['state']) || result['dirty'] == 'true'
+        if !%w(published unpublished unknown).include?(result['state']) || result['dirty'] == 'true'
           building = true
         end
         results << result
@@ -73,10 +61,10 @@ module ObsFactory
       end
       Rails.logger.debug "TTT #{total} #{final} #{failed} #{building}"
       if failed > 0
-        failed = get_build_failures
+        failed = build_failures_count
       end
-      build_progress = (100 * (final + failed)) / total
       if building
+        build_progress = (100 * (final + failed)) / total
         build_progress = [99, build_progress].min
         if failed > 0
           @summary = [:building, "#{self.nickname}: #{build_progress}% (#{failed} errors)"]
@@ -89,17 +77,6 @@ module ObsFactory
       else
         @summary = [:succeeded, "#{self.nickname}: DONE"]
       end
-    end
-
-    def get_build_failures
-      buildresult = Buildresult.find_hashed(project: name, code: %w(failed broken unresolvable))
-      bp = {}
-      buildresult.elements('result') do |result|
-        result.elements('status') do |s|
-          bp[s['package']] = 1
-        end
-      end
-      bp.keys.count
     end
   end
 end

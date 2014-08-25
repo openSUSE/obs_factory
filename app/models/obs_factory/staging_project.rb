@@ -1,33 +1,37 @@
 module ObsFactory
-  # A staging project. Contains a reference to the corresponding Project object.
+  # A staging project asociated to a distribution.
+  #
+  # It contains references to the corresponding Project and
+  # Distribution objects.
   class StagingProject
     include ActiveModel::Model
     extend ActiveModel::Naming
     include ActiveModel::Serializers::JSON
 
-    attr_accessor :project
+    attr_accessor :project, :distribution
 
     OBSOLETE_STATES = %w(declined superseded revoked)
-    NAME_PREFIX = "openSUSE:Factory:Staging:"
+    NAME_PREFIX = ":Staging:"
 
-    def initialize(project = nil)
+    def initialize(project, distribution)
       self.project = project
+      self.distribution = distribution
     end
 
-    # Find all top-level staging projects
+    # Find all staging projects for a given distribution
     #
     # @return [Array] array of StagingProject objects
-    def self.all
-      ::Project.where(["name like ?", "#{NAME_PREFIX}_"]).map { |p| StagingProject.new(p) }
+    def self.for(distribution)
+      ::Project.where(["name like ?", "#{distribution.name}#{NAME_PREFIX}_"]).map { |p| StagingProject.new(p, distribution) }
     end
 
-    # Find a staging project by id
+    # Find a staging project by distribution and id
     #
     # @return [StagingProject] the project
-    def self.find(id)
-      project = ::Project.find_by_name("#{NAME_PREFIX}#{id}")
+    def self.find(distribution, id)
+      project = ::Project.find_by_name("#{distribution.name}#{NAME_PREFIX}#{id}")
       if project
-        StagingProject.new(project)
+        StagingProject.new(project, distribution)
       else
         nil
       end
@@ -47,18 +51,26 @@ module ObsFactory
       project.description
     end
 
+    # Part of the name shared by all the staging projects belonging to the same
+    # distribution
+    #
+    # @return [String] the name excluding the id
+    def prefix
+      "#{distribution.name}#{NAME_PREFIX}"
+    end
+
     # Letter of the staging project, extracted from its name
     #
     # @return [String] just the letter
     def letter
-      name[NAME_PREFIX.size, 1]
+      name[prefix.size, 1]
     end
 
     # Id of the staging project, extracted from its name
     #
     # @return [String] the name excluding the common prefix
     def id
-      name[NAME_PREFIX.size..-1]
+      name[prefix.size..-1]
     end
 
     # Requests that are selected into the project but should be not longer valid
@@ -75,7 +87,7 @@ module ObsFactory
     #
     # @return [Array] Array of StagingProject objects
     def subprojects
-      @subprojects ||= ::Project.where(["name like ?", "#{name}:%"]).map { |p| StagingProject.new(p) }
+      @subprojects ||= ::Project.where(["name like ?", "#{name}:%"]).map { |p| StagingProject.new(p, distribution) }
     end
 
     # Associated openQA jobs.
