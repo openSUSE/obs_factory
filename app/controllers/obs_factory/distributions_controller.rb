@@ -3,7 +3,7 @@ module ObsFactory
     respond_to :html
 
     def show
-      @distribution = Distribution.find(params[:id])
+      @distribution = Distribution.find(params[:project])
       @staging_projects = StagingProjectPresenter.sort(@distribution.staging_projects)
       @versions = { source: @distribution.source_version,
                     totest: @distribution.totest_version,
@@ -15,6 +15,8 @@ module ObsFactory
       @images = ObsProjectPresenter.new(@distribution.images_project)
       @openqa_jobs = @distribution.openqa_jobs_for(:totest)
       calculate_reviews
+      # For the breadcrumbs
+      @project = @distribution.project
     end
 
     protected

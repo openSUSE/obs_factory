@@ -1,8 +1,11 @@
+-# Depends on https://github.com/openSUSE/open-build-service/pull/762
+-# project_bread_crumb 'Dashboard'
+
 %div{class: "grid_16 alpha"}
   %div{class: "box box-shadow"}
     %h2
       %i{class: "fa fa-2 fa-tasks"}
-      = link_to "Staging Projects", distribution_staging_projects_path(@distribution.id)
+      = link_to "Staging Projects", staging_projects_path(project: @distribution.name)
     %ul{id: 'main-dashboard'}
       - @staging_projects.each do |project|
         - next if project.overall_state == :empty
@@ -13,7 +16,7 @@
 
     %h2
       %i{class: "fa fa-2 fa-circle-o"}
-      = link_to "Ring Projects", main_app.project_subprojects_path(project: 'openSUSE:Factory:Rings')
+      = link_to "Ring Projects", main_app.project_subprojects_path(project: "#{@distribution.name}:Rings")
 
     %ul{id: 'ring-projects', class: 'project-results'}
       - @ring_prjs.each do |rp|
