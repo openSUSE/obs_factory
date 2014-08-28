@@ -222,7 +222,7 @@ module ObsFactory
 
     def build_state
       return :building if building_repositories.present?
-      return :unacceptable if broken_packages.present?
+      return :failed if broken_packages.present?
       # check openQA jobs for all projects not building right now - or that are known to be broken
       openqa_jobs.each do |job|
         if job.failing_modules.present?
