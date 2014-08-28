@@ -167,7 +167,7 @@ module ObsFactory
         if @live_project.project.nil?
           @live_project = nil
         else
-          @live_project.exclusive_repository = 'live'
+          @live_project.exclusive_repository = 'standard'
         end
       end
       @live_project
