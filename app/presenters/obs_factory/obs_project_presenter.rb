@@ -34,7 +34,6 @@ module ObsFactory
       results = []
       build_summary.elements('result') do |result|
         next if exclusive_repository && result['repository'] != exclusive_repository
-        Rails.logger.debug "RRR #{result.inspect}"
         if !%w(published unpublished unknown).include?(result['state']) || result['dirty'] == 'true'
           building = true
         end
@@ -47,7 +46,7 @@ module ObsFactory
           next if code == 'excluded' # plain ignore
           total += count
           if code == 'unresolvable'
-            if building # only count if finished
+            unless building # only count if finished
               failed += count
             end
             next
@@ -59,7 +58,6 @@ module ObsFactory
           end
         end
       end
-      Rails.logger.debug "TTT #{total} #{final} #{failed} #{building}"
       if failed > 0
         failed = build_failures_count
       end
