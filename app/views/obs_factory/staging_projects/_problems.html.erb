@@ -42,11 +42,29 @@ end -%>
   <i class='fa-check-circle fa fa-2x ok-checkbox'></i>
 <% else %>
   <ul class='problem_list'>
-    <% problems.sort[0,5].each do |p| %>
-      <%= p %>
-    <% end %>
-    <% if problems.size > 5 %>
-      <li>...<%= problems.size - 5 %> more problems</li>
+    <%- problems.sort! -%>
+    <%- max = 5 -%>
+    <%- count = problems.size -%>
+    <% if count <= max+1 # Prevent the "1 more" link %>
+      <% problems.each do |p| %>
+        <%= p %>
+      <% end %>
+    <% else %>
+      <% problems[0,max].each do |p| %>
+        <%= p %>
+      <% end %>
+      <%- name = project.letter %>
+      <li>
+        <%= link_to "...#{count - max} more problems", "#", class: "staging_expand staging_#{name}", data: {name: name} %>
+      </li>
+      <div class="staging_collapsible staging_<%= name %>" style="display:none">
+        <% problems[max..-1].each do |p| %>
+          <%= p %>
+        <% end %>
+        <li>
+          <%= link_to "collapse", "#", class: "staging_collapse staging_#{name}", data: {name: name} %>
+        </li>
+      </div>
     <% end %>
   </ul>
 <% end %>

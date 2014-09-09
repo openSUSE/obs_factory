@@ -1,5 +1,8 @@
 - project_bread_crumb 'Staging projects'
 
+- content_for :ready_function do
+  = render partial: 'expand_collapse.js.erb'
+
 %div{class: "grid_13 alpha"}
   %div{class: "box box-shadow"}
 

@@ -86,6 +86,15 @@ a.openqa-incomplete {
     padding: 3px;
 }
 
+#staging-dashboard .request a.staging_expand,
+#staging-dashboard .request a.staging_collapse {
+  color: #069;
+}
+
+#staging-dashboard div.staging_collapsible {
+  display: inline-block;
+}
+
 #staging-dashboard .ok {
     background-color: #53b25f;
 }
