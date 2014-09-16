@@ -1,8 +1,6 @@
-<% problems = []
-   if project.overall_state != :building
-     problems += project.failed_openqa_jobs.map do |j|
-       content_tag(:li, "QA: #{render(j)}".html_safe, class: "openqa_job")
-     end
+ <% 
+   problems = project.failed_openqa_jobs.map do |j|
+     content_tag(:li, "QA: #{render(j)}".html_safe, class: "openqa_job")
    end
 -%>
 

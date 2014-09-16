@@ -8,7 +8,7 @@ module ObsFactory
     extend ActiveModel::Naming
     include ActiveModel::Serializers::JSON
 
-    attr_accessor :project, :distribution
+    attr_accessor :project, :distribution, :parent
 
     OBSOLETE_STATES = %w(declined superseded revoked)
     NAME_PREFIX = ":Staging:"
@@ -87,7 +87,14 @@ module ObsFactory
     #
     # @return [Array] Array of StagingProject objects
     def subprojects
-      @subprojects ||= ::Project.where(["name like ?", "#{name}:%"]).map { |p| StagingProject.new(p, distribution) }
+      return @subprojects unless @subprojects.nil?
+      @subprojects = []
+      ::Project.where(["name like ?", "#{name}:%"]).map do |p| 
+        p = StagingProject.new(p, distribution)
+        p.parent = self
+        @subprojects << p
+      end
+      @subprojects
     end
 
     # Associated openQA jobs.
@@ -97,7 +104,13 @@ module ObsFactory
     #
     # @return [Array] Array of OpenqaJob objects
     def openqa_jobs
-      @openqa_jobs ||= iso.nil? ? [] : OpenqaJob.find_all_by(iso: iso)
+      return @openqa_jobs unless @openqa_jobs.nil?
+      if overall_state == :building || (parent && parent.overall_state == :building) || iso.nil?
+        @openqa_jobs = []
+      else
+        @openqa_jobs = OpenqaJob.find_all_by(iso: iso)
+      end
+      @openqa_jobs
     end
 
     # Packages included in the staging project that are not building properly.
