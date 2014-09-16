@@ -7,6 +7,8 @@ module ObsFactory
 
     TOTEST_VERSION_FILE = "images/local/_product:openSUSE-cd-mini-x86_64"
     
+    attr_accessor :project
+
     def openqa_version
       'FTT'
     end
@@ -16,7 +18,7 @@ module ObsFactory
     # @return [String] version string
     def totest_version
       begin
-        d = Xmlhash.parse(ActiveXML::backend.direct_http "/build/#{name}:ToTest/#{TOTEST_VERSION_FILE}")
+        d = Xmlhash.parse(ActiveXML::backend.direct_http "/build/#{project.name}:ToTest/#{TOTEST_VERSION_FILE}")
         d.elements('binary') do |b|
           matchdata = %r{.*Snapshot(.*)-Media\.iso$}.match(b['filename'])
           return matchdata[1] if matchdata
@@ -34,7 +36,11 @@ module ObsFactory
     #
     # @return [String] version string
     def published_version
-      f = open(repo_url)
+      begin
+        f = open(repo_url)
+      rescue OpenURI::HTTPError => e
+        return 'unknown'
+      end
       matchdata = %r{openSUSE-(.*)-i586-.*}.match(f.read)
       matchdata[1]
     end
@@ -78,6 +84,7 @@ module ObsFactory
     def initialize(project = nil)
       self.project = project
       self.strategy = determine_distribution_strategy(project.name)
+      self.strategy.project = project
     end
 
     # Find a distribution by id
@@ -137,7 +144,7 @@ module ObsFactory
     end
 
     def self.attributes
-      %w(name description staging_projects
+      %w(name description staging_projects openqa_version
       source_version totest_version published_version
       standard_project live_project images_project ring_projects)
     end
@@ -203,6 +210,13 @@ module ObsFactory
     # @return [Array] list of Request objects
     def requests_with_reviews_for_user(user)
       Request.with_open_reviews_for(by_user: user, target_project: name)
+    end
+
+    # String to pass as version to filter the openQA jobs
+    #
+    # @return [String] version parameter
+    def openqa_version
+       strategy.openqa_version
     end
 
     # Standard project
