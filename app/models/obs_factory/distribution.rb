@@ -73,18 +73,19 @@ module ObsFactory
 
     attr_accessor :project, :strategy
 
-    def determine_distribution_strategy(name)
-      case name
+    def distribution_strategy_for_project(project)
+      s = case project.name
         when 'openSUSE:Factory' then DistributionStrategyFactory.new
         when 'openSUSE:13.2' then DistributionStrategy132.new
         else raise UnknownDistribution
       end
+      s.project = project
+      s
     end
 
     def initialize(project = nil)
       self.project = project
-      self.strategy = determine_distribution_strategy(project.name)
-      self.strategy.project = project
+      self.strategy = distribution_strategy_for_project(project)
     end
 
     # Find a distribution by id
