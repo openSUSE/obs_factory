@@ -2,8 +2,16 @@ module ObsFactory
   class DistributionsController < ApplicationController
     respond_to :html
 
-    def show
+    before_action :require_distribution
+
+    def require_distribution
       @distribution = Distribution.find(params[:project])
+      unless @distribution
+        redirect_to main_app.root_path, flash: { error: "#{params[:project]} is not a valid openSUSE distribution, can't offer dashboard" }
+      end
+    end
+    
+    def show
       @staging_projects = StagingProjectPresenter.sort(@distribution.staging_projects)
       @versions = { source: @distribution.source_version,
                     totest: @distribution.totest_version,
