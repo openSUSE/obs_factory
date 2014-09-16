@@ -1,19 +1,83 @@
 require 'open-uri'
 
 module ObsFactory
+
+  # this is not a Factory pattern, this is for openSUSE:Factory :/
+  class DistributionStrategyFactory
+
+    TOTEST_VERSION_FILE = "images/local/_product:openSUSE-cd-mini-x86_64"
+    
+    def openqa_version
+      'FTT'
+    end
+
+    # Version of the distribution used as ToTest
+    #
+    # @return [String] version string
+    def totest_version
+      begin
+        d = Xmlhash.parse(ActiveXML::backend.direct_http "/build/#{name}:ToTest/#{TOTEST_VERSION_FILE}")
+        d.elements('binary') do |b|
+          matchdata = %r{.*Snapshot(.*)-Media\.iso$}.match(b['filename'])
+          return matchdata[1] if matchdata
+        end
+      rescue
+        nil
+      end
+    end
+
+    def repo_url
+      'http://download.opensuse.org/factory/repo/oss/media.1/build'
+    end
+
+    # Version of the published distribution
+    #
+    # @return [String] version string
+    def published_version
+      f = open(repo_url)
+      matchdata = %r{openSUSE-(.*)-i586-.*}.match(f.read)
+      matchdata[1]
+    end
+
+  end
+
+  # this class tracks the differences between factory and 13.2
+  class DistributionStrategy132 < DistributionStrategyFactory
+
+    def repo_url
+      'http://download.opensuse.org/distribution/13.2/repo/oss/media.1/build'
+    end
+    
+    def openqa_version
+      '13.2'
+    end
+    
+  end
+  
+  class UnknownDistribution < Exception
+  end
+  
   # A Distribution. Contains a reference to the corresponding Project object.
   class Distribution
     include ActiveModel::Model
     extend ActiveModel::Naming
-
+    
     SOURCE_VERSION_FILE = "_product/openSUSE.product"
-    TOTEST_VERSION_FILE = "images/local/_product:openSUSE-cd-mini-x86_64"
     RINGS_PREFIX = ":Rings:"
 
-    attr_accessor :project
+    attr_accessor :project, :strategy
+
+    def determine_distribution_strategy(name)
+      case name
+        when 'openSUSE:Factory' then DistributionStrategyFactory.new
+        when 'openSUSE:13.2' then DistributionStrategy132.new
+        else raise UnknownDistribution
+      end
+    end
 
     def initialize(project = nil)
       self.project = project
+      self.strategy = determine_distribution_strategy(project.name)
     end
 
     # Find a distribution by id
@@ -22,7 +86,11 @@ module ObsFactory
     def self.find(id)
       project = ::Project.find_by_name(id)
       if project
-        Distribution.new(project)
+        begin
+          Distribution.new(project)
+        rescue UnknownDistribution
+          nil
+        end
       else
         nil
       end
@@ -97,26 +165,16 @@ module ObsFactory
     # @return [String] version string
     def totest_version
       Rails.cache.fetch("totest_version_for_#{name}", expires_in: 10.minutes) do
-        begin
-          d = Xmlhash.parse(ActiveXML::backend.direct_http "/build/#{name}:ToTest/#{TOTEST_VERSION_FILE}")
-          d.elements('binary') do |b|
-            matchdata = %r{.*Snapshot(.*)-Media\.iso$}.match(b['filename'])
-            return matchdata[1] if matchdata
-          end
-        rescue
-          nil
-        end
+        strategy.totest_version
       end
     end
-
+    
     # Version of the published distribution
     #
     # @return [String] version string
     def published_version
       Rails.cache.fetch("published_version_for_#{name}", expires_in: 10.minutes) do
-        f = open("http://download.opensuse.org/factory/repo/oss/media.1/build")
-        matchdata = %r{openSUSE-(.*)-i586-.*}.match(f.read)
-        matchdata[1]
+        strategy.published_version
       end
     end
 
@@ -125,7 +183,7 @@ module ObsFactory
     # @param [#to_s] version must be :source, :totest or :published
     # @return [Array] list of OpenqaJob objects
     def openqa_jobs_for(version)
-      filter = {distri: 'opensuse', version: 'FTT', build: send(:"#{version}_version")}
+      filter = {distri: 'opensuse', version: strategy.openqa_version, build: send(:"#{version}_version")}
       OpenqaJob.find_all_by(filter, exclude_modules: true)
     end
 
