@@ -2,11 +2,12 @@ module ObsFactory
   # View decorator for StagingProject
   class StagingProjectPresenter < BasePresenter
 
-    # Wraps the associated subprojects with the corresponding decorator.
+    # Wraps the associated subproject with the corresponding decorator.
     #
-    # @return [Array] Array of StagingProjectPresenter objects
-    def subprojects
-      ObsFactory::StagingProjectPresenter.wrap(model.subprojects)
+    # @return StagingProjectPresenter object
+    def subproject
+      return nil unless model.subproject
+      ObsFactory::StagingProjectPresenter.new(model.subproject)
     end
 
     def self.sort(collection)
@@ -94,10 +95,7 @@ module ObsFactory
         ret[:percentage] = [final * 100 / total, 99].min
       else
         ret[:percentage] = 100
-        subprojects.each do |prj|
-          # we only have one subprj or none
-          return prj.build_progress
-        end
+        return subproject.build_progress if subproject
       end
       ret
     end
@@ -105,18 +103,14 @@ module ObsFactory
     # collect the broken packages of all subprojects
     def broken_packages
       ret = model.broken_packages
-      subprojects.each do |prj|
-        ret += prj.broken_packages
-      end
+      ret += subproject.broken_packages if subproject
       ret
     end
 
     # @return [Array] Array of OpenqaJob objects for all subprojects
     def all_openqa_jobs
       ret = model.openqa_jobs
-      subprojects.each do |prj|
-        ret += prj.openqa_jobs
-      end
+      ret += subproject.openqa_jobs if subproject
       ret
     end
 
