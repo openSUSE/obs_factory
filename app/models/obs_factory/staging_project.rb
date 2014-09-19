@@ -236,6 +236,10 @@ module ObsFactory
     def build_state
       return :building if building_repositories.present?
       return :failed if broken_packages.present?
+      :acceptable
+    end
+
+    def openqa_state
       # check openQA jobs for all projects not building right now - or that are known to be broken
       openqa_jobs.each do |job|
         if job.failing_modules.present?
@@ -244,7 +248,7 @@ module ObsFactory
           return :testing
         end
       end
-      return :acceptable
+      :acceptable
     end
 
     # calculate the overall state of the project
@@ -267,6 +271,13 @@ module ObsFactory
         subprojects.each do |prj|
           # we only have one subprj, so we don't have to worry overwriting 
           @state = prj.build_state
+        end
+      end
+
+      if @state == :acceptable
+        @state = openqa_state
+        if @state == :acceptable
+          subprojects.each { |prj| @state = prj.openqa_state }
         end
       end
 
