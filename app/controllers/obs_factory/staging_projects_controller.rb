@@ -7,7 +7,7 @@ module ObsFactory
       respond_to do |format|
         format.html do
           @staging_projects = StagingProjectPresenter.sort(@distribution.staging_projects)
-          @backlog_requests = Request.with_open_reviews_for(by_group: 'factory-staging')
+          @backlog_requests = Request.with_open_reviews_for(by_group: 'factory-staging', target_project: @distribution.name)
           @backlog_requests.sort! { |x,y| x.package <=> y.package }
           # For the breadcrumbs
           @project = @distribution.project
