@@ -96,6 +96,11 @@ module ObsFactory
       @subprojects[0] ||= nil
     end
 
+    # only for compat in the JSON
+    def subprojects
+      [ subproject ]
+    end
+
     # Associated openQA jobs.
     #
     # The jobs are fetched by ISO name.
@@ -230,7 +235,7 @@ module ObsFactory
 
     def self.attributes
       %w(name description obsolete_requests openqa_jobs building_repositories
-        broken_packages subproject untracked_requests missing_reviews selected_requests overall_state )
+        broken_packages subproject subprojects untracked_requests missing_reviews selected_requests overall_state )
     end
 
     # Required by ActiveModel::Serializers
