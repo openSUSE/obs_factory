@@ -81,20 +81,24 @@ module ObsFactory
       selected_requests.select(&:obsolete?)
     end
 
-    # Staging projects that are subprojects of this one, according to their names.
-    #
     # Used to fetch the :DVD project
     #
-    # @return [Array] Array of StagingProject objects
-    def subprojects
-      return @subprojects unless @subprojects.nil?
+    # @return StagingProject object or nil
+    def subproject
+      return @subprojects[0] unless @subprojects.nil?
       @subprojects = []
       ::Project.where(["name like ?", "#{name}:%"]).map do |p| 
         p = StagingProject.new(p, distribution)
         p.parent = self
         @subprojects << p
       end
-      @subprojects
+      raise 'now we have a problem' if @subprojects.length > 1
+      @subprojects[0] ||= nil
+    end
+
+    # only for compat in the JSON
+    def subprojects
+      [ subproject ]
     end
 
     # Associated openQA jobs.
@@ -105,12 +109,18 @@ module ObsFactory
     # @return [Array] Array of OpenqaJob objects
     def openqa_jobs
       return @openqa_jobs unless @openqa_jobs.nil?
-      if overall_state == :building || (parent && parent.overall_state == :building) || iso.nil?
-        @openqa_jobs = []
-      else
-        @openqa_jobs = OpenqaJob.find_all_by(iso: iso)
+      @openqa_jobs ||= openqa_results_relevant? ? OpenqaJob.find_all_by(iso: iso) : []
+    end
+
+    # only check the openqa jobs if the project is under specific conditions
+    def openqa_results_relevant?
+      return false if iso.nil?
+      return false if overall_state == :building
+      if parent
+        return parent.openqa_results_relevant?
+      else # master project
+        return ! [:building, :empty].include?(overall_state)
       end
-      @openqa_jobs
     end
 
     # Packages included in the staging project that are not building properly.
@@ -225,7 +235,7 @@ module ObsFactory
 
     def self.attributes
       %w(name description obsolete_requests openqa_jobs building_repositories
-        broken_packages subprojects untracked_requests missing_reviews selected_requests overall_state )
+        broken_packages subproject subprojects untracked_requests missing_reviews selected_requests overall_state )
     end
 
     # Required by ActiveModel::Serializers
@@ -267,17 +277,14 @@ module ObsFactory
         @state = build_state
       end
 
-      if @state == :acceptable
-        subprojects.each do |prj|
-          # we only have one subprj, so we don't have to worry overwriting 
-          @state = prj.build_state
-        end
+      if @state == :acceptable && subproject
+        @state = subproject.build_state
       end
 
       if @state == :acceptable
         @state = openqa_state
-        if @state == :acceptable
-          subprojects.each { |prj| @state = prj.openqa_state }
+        if @state == :acceptable && subproject
+          @state = subproject.openqa_state
         end
       end
 
