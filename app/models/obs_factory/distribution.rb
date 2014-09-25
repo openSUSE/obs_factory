@@ -45,6 +45,9 @@ module ObsFactory
       matchdata[1]
     end
 
+    def openqa_iso_prefix
+      "openSUSE-Staging"
+    end
   end
 
   # this class tracks the differences between factory and 13.2
@@ -58,6 +61,10 @@ module ObsFactory
       '13.2'
     end
     
+    def openqa_iso_prefix
+      "openSUSE-13.2-Staging"
+    end
+
   end
   
   class UnknownDistribution < Exception
@@ -265,6 +272,13 @@ module ObsFactory
         ObsProject.new("#{name}#{RINGS_PREFIX}0-Bootstrap", '0'),
         ObsProject.new("#{name}#{RINGS_PREFIX}1-MinimalX", '1'),
         ObsProject.new("#{name}#{RINGS_PREFIX}2-TestDVD", '2') ]
+    end
+
+    # the prefix openQA gives test ISOs
+    #
+    # @return [String] e.g. 'openSUSE-Staging'
+    def openqa_iso_prefix
+      strategy.openqa_iso_prefix
     end
   end
 end

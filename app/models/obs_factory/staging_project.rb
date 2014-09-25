@@ -230,7 +230,7 @@ module ObsFactory
       return nil if binary.nil?
       ending = binary['filename'][5..-1] # Everything but the initial 'Test-'
       suffix = /DVD$/ =~ name ? 'Staging2' : 'Staging'
-      @iso = "openSUSE-Staging:#{letter}-#{suffix}-DVD-x86_64-#{ending}"
+      @iso = distribution.openqa_iso_prefix + ":#{letter}-#{suffix}-DVD-x86_64-#{ending}"
     end
 
     def self.attributes
@@ -249,8 +249,11 @@ module ObsFactory
       :acceptable
     end
 
+    # check openQA jobs for all projects not building right now - or that are known to be broken
     def openqa_state
-      # check openQA jobs for all projects not building right now - or that are known to be broken
+      # the ISOs may still be syncing
+      return :testing if openqa_jobs.empty?
+
       openqa_jobs.each do |job|
         if job.failing_modules.present?
           return :failed
