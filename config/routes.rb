@@ -2,7 +2,7 @@ ObsFactory::Engine.routes.draw do
   cons = { project: %r{[^\/]*} }
   get 'project/dashboard/:project' => "distributions#show", as: 'dashboard', constraints: cons
   get 'project/staging_projects/:project' => "staging_projects#index", as: 'staging_projects', constraints: cons
-  get 'project/staging_projects/:project/:id' => "staging_projects#show", as: 'staging_project', contraints: cons
+  get 'project/staging_projects/:project/:id' => "staging_projects#show", as: 'staging_project', constraints: cons
 
   # Used to enforce the refresh of the cache of jobs (using cache=refresh)
   get 'openqa_jobs' => 'openqa_jobs#index'
