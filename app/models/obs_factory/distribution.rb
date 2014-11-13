@@ -10,7 +10,7 @@ module ObsFactory
     attr_accessor :project
 
     def openqa_version
-      'FTT'
+      'Tumbleweed'
     end
 
     # Version of the distribution used as ToTest
