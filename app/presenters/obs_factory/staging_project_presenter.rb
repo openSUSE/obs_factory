@@ -135,7 +135,11 @@ module ObsFactory
       classified_requests.each do |rq|
         missing +=1 if rq[:missing_reviews]
       end
-      100 - missing * 100 / total
+      if total > 0
+        100 - missing * 100 / total
+      else
+        0
+      end
     end
 
     def testing_percentage
@@ -144,7 +148,11 @@ module ObsFactory
       jobs.each do |job|
         notdone += 1 unless %w(passed failed).include?(job.result)
       end
-      100 - notdone * 100 / jobs.size
+      if jobs.size > 0
+        100 - notdone * 100 / jobs.size
+      else
+        0
+      end
     end
 
     # returns a number presenting how high it should be in the list of staging prjs
