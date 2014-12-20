@@ -4,6 +4,10 @@ require 'net/http'
 module ObsFactory
   class OpenqaApi
 
+    class OpenqaFailure < APIException
+      setup 408
+    end
+
     def initialize(base_url)
       @base_url = base_url.chomp('/') + '/api/v1/'
     end
@@ -35,8 +39,9 @@ module ObsFactory
         uri = URI.join(@base_url, url)
       end
       uri.query = params.to_query
+     
       resp = _get(uri)
-      raise "OpenQA API GET failure: \"#{url}\" with \"#{params.to_query}\"" unless resp.code.to_i == 200
+      raise OpenqaFailure, "OpenQA API GET failure: \"#{url}\" with \"#{params.to_query}\"" unless resp.code.to_i == 200
       ActiveSupport::JSON.decode(resp.body)
     end
   end
