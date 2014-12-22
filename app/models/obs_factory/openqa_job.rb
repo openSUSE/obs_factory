@@ -135,7 +135,7 @@ module ObsFactory
       # results in openQA
       result = @@api.get("tests/#{job_id}/file/results.json", {}, base_url: openqa_base_url)
       result['testmodules'].map {|m| m.slice('name', 'result') }
-    rescue
+    rescue APIException
         []
     end
   end
