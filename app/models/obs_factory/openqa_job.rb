@@ -57,9 +57,6 @@ module ObsFactory
             # First, enrich the result with the modules information and cache
             # the jobs per ISO
             jobs.group_by {|j| (j['assets']['iso'].first rescue nil)}.each do |iso, iso_jobs|
-              iso_jobs.each do |job|
-                job['modules'] = modules_for(job['id'])
-              end
               Rails.cache.write("openqa_jobs_for_iso_#{iso}", iso_jobs, expires_in: 2.minutes)
             end
             # And then, cache the list of ISOs
@@ -76,9 +73,6 @@ module ObsFactory
           get_params[:iso] = filter[:iso]
           jobs = @@api.get('jobs', get_params)['jobs']
           unless exclude_mod
-            jobs.each do |job|
-              job['modules'] = modules_for(job['id'])
-            end
             Rails.cache.write(cache_entry, jobs, expires_in: 2.minutes)
           end
         end
@@ -86,11 +80,6 @@ module ObsFactory
       else
         get_params.merge!(filter)
         jobs = @@api.get('jobs', get_params)['jobs']
-        unless exclude_mod
-          jobs.each do |job|
-            job['modules'] = modules_for(job['id'])
-          end
-        end
       end
 
       jobs.map { |j| OpenqaJob.new(j.slice(*attributes)) }
@@ -100,7 +89,7 @@ module ObsFactory
     #
     # @return [Array] array of module names
     def failing_modules
-      modules.reject {|m| %w(ok na).include? m['result']}.map {|m| m['name'] }
+      modules.reject {|m| %w(passed).include? m['result']}.map {|m| m['name'] }
     end
 
     # Result of the job, or its state if no result is available yet
@@ -123,20 +112,5 @@ module ObsFactory
       Hash[self.class.attributes.map { |a| [a, nil] }]
     end
 
-    protected
-
-    # Reads the list of failed modules for a given job_id from openQA
-    # by means of a GET call
-    #
-    # @param [#to_s]  job_id  the job id
-    # @return [Array]  array of hashes with two keys each: 'name' and 'result'
-    def self.modules_for(job_id)
-      # Surprisingly, we don't have an API call for getting the job
-      # results in openQA
-      result = @@api.get("tests/#{job_id}/file/results.json", {}, base_url: openqa_base_url)
-      result['testmodules'].map {|m| m.slice('name', 'result') }
-    rescue APIException
-        []
-    end
   end
 end
