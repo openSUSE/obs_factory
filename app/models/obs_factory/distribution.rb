@@ -13,6 +13,18 @@ module ObsFactory
       'Tumbleweed'
     end
 
+    def parent_name
+      'openSUSE:Factory'
+    end
+
+    def url_suffix
+      'factory/iso'
+    end
+
+    def rings_prefix
+      ':Rings:'
+    end
+
     # Version of the distribution used as ToTest
     #
     # @return [String] version string
@@ -50,6 +62,48 @@ module ObsFactory
     end
   end
 
+  # PowerPC to Factory Diff
+  class DistributionStrategyFactoryPowerPC < DistributionStrategyFactory
+
+    TOTEST_VERSION_FILE = "images/local/_product:openSUSE-cd-mini-ppc64le"
+
+    def url_suffix
+      'ports/ppc/factory'
+    end
+
+    # Version of the distribution used as ToTest
+    #
+    # @return [String] version string
+    def totest_version
+      begin
+        d = Xmlhash.parse(ActiveXML::backend.direct_http "/build/#{project.name}:ToTest/#{TOTEST_VERSION_FILE}")
+        d.elements('binary') do |b|
+          matchdata = %r{.*Snapshot(.*)-Media\.iso$}.match(b['filename'])
+          return matchdata[1] if matchdata
+        end
+      rescue
+        nil
+      end
+    end
+
+    def repo_url
+      'http://download.opensuse.org/ports/ppc/factory/repo/oss/media.1/build'
+    end
+
+    # Version of the published distribution
+    #
+    # @return [String] version string
+    def published_version
+      begin
+        f = open(repo_url)
+      rescue OpenURI::HTTPError => e
+        return 'unknown'
+      end
+      matchdata = %r{openSUSE-(.*)-ppc64le-.*}.match(f.read)
+      matchdata[1]
+    end
+  end
+
   # this class tracks the differences between factory and 13.2
   class DistributionStrategy132 < DistributionStrategyFactory
 
@@ -83,6 +137,7 @@ module ObsFactory
     def distribution_strategy_for_project(project)
       s = case project.name
         when 'openSUSE:Factory' then DistributionStrategyFactory.new
+        when 'openSUSE:Factory:PowerPC' then DistributionStrategyFactoryPowerPC.new
         when 'openSUSE:13.2' then DistributionStrategy132.new
         else raise UnknownDistribution
       end
@@ -116,6 +171,14 @@ module ObsFactory
     # @return [String] name of the Project object
     def name
       project.name
+    end
+
+    def parent_name
+      strategy.parent_name
+    end
+
+    def url_suffix
+      strategy.url_suffix
     end
 
     # Id of the distribution
