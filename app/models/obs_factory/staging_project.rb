@@ -22,14 +22,14 @@ module ObsFactory
     #
     # @return [Array] array of StagingProject objects
     def self.for(distribution)
-      ::Project.where(["name like ?", "#{distribution.name}#{NAME_PREFIX}_"]).map { |p| StagingProject.new(p, distribution) }
+      ::Project.where(["name like ?", "#{distribution.parent_name}#{NAME_PREFIX}_"]).map { |p| StagingProject.new(p, distribution) }
     end
 
     # Find a staging project by distribution and id
     #
     # @return [StagingProject] the project
     def self.find(distribution, id)
-      project = ::Project.find_by_name("#{distribution.name}#{NAME_PREFIX}#{id}")
+      project = ::Project.find_by_name("#{distribution.parent_name}#{NAME_PREFIX}#{id}")
       if project
         StagingProject.new(project, distribution)
       else
@@ -56,7 +56,7 @@ module ObsFactory
     #
     # @return [String] the name excluding the id
     def prefix
-      "#{distribution.name}#{NAME_PREFIX}"
+      "#{distribution.parent_name}#{NAME_PREFIX}"
     end
 
     # Letter of the staging project, extracted from its name
