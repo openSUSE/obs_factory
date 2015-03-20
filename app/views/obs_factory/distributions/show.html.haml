@@ -15,8 +15,7 @@
 
     %h2
       %i{class: "fa fa-2 fa-circle-o"}
-      = link_to "Ring Projects", main_app.project_subprojects_path(project: "#{@distribution.name}:Rings")
-
+      = link_to "Ring Projects", main_app.project_subprojects_path(project: @distribution.rings_project_name)
     %ul{id: 'ring-projects', class: 'project-results'}
       - @ring_prjs.each do |rp|
         %li{class: "project-result-#{rp.summary[0]}"}
@@ -26,7 +25,7 @@
 
     %h2
       %i{class: "fa fa-2 fa-building"}
-      = link_to "Repositories of openSUSE:Factory", main_app.project_show_path(project: 'openSUSE:Factory')
+      = link_to "Repositories of #{@distribution.name}", main_app.project_show_path(project: "#{@distribution.name}")
 
     %ul{id: 'factory-build-Status', class: 'project-results'}
       %li{class: "project-result-#{@standard.summary[0]} "}
@@ -42,7 +41,7 @@
 
     %h2
       %i{class: "fa fa-2 fa-check"}
-      = link_to "Open Reviews", "/project/requests/#{@distribution.name}"
+      = link_to "Open Reviews", "/project/requests/#{@distribution.root_project_name}"
 
     %ul
       - if @reviews[:legal_auto] > 0
@@ -66,16 +65,15 @@
       %li
         Legal Team:
         = @reviews[:legal_team]
-
     %h2
       %i{class: "fa fa-2 fa-tag"}
-      = link_to "Versions", "http://download.opensuse.org/factory/iso"
+      = link_to "Versions", "http://download.opensuse.org/#{@distribution.url_suffix}"
 
     %ul
       - if @versions[:source]
         %li
           Source:
-          = link_to @versions[:source], main_app.package_show_path(project: 'openSUSE:Factory', package: '_product')
+          = link_to @versions[:source], main_app.package_show_path(project: "#{@distribution.name}", package: '_product')
 
       - if @versions[:totest]
         %li
@@ -85,7 +83,7 @@
       - if @versions[:published]
         %li
           Published:
-          = link_to @versions[:published], "http://download.opensuse.org/factory/iso"
+          = link_to @versions[:published], "http://download.opensuse.org/#{@distribution.url_suffix}"
 
     %h2
       %i{class: "fa fa-2 fa-wrench"}

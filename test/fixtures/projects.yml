@@ -1,6 +1,12 @@
 factory:
   name: 'openSUSE:Factory'
   title: 'openSUSE:Factory'
+factoryppc:
+  name: 'openSUSE:Factory:PowerPC'
+  title: 'openSUSE:Factory:PowerPC'
+opensuse_132:
+  name: 'openSUSE:13.2'
+  title: 'openSUSE:13.2'
 staging_A:
   name: 'openSUSE:Factory:Staging:A'
   title: 'openSUSE:Factory:Staging:A'
@@ -29,3 +35,11 @@ staging_D_DVD:
   name: 'openSUSE:Factory:Staging:D:DVD'
   title: 'openSUSE:Factory:Staging:D:DVD'
   description: 'DVD subproject for Staging:D'
+staging132_A:
+  name: 'openSUSE:13.2:Staging:A'
+  title: 'openSUSE:13.2:Staging:A'
+  description: 'Staging A for 13.2'
+staging132_B:
+  name: 'openSUSE:13.2:Staging:B'
+  title: 'openSUSE:13.2:Staging:B'
+  description: 'Staging B for 13.2'
