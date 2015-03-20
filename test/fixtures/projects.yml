@@ -1,6 +1,9 @@
 factory:
   name: 'openSUSE:Factory'
   title: 'openSUSE:Factory'
+factoryppc:
+  name: 'openSUSE:Factory:PowerPC'
+  title: 'openSUSE:Factory:PowerPC'
 staging_A:
   name: 'openSUSE:Factory:Staging:A'
   title: 'openSUSE:Factory:Staging:A'
