@@ -15,7 +15,7 @@
 
     %h2
       %i{class: "fa fa-2 fa-circle-o"}
-      = link_to "Ring Projects", main_app.project_subprojects_path(project: "#{@distribution.parent_name}:Rings")
+      = link_to "Ring Projects", main_app.project_subprojects_path(project: @distribution.rings_project_name)
     %ul{id: 'ring-projects', class: 'project-results'}
       - @ring_prjs.each do |rp|
         %li{class: "project-result-#{rp.summary[0]}"}
@@ -41,7 +41,7 @@
 
     %h2
       %i{class: "fa fa-2 fa-check"}
-      = link_to "Open Reviews", "/project/requests/#{@distribution.parent_name}"
+      = link_to "Open Reviews", "/project/requests/#{@distribution.root_project_name}"
 
     %ul
       - if @reviews[:legal_auto] > 0

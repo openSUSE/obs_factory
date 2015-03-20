@@ -1,138 +1,6 @@
 require 'open-uri'
 
 module ObsFactory
-
-  # this is not a Factory pattern, this is for openSUSE:Factory :/
-  class DistributionStrategyFactory
-
-    TOTEST_VERSION_FILE = "images/local/_product:openSUSE-cd-mini-x86_64"
-    
-    attr_accessor :project
-
-    def openqa_version
-      'Tumbleweed'
-    end
-
-    def parent_name
-      'openSUSE:Factory'
-    end
-
-    def url_suffix
-      'factory/iso'
-    end
-
-    def rings_prefix
-      ':Rings:'
-    end
-
-    def ring_projects
-      @ring_projects ||= [
-        ObsProject.new("#{name}#{rings_prefix}0-Bootstrap", '0'),
-        ObsProject.new("#{name}#{rings_prefix}1-MinimalX", '1'),
-        ObsProject.new("#{name}#{rings_prefix}2-TestDVD", '2') ]
-    end
-
-    # Version of the distribution used as ToTest
-    #
-    # @return [String] version string
-    def totest_version
-      begin
-        d = Xmlhash.parse(ActiveXML::backend.direct_http "/build/#{project.name}:ToTest/#{TOTEST_VERSION_FILE}")
-        d.elements('binary') do |b|
-          matchdata = %r{.*Snapshot(.*)-Media\.iso$}.match(b['filename'])
-          return matchdata[1] if matchdata
-        end
-      rescue
-        nil
-      end
-    end
-
-    def repo_url
-      'http://download.opensuse.org/factory/repo/oss/media.1/build'
-    end
-
-    # Version of the published distribution
-    #
-    # @return [String] version string
-    def published_version
-      begin
-        f = open(repo_url)
-      rescue OpenURI::HTTPError => e
-        return 'unknown'
-      end
-      matchdata = %r{openSUSE-(.*)-i586-.*}.match(f.read)
-      matchdata[1]
-    end
-
-    def openqa_iso_prefix
-      "openSUSE-Staging"
-    end
-  end
-
-  # PowerPC to Factory Diff
-  class DistributionStrategyFactoryPowerPC < DistributionStrategyFactory
-
-    TOTEST_VERSION_FILE = "images/local/_product:openSUSE-cd-mini-ppc64le"
-
-    def url_suffix
-      'ports/ppc/factory'
-    end
-
-    def ring_projects
-      @ring_projects ||= [
-        ObsProject.new("#{parent_name}#{rings_prefix}0-Bootstrap", '0'),
-        ObsProject.new("#{parent_name}#{rings_prefix}1-MinimalX", '1') ]
-    end
-
-    # Version of the distribution used as ToTest
-    #
-    # @return [String] version string
-    def totest_version
-      begin
-        d = Xmlhash.parse(ActiveXML::backend.direct_http "/build/#{project.name}:ToTest/#{TOTEST_VERSION_FILE}")
-        d.elements('binary') do |b|
-          matchdata = %r{.*Snapshot(.*)-Media\.iso$}.match(b['filename'])
-          return matchdata[1] if matchdata
-        end
-      rescue
-        nil
-      end
-    end
-
-    def repo_url
-      'http://download.opensuse.org/ports/ppc/factory/repo/oss/media.1/build'
-    end
-
-    # Version of the published distribution
-    #
-    # @return [String] version string
-    def published_version
-      begin
-        f = open(repo_url)
-      rescue OpenURI::HTTPError => e
-        return 'unknown'
-      end
-      matchdata = %r{openSUSE-(.*)-ppc64le-.*}.match(f.read)
-      matchdata[1]
-    end
-  end
-
-  # this class tracks the differences between factory and 13.2
-  class DistributionStrategy132 < DistributionStrategyFactory
-
-    def repo_url
-      'http://download.opensuse.org/distribution/13.2/repo/oss/media.1/build'
-    end
-    
-    def openqa_version
-      '13.2'
-    end
-    
-    def openqa_iso_prefix
-      "openSUSE-13.2-Staging"
-    end
-
-  end
   
   class UnknownDistribution < Exception
   end
@@ -141,15 +9,17 @@ module ObsFactory
   class Distribution
     include ActiveModel::Model
     extend ActiveModel::Naming
+    extend Forwardable
     
     SOURCE_VERSION_FILE = "_product/openSUSE.product"
+    RINGS_PREFIX = ":Rings"
 
     attr_accessor :project, :strategy
 
     def distribution_strategy_for_project(project)
       s = case project.name
         when 'openSUSE:Factory' then DistributionStrategyFactory.new
-        when 'openSUSE:Factory:PowerPC' then DistributionStrategyFactoryPowerPC.new
+        when 'openSUSE:Factory:PowerPC' then DistributionStrategyFactoryPPC.new
         when 'openSUSE:13.2' then DistributionStrategy132.new
         else raise UnknownDistribution
       end
@@ -161,6 +31,19 @@ module ObsFactory
       self.project = project
       self.strategy = distribution_strategy_for_project(project)
     end
+
+    def self.attributes
+      %w(name description staging_projects openqa_version
+      source_version totest_version published_version
+      standard_project live_project images_project ring_projects)
+    end
+
+    def attributes
+      Hash[self.class.attributes.map { |a| [a, nil] }]
+    end
+
+    def_delegators :@strategy, :root_project_name, :url_suffix, :openqa_version,
+                               :openqa_iso_prefix
 
     # Find a distribution by id
     #
@@ -185,14 +68,6 @@ module ObsFactory
       project.name
     end
 
-    def parent_name
-      strategy.parent_name
-    end
-
-    def url_suffix
-      strategy.url_suffix
-    end
-
     # Id of the distribution
     #
     # @return [String] name
@@ -205,6 +80,24 @@ module ObsFactory
     # @return [String] description of the Project object
     def description
       project.description
+    end
+
+    # Version of the distribution used as ToTest
+    #
+    # @return [String] version string
+    def totest_version
+      Rails.cache.fetch("totest_version_for_#{name}", expires_in: 10.minutes) do
+        strategy.totest_version
+      end
+    end
+
+    # Version of the published distribution
+    #
+    # @return [String] version string
+    def published_version
+      Rails.cache.fetch("published_version_for_#{name}", expires_in: 10.minutes) do
+        strategy.published_version
+      end
     end
 
     # Staging projects associated to the distribution
@@ -226,16 +119,6 @@ module ObsFactory
       end
     end
 
-    def self.attributes
-      %w(name description staging_projects openqa_version
-      source_version totest_version published_version
-      standard_project live_project images_project ring_projects)
-    end
-
-    def attributes
-      Hash[self.class.attributes.map { |a| [a, nil] }]
-    end
-
     # Version of the distribution used as source
     #
     # @return [String] version string
@@ -247,24 +130,6 @@ module ObsFactory
         rescue ActiveXML::Transport::NotFoundError
           nil
         end
-      end
-    end
-
-    # Version of the distribution used as ToTest
-    #
-    # @return [String] version string
-    def totest_version
-      Rails.cache.fetch("totest_version_for_#{name}", expires_in: 10.minutes) do
-        strategy.totest_version
-      end
-    end
-    
-    # Version of the published distribution
-    #
-    # @return [String] version string
-    def published_version
-      Rails.cache.fetch("published_version_for_#{name}", expires_in: 10.minutes) do
-        strategy.published_version
       end
     end
 
@@ -293,13 +158,6 @@ module ObsFactory
     # @return [Array] list of Request objects
     def requests_with_reviews_for_user(user)
       Request.with_open_reviews_for(by_user: user, target_project: name)
-    end
-
-    # String to pass as version to filter the openQA jobs
-    #
-    # @return [String] version parameter
-    def openqa_version
-       strategy.openqa_version
     end
 
     # Standard project
@@ -343,14 +201,16 @@ module ObsFactory
     #
     # @return [Array] list of ObsProject objects nicknamed with numbers
     def ring_projects
-      strategy.ring_projects
+      @ring_projects ||= strategy.rings.each_with_index.map do |r,idx|
+        ObsProject.new("#{rings_project_name}:#{idx}-#{r}", idx.to_s)
+      end
     end
 
-    # the prefix openQA gives test ISOs
+    # Name of the project used as top-level for the ring projects
     #
-    # @return [String] e.g. 'openSUSE-Staging'
-    def openqa_iso_prefix
-      strategy.openqa_iso_prefix
+    # @return [String] project name
+    def rings_project_name
+      "#{root_project_name}#{RINGS_PREFIX}"
     end
   end
 end
