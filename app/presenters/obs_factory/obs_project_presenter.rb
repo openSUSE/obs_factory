@@ -18,6 +18,7 @@ module ObsFactory
       # hard code the archs we care for
       params['arch_i586'] = 1
       params['arch_x86_64'] = 1
+      params['arch_ppc64le'] = 1
       params['arch_local'] = 1
       params
     end
