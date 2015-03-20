@@ -15,10 +15,6 @@ module ObsFactory
       'ports/ppc/factory'
     end
 
-    def rings
-      %w(Bootstrap MinimalX)
-    end
-
     def repo_url
       'http://download.opensuse.org/ports/ppc/factory/repo/oss/media.1/build'
     end
