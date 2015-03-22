@@ -24,6 +24,10 @@ module ObsFactory
       'images/local/_product:openSUSE-cd-mini-x86_64'
     end
 
+    def arch
+      'x86_64'
+    end
+
     def url_suffix
       'factory/iso'
     end

@@ -11,6 +11,10 @@ module ObsFactory
       'images/local/_product:openSUSE-cd-mini-ppc64le'
     end
 
+    def arch
+      'ppc64le'
+    end
+
     def url_suffix
       'ports/ppc/factory'
     end
