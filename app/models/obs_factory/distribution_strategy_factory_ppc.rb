@@ -7,6 +7,10 @@ module ObsFactory
       "openSUSE:Factory"
     end
 
+    def openqa_version
+      'Tumbleweed PowerPC'
+    end
+
     def totest_version_file
       'images/local/_product:openSUSE-cd-mini-ppc64le'
     end
