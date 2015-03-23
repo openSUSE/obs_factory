@@ -221,8 +221,9 @@ module ObsFactory
     # @return [String] file name
     def iso
       return @iso if @iso
-      buildresult = Buildresult.find_hashed(project: name, package: 'Test-DVD-x86_64',
-                                            repository: 'images', arch: 'x86_64',
+      arch = distribution.arch
+      buildresult = Buildresult.find_hashed(project: name, package: "Test-DVD-#{arch}",
+                                            repository: 'images', arch: "#{arch}",
                                             view: 'binarylist')
       binaries = buildresult['result']['binarylist']['binary']
       return nil if binaries.nil?
@@ -230,7 +231,7 @@ module ObsFactory
       return nil if binary.nil?
       ending = binary['filename'][5..-1] # Everything but the initial 'Test-'
       suffix = /DVD$/ =~ name ? 'Staging2' : 'Staging'
-      @iso = distribution.openqa_iso_prefix + ":#{letter}-#{suffix}-DVD-x86_64-#{ending}"
+      @iso = distribution.openqa_iso_prefix + ":#{letter}-#{suffix}-DVD-#{arch}-#{ending}"
     end
 
     def self.attributes
