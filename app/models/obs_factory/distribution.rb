@@ -36,7 +36,7 @@ module ObsFactory
     def self.attributes
       %w(name description staging_projects openqa_version
       source_version totest_version published_version
-      standard_project live_project images_project ring_projects)
+      standard_project live_project images_project ring_projects openqa_group)
     end
 
     def attributes
@@ -44,7 +44,7 @@ module ObsFactory
     end
 
     def_delegators :@strategy, :root_project_name, :url_suffix, :openqa_version,
-                               :openqa_iso, :arch
+                               :openqa_iso, :arch, :openqa_group
 
     # Find a distribution by id
     #
@@ -139,7 +139,7 @@ module ObsFactory
     # @param [#to_s] version must be :source, :totest or :published
     # @return [Array] list of OpenqaJob objects
     def openqa_jobs_for(version)
-      filter = {distri: 'opensuse', version: strategy.openqa_version, build: send(:"#{version}_version")}
+      filter = {distri: 'opensuse', version: strategy.openqa_version, build: send(:"#{version}_version"), group: strategy.openqa_group}
       OpenqaJob.find_all_by(filter, exclude_modules: true)
     end
 

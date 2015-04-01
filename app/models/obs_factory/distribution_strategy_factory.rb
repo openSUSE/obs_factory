@@ -36,6 +36,10 @@ module ObsFactory
       %w(Bootstrap MinimalX TestDVD)
     end
 
+    def openqa_group
+      'openSUSE Tumbleweed'
+    end
+
     def repo_url
       'http://download.opensuse.org/factory/repo/oss/media.1/build'
     end
