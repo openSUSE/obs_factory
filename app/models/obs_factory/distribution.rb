@@ -45,6 +45,10 @@ module ObsFactory
       matchdata[1]
     end
 
+    def openqa_groupid
+      '1'
+    end
+
     def openqa_iso_prefix
       "openSUSE-Staging"
     end

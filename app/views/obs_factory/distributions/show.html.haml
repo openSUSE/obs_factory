@@ -89,7 +89,7 @@
 
     %h2
       %i{class: "fa fa-2 fa-wrench"}
-      = link_to "openQA results for #{@versions[:totest]}", "https://openqa.opensuse.org/tests/overview?distri=opensuse&version=#{@distribution.openqa_version}&build=#{@versions[:totest]}"
+      = link_to "openQA results for #{@versions[:totest]}", "https://openqa.opensuse.org/tests/overview?distri=opensuse&version=#{@distribution.openqa_version}&build=#{@versions[:totest]}&groupid=#{@distribution.openqa_groupid}"
 
     %p
       - @openqa_jobs.group_by(&:result_or_state).each do |label, jobs|
