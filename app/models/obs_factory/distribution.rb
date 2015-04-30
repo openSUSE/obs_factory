@@ -44,7 +44,7 @@ module ObsFactory
     end
 
     def_delegators :@strategy, :root_project_name, :url_suffix, :openqa_version,
-                               :openqa_iso_prefix, :arch
+                               :openqa_iso, :arch
 
     # Find a distribution by id
     #

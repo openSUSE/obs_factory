@@ -51,6 +51,33 @@ module ObsFactory
       "openSUSE-Staging"
     end
 
+    # Name of the ISO file by the given staging project tracked on openqa
+    #
+    # @return [String] file name
+    def openqa_iso(project)
+      ending = _project_iso(project)[5..-1] # Everything but the initial 'Test-'
+      suffix = /DVD$/ =~ project.name ? 'Staging2' : 'Staging'
+      self.openqa_iso_prefix + ":#{project.letter}-#{suffix}-DVD-#{project.arch}-#{ending}"
+    end
+
+    # Name of the ISO file produced by the given staging project's Test-DVD
+    #
+    # @return [String] file name
+    def _project_iso(project)
+      arch = self.arch
+      buildresult = Buildresult.find_hashed(project: project.name, package: "Test-DVD-#{arch}",
+                                            repository: 'images',
+                                            view: 'binarylist')
+      binaries = []
+      # we get multiple architectures, but only one with binaries
+      buildresult.elements('result') do |r|
+        r['binarylist'].elements('binary') do |b|
+          return b['filename'] if /\.iso$/ =~ b['filename']
+        end
+      end
+      nil
+    end
+
     # Version of the distribution used as ToTest
     #
     # @return [String] version string
