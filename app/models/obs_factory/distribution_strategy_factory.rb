@@ -55,15 +55,19 @@ module ObsFactory
     #
     # @return [String] file name
     def openqa_iso(project)
-      ending = _project_iso(project)[5..-1] # Everything but the initial 'Test-'
+      iso = project_iso(project)
+      return nil if iso.nil?
+      ending = iso(project)[5..-1] # Everything but the initial 'Test-'
       suffix = /DVD$/ =~ project.name ? 'Staging2' : 'Staging'
       self.openqa_iso_prefix + ":#{project.letter}-#{suffix}-DVD-#{project.arch}-#{ending}"
     end
 
     # Name of the ISO file produced by the given staging project's Test-DVD
     #
+    # Not part of the Strategy API, but useful for subclasses
+    #
     # @return [String] file name
-    def _project_iso(project)
+    def project_iso(project)
       arch = self.arch
       buildresult = Buildresult.find_hashed(project: project.name, package: "Test-DVD-#{arch}",
                                             repository: 'images',
@@ -77,6 +81,7 @@ module ObsFactory
       end
       nil
     end
+    protected :project_iso
 
     # Version of the distribution used as ToTest
     #
