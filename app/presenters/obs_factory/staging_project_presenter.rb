@@ -37,6 +37,8 @@ module ObsFactory
         'search'
       when 'factory-repo-checker' then
         'cog'
+      when 'sle-release-managers' then
+        'users'
       when 'legal-team' then
         'graduation-cap'
       else
