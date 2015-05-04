@@ -21,6 +21,7 @@ module ObsFactory
         when 'openSUSE:Factory' then DistributionStrategyFactory.new
         when 'openSUSE:Factory:PowerPC' then DistributionStrategyFactoryPPC.new
         when 'openSUSE:13.2' then DistributionStrategy132.new
+        when 'SUSE:SLE-12-SP1:GA' then DistributionStrategySLE12SP1.new
         else raise UnknownDistribution
       end
       s.project = project
@@ -43,7 +44,7 @@ module ObsFactory
     end
 
     def_delegators :@strategy, :root_project_name, :url_suffix, :openqa_version,
-                               :openqa_iso_prefix, :arch
+                               :openqa_iso, :arch
 
     # Find a distribution by id
     #

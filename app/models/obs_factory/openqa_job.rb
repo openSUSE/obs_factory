@@ -11,7 +11,7 @@ module ObsFactory
     def self.openqa_base_url
       # build.opensuse.org can reach only the host directly, so we need
       # to use http - and accept a https redirect if used on work stations
-      "http://openqa.opensuse.org"
+      CONFIG['openqa_base_url'] || "http://openqa.opensuse.org"
     end
 
     @@api = ObsFactory::OpenqaApi.new(openqa_base_url)
