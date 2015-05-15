@@ -39,6 +39,8 @@ module ObsFactory
         'cog'
       when 'sle-release-managers' then
         'users'
+      when 'maintenance-team' then
+        'medkit'
       when 'legal-team' then
         'graduation-cap'
       else
