@@ -20,7 +20,7 @@ module ObsFactory
       s = case project.name
         when 'openSUSE:Factory' then DistributionStrategyFactory.new
         when 'openSUSE:Factory:PowerPC' then DistributionStrategyFactoryPPC.new
-        when 'openSUSE:13.2' then DistributionStrategy132.new
+        when /^openSUSE:.*/ then DistributionStrategyOpenSUSE.new
         when 'SUSE:SLE-12-SP1:GA' then DistributionStrategySLE12SP1.new
         else raise UnknownDistribution
       end
