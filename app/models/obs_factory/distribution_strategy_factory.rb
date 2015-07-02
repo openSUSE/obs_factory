@@ -57,9 +57,9 @@ module ObsFactory
     def openqa_iso(project)
       iso = project_iso(project)
       return nil if iso.nil?
-      ending = iso(project)[5..-1] # Everything but the initial 'Test-'
+      ending = iso[5..-1] # Everything but the initial 'Test-'
       suffix = /DVD$/ =~ project.name ? 'Staging2' : 'Staging'
-      self.openqa_iso_prefix + ":#{project.letter}-#{suffix}-DVD-#{project.arch}-#{ending}"
+      self.openqa_iso_prefix + ":#{project.letter}-#{suffix}-DVD-#{arch}-#{ending}"
     end
 
     # Name of the ISO file produced by the given staging project's Test-DVD
