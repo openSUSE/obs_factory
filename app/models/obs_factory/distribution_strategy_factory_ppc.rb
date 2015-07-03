@@ -19,6 +19,10 @@ module ObsFactory
       'ports/ppc/factory'
     end
 
+    def openqa_group
+      'openSUSE Tumbleweed PowerPC'
+    end
+
     def repo_url
       'http://download.opensuse.org/ports/ppc/factory/repo/oss/media.1/build'
     end
