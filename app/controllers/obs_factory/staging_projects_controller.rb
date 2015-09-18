@@ -25,7 +25,7 @@ module ObsFactory
     end
 
     def show
-      staging_project = @distribution.staging_project(params[:id].upcase)
+      staging_project = @distribution.staging_project(params[:id])
       respond_to do |format|
         format.html do
           @staging_project = StagingProjectPresenter.new(staging_project)
