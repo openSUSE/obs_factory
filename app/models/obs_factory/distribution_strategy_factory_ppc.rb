@@ -19,8 +19,8 @@ module ObsFactory
       'ports/ppc/factory'
     end
 
-    def openqa_version
-      'Tumbleweed PowerPC'
+    def openqa_group
+      'openSUSE Tumbleweed PowerPC'
     end
 
     def repo_url
