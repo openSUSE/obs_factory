@@ -23,7 +23,7 @@ module ObsFactory
     # any other case, a GET query to openQA is always performed.
     #
     # param [Hash] args filters to use in the query. Valid values:
-    #              :build, :distri, :iso, :maxage, :state and :version
+    #              :build, :distri, :iso, :maxage, :state, :group and :version
     # param [Hash] opt Options:
     #   :cache == 'refresh' forces a refresh of the cache
     #   :exclude_modules skips the loading of the modules information (which
@@ -33,7 +33,7 @@ module ObsFactory
     def self.find_all_by(args = {}, opt = {})
       refresh = (opt.symbolize_keys[:cache].to_s == 'refresh')
       exclude_mod = !!opt.symbolize_keys[:exclude_modules]
-      filter = args.symbolize_keys.slice(:iso, :state, :build, :maxage, :distri, :version)
+      filter = args.symbolize_keys.slice(:iso, :state, :build, :maxage, :distri, :version, :group)
 
       # We are only interested in current results
       get_params = {scope: 'current'}

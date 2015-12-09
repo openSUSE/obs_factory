@@ -12,6 +12,10 @@ module ObsFactory
       'Tumbleweed'
     end
 
+    def openqa_group
+      'openSUSE Tumbleweed'
+    end
+    #
     # Name of the project used as top-level for the staging projects and
     # the rings
     #
