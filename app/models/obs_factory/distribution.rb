@@ -21,7 +21,7 @@ module ObsFactory
         when 'openSUSE:Factory' then DistributionStrategyFactory.new
         when 'openSUSE:Factory:PowerPC' then DistributionStrategyFactoryPPC.new
         when /^openSUSE:.*/ then DistributionStrategyOpenSUSE.new
-        when 'SUSE:SLE-12-SP1:GA' then DistributionStrategySLE12SP1.new
+        when /^SUSE:SLE-12-SP\d:GA/ then DistributionStrategySLE12SP1.new
         else raise UnknownDistribution
       end
       s.project = project
