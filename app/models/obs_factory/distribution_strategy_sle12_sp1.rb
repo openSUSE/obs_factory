@@ -3,7 +3,8 @@ module ObsFactory
   class DistributionStrategySLE12SP1 < DistributionStrategyFactory
 
     def sp_version
-      project.name[/SLE-12-(.*):GA/]
+      match = project.name.match(/SLE-12-(.*):GA/)
+      match[1]
     end
 
 
