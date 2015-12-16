@@ -34,8 +34,14 @@ module ObsFactory
     #
     # @return [XMLHash] summary
     def build_summary
-      Rails.cache.fetch("build_summary_for_#{name}", expires_in: 5.minutes) do
-        ::Buildresult.find_hashed(project: name, view: 'summary')
+      obs_api = ObsFactory::ObsApi.new
+      if obs_api.use_api?
+        params = {"view" => 'summary'}
+        obs_api.geturl(name, params)
+      else
+        Rails.cache.fetch("build_summary_for_#{name}", expires_in: 5.minutes) do
+          ::Buildresult.find_hashed(project: name, view: 'summary')
+        end
       end
     end
 
@@ -43,7 +49,13 @@ module ObsFactory
     #
     # @return [Integer] failures count
     def build_failures_count
-      buildresult = Buildresult.find_hashed(project: name, code: %w(failed broken unresolvable))
+      obs_api = ObsFactory::ObsApi.new
+      if obs_api.use_api?
+        params = {"code" => "%w(failed broken unresolvable)"}
+        buildresult = obs_api.geturl(name, params)
+      else
+        buildresult = Buildresult.find_hashed(project: name, code: %w(failed broken unresolvable))
+      end
       bp = {}
       buildresult.elements('result') do |result|
         result.elements('status') do |s|

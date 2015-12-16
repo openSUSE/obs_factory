@@ -1,0 +1,6 @@
+production:
+ external_obs: false
+ obs_api: "https://api.opensuse.org"
+ obs_user: foo
+ obs_pass: bar
+

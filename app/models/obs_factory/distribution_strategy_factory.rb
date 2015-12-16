@@ -73,9 +73,15 @@ module ObsFactory
     # @return [String] file name
     def project_iso(project)
       arch = self.arch
-      buildresult = Buildresult.find_hashed(project: project.name, package: "Test-DVD-#{arch}",
+      obs_api = ObsApi.new
+      if obs_api.use_api?
+        params = {"package" => "Test-DVD-#{arch}", "repository" => "images", "view" => "binarylist"}
+        buildresult = obs_api.geturl(project.name, params)
+      else
+        buildresult = Buildresult.find_hashed(project: project.name, package: "Test-DVD-#{arch}",
                                             repository: 'images',
                                             view: 'binarylist')
+      end
       binaries = []
       # we get multiple architectures, but only one with binaries
       buildresult.elements('result') do |r|
@@ -92,7 +98,12 @@ module ObsFactory
     # @return [String] version string
     def totest_version
       begin
-        d = Xmlhash.parse(ActiveXML::backend.direct_http "/build/#{project.name}:ToTest/#{totest_version_file}")
+        obs_api = ObsApi.new
+        if obs_api.use_api?
+          d = obs_api.direct(project.name + ":ToTest", "build", totest_version_file)
+        else
+          d = Xmlhash.parse(ActiveXML::backend.direct_http "/build/#{project.name}:ToTest/#{totest_version_file}")
+        end
         d.elements('binary') do |b|
           matchdata = %r{.*Snapshot(.*)-Media\.iso$}.match(b['filename'])
           return matchdata[1] if matchdata

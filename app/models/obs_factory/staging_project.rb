@@ -293,7 +293,13 @@ module ObsFactory
 
     # Used internally to calculate #broken_packages and #building_repositories
     def set_buildinfo
-      buildresult = Buildresult.find_hashed(project: name, code: %w(failed broken unresolvable))
+      obs_api = ObsApi.new
+      if obs_api.use_api?
+        params = {"code" => %w(failed broken unresolvable)}
+        buildresult = obs_api.geturl(name, params)
+      else
+        buildresult = Buildresult.find_hashed(project: name, code: %w(failed broken unresolvable))
+      end
       @broken_packages = []
       @building_repositories = []
       buildresult.elements('result') do |result|
@@ -317,8 +323,14 @@ module ObsFactory
           current_repo = result.slice('repository', 'arch', 'code', 'state', 'dirty')
           current_repo[:tobuild] = 0
           current_repo[:final] = 0
-
-          buildresult = Buildresult.find_hashed(project: name, view: 'summary', repository: current_repo['repository'], arch: current_repo['arch'])
+          if obs_api.use_api?
+            params= {"view" => "summary",
+                     "repository" => current_repo['repository'],
+                     "arch" => current_repo['arch']}
+	    buildresult = obs_api.geturl(name, params)
+          else
+            buildresult = Buildresult.find_hashed(project: name, view: 'summary', repository: current_repo['repository'], arch: current_repo['arch'])
+          end
           buildresult = buildresult.get('result').get('summary')
           buildresult.elements('statuscount') do |sc|
             if %w(excluded broken failed unresolvable succeeded excluded disabled).include?(sc['code'])
