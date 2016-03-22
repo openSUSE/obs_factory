@@ -149,7 +149,7 @@ module ObsFactory
     # @param [String] group name of the group
     # @return [Array] list of Request objects
     def requests_with_reviews_for_group(group)
-      Request.with_open_reviews_for(by_group: group, target_project: name)
+      Request.with_open_reviews_for(by_group: group, target_project: root_project_name)
     end
 
     # Requests with some open review targeting the distribution, filtered by
@@ -158,7 +158,7 @@ module ObsFactory
     # @param [String] user name of the user
     # @return [Array] list of Request objects
     def requests_with_reviews_for_user(user)
-      Request.with_open_reviews_for(by_user: user, target_project: name)
+      Request.with_open_reviews_for(by_user: user, target_project: root_project_name)
     end
 
     # Standard project
