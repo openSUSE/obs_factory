@@ -126,7 +126,7 @@ module ObsFactory
     def source_version
       Rails.cache.fetch("source_version_for_#{name}", expires_in: 10.minutes) do
         begin
-          p = Xmlhash.parse(ActiveXML::backend.direct_http "/source/#{name}/#{SOURCE_VERSION_FILE}")
+          p = Xmlhash.parse(ActiveXML::backend.direct_http "/source/#{name}/#{SOURCE_VERSION_FILE}?expand=1")
           p.get('products').get('product').get('version')
         rescue ActiveXML::Transport::NotFoundError
           nil
