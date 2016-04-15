@@ -13,7 +13,7 @@ module ObsFactory
 
     OBSOLETE_STATES = %w(declined superseded revoked)
 
-    DELEGATED_METHODS = %w(id state description creator accept_at created_at updated_at reviews)
+    DELEGATED_METHODS = %w(id state description creator accept_at created_at updated_at reviews number)
 
     # Delegate some methods to the associated BsRequest object
     DELEGATED_METHODS.each do |m|
@@ -29,7 +29,7 @@ module ObsFactory
     # @param [Array] Array of ids
     # @return [Array]  Array of Request objects
     def self.find(ids)
-      bs_requests = BsRequest.includes(:reviews, :bs_request_actions).find(ids)
+      bs_requests = BsRequest.includes(:reviews, :bs_request_actions).where(number: ids)
       bs_requests.map {|r| Request.new(r) }
     end
 
