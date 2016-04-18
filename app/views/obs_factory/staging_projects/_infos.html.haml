@@ -21,7 +21,7 @@
       - counter = 0
       - @backlog_requests.each do |req|
         %li
-          = link_to elide(req.package, length = 19), main_app.request_show_path(req.id)
+          = link_to elide(req.package, length = 19), main_app.request_show_path(req.number)
         - counter += 1
         - if counter > 5 && @backlog_requests.size > counter + 1
           %li ... #{@backlog_requests.size - counter} more
