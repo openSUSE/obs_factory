@@ -199,7 +199,7 @@ module ObsFactory
               # who = rev.by_group || rev.by_user || rev.by_project || rev.by_package
               attribs.each do |att|
                 if who = rev.send(att)
-                  @missing_reviews << { id: rev.id, request: req.id, state: rev.state.to_s, package: req.package, by: who }
+                  @missing_reviews << { id: rev.id, request: req.number, state: rev.state.to_s, package: req.package, by: who }
                 end
               end
             end
