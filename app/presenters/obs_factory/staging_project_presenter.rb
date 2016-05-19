@@ -65,7 +65,7 @@ module ObsFactory
       requests.each do |req|
         r = { number: req.number, package: req.package }
         css = 'ok'
-        r[:missing_reviews] = reviews[req.id]
+        r[:missing_reviews] = reviews[req.number]
         unless r[:missing_reviews].blank?
           css = 'review'
         end
