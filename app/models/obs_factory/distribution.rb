@@ -213,5 +213,14 @@ module ObsFactory
     def rings_project_name
       "#{root_project_name}#{RINGS_PREFIX}"
     end
+
+    # URL parameter for openqa's /test route to be opened in view
+    # for given project
+    #
+    # @return [String] URL part (e.g. match=A)
+    def openqa_filter(project)
+      return "match=Staging:#{project.letter}"
+    end
+
   end
 end

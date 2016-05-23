@@ -11,5 +11,5 @@
     - elsif project.overall_state == :review
       = "#{project.review_percentage}%"
     - elsif project.overall_state == :testing
-      = link_to "https://openqa.opensuse.org/tests?hoursfresh=24&match=Staging:#{project.letter}" do
+      = link_to "https://openqa.opensuse.org/tests?hoursfresh=24&#{@distribution.openqa_filter(project)}" do
         = "#{project.testing_percentage}%"

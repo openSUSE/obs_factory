@@ -18,5 +18,11 @@ module ObsFactory
     def openqa_iso_prefix
       "openSUSE-#{opensuse_version}-Staging"
     end
+
+    # URL parameter for 42
+    def openqa_filter(project)
+      return "match=42:S:#{project.letter}"
+    end
+
   end
 end
