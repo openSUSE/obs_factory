@@ -12,7 +12,7 @@ module ObsFactory
     #
     # @return [String] type of test
     def test
-      name.split('-').last
+      settings['TEST']
     end
   end
 end

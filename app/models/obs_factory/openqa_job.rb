@@ -6,7 +6,7 @@ module ObsFactory
     extend ActiveModel::Naming
     include ActiveModel::Serializers::JSON
 
-    attr_accessor :id, :name, :state, :result, :clone_id, :iso, :modules
+    attr_accessor :id, :name, :state, :result, :clone_id, :iso, :modules, :settings
 
     def self.openqa_base_url
       # build.opensuse.org can reach only the host directly, so we need
@@ -104,7 +104,7 @@ module ObsFactory
     end
 
     def self.attributes
-      %w(id name state result clone_id iso modules)
+      %w(id name state result clone_id iso modules settings)
     end
 
     # Required by ActiveModel::Serializers
