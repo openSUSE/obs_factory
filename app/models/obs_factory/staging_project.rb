@@ -248,7 +248,7 @@ module ObsFactory
       openqa_jobs.each do |job|
         if job.failing_modules.present?
           return :failed
-        elsif job.result != 'passed'
+        elsif ! %w(passed softfailed).include? job.result
           return :testing
         end
       end
