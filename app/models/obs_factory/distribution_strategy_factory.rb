@@ -114,5 +114,10 @@ module ObsFactory
       matchdata = %r{openSUSE-(.*)-#{published_arch}-.*}.match(f.read)
       matchdata[1]
     end
+
+    def openqa_filter(project)
+      return "match=Staging:#{project.letter}"
+    end
+
   end
 end
