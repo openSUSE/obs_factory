@@ -219,7 +219,7 @@ module ObsFactory
     #
     # @return [String] URL part (e.g. match=A)
     def openqa_filter(project)
-      return "match=Staging:#{project.letter}"
+      return strategy.openqa_filter(project)
     end
 
   end
