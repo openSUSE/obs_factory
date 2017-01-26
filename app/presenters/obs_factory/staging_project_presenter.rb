@@ -37,12 +37,16 @@ module ObsFactory
         'search'
       when 'factory-repo-checker' then
         'cog'
-      when 'sle-release-managers' then
+      when 'sle-release-managers', 'leap-reviewers' then
         'users'
       when 'maintenance-team' then
         'medkit'
       when 'legal-team' then
         'graduation-cap'
+      when 'leaper' then
+        'code-fork'
+      when 'sle-changelog-checker' then
+        'tags'
       else
         'ban'
       end
