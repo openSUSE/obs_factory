@@ -20,7 +20,7 @@ module ObsFactory
           # For the breadcrumbs
           @project = @distribution.project
         end
-        format.json { render json: @distribution.staging_projects }
+        format.json { render json: @distribution.staging_projects_all }
       end
     end
 

@@ -108,6 +108,13 @@ module ObsFactory
       @staging_projects ||= StagingProject.for(self)
     end
 
+    # Staging projects associated to the distribution, including non-letter
+    #
+    # @return [Array] array of StagingProject objects
+    def staging_projects_all
+      @staging_projects ||= StagingProject.for(self, false)
+    end
+
     # Staging project associated to the distribution and with the given id
     #
     # @param [String] id of the staging project

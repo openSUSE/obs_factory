@@ -20,9 +20,11 @@ module ObsFactory
 
     # Find all staging projects for a given distribution
     #
+    # @param [Boolean] only_letter  only letter stagings, otherwise all stagings
     # @return [Array] array of StagingProject objects
-    def self.for(distribution)
-      ::Project.where(["name like ?", "#{distribution.root_project_name}#{NAME_PREFIX}_"]).map { |p| StagingProject.new(p, distribution) }
+    def self.for(distribution, only_letter=true)
+      wildcard = only_letter ? "_" : "%"
+      ::Project.where(["name like ?", "#{distribution.root_project_name}#{NAME_PREFIX}#{wildcard}"]).map { |p| StagingProject.new(p, distribution) }
     end
 
     # Find a staging project by distribution and id
