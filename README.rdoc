@@ -1,44 +1,44 @@
 = ObsFactory
 
-Mountable engine for Open Build Service to add some urls that will allow a
-better overview of some openSUSE Factory specific artifacts like staging
-projects.
+Mountable engine for Open Build Service to add paths that will provide a
+better overview of some distribution specific artifacts like staging projects.
 
-For example, if the engine is mounted in +/factory+ it will provide
-+/factory/staging_projects.json+ which will output something like
+Provides the following paths:
+
+- <code>project/dashboard/:project</code>
+- <code>project/staging_projects/:project</code>
+- <code>project/staging_projects/:project/:id</code>
+
+Append <code>?format=json</code> to access the raw data which will output
+something like the following.
 
     { projects: [
         { name: staging:A,
            description: blah,
-           untracked_requests: [ 3443, 3444],
-           obsolete_requests: [ 33221],
+           untracked_requests: [ 3443, 3444 ],
+           obsolete_requests: [ 33221 ],
            unreviewed_requests: [
                { id => 44434, missing_reviews => [repo_checker, legal] },
-               {id => 44431, missing_reviews => [repo_checker] } ],
+               { id => 44431, missing_reviews => [repo_checker] } ],
            buildstatus: { working => 3, broken => 1 }
            openqa: [ {job => 33, result => 'ok'} ]
            subprojects: [
                name: staging:A:DVD,
                description: blah DVD,
                untracked_requests: [ ],
-               invalid_requests: [  ],
+               invalid_requests: [ ],
                unreviewed_requests: [ ],
                buildstatus: { working => 3, broken => 1 }
                openqa: [ ]
-        ]
-      } ]
-    }
+           ]
+        }
+    ]}
 
-And +/factory/staging_projects.html+ which will provide the same information in a convenient
-dashboard.
+== Installation
 
-== Installing
-
-Add this to OBS Gemfile
+Add this to OBS Gemfile in +src/api+.
 
   gem 'obs_factory', path: '/local/path/to/obs_factory'
 
-And this to the +config/routes.rb+ file of OBS inside the +routes.draw+ block
-
-  mount ObsFactory::Engine => "/factory"
-
+Copy <code>dist/init_obs_factory.rb</code> to <code>OBS/src/api/lib/engines/</code> and change the
+require path as needed.
