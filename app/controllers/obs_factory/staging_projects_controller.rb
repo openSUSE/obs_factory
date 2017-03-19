@@ -24,11 +24,19 @@ module ObsFactory
       end
     end
 
+    before_action :require_id, only: [:show]
+
+    def require_id
+      @staging_project = StagingProject.find(@distribution, params[:id])
+      unless @staging_project
+        redirect_to main_app.root_path, flash: { error: "#{params[:id]} is not a valid staging project" }
+      end
+    end
+
     def show
-      staging_project = @distribution.staging_project(params[:id])
       respond_to do |format|
         format.html do
-          @staging_project = StagingProjectPresenter.new(staging_project)
+          @staging_project = StagingProjectPresenter.new(@staging_project)
           # For the breadcrumbs
           @project = @distribution.project
         end
