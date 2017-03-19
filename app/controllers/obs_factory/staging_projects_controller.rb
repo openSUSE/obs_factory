@@ -16,6 +16,20 @@ module ObsFactory
         format.html do
           @staging_projects = StagingProjectPresenter.sort(@distribution.staging_projects)
           @backlog_requests = Request.with_open_reviews_for(by_group: 'factory-staging', target_project: @distribution.name)
+          file = PackageFile.new(
+            project_name: "#{params[:project]}:Staging",
+            package_name: "dashboard",
+            name: "ignored_requests")
+          unless file.to_s.nil?
+            @ignored_requests = YAML.load(file.to_s)
+          end
+          if !@ignored_requests.nil? and @ignored_requests
+            @backlog_requests_ignored = @backlog_requests.select { |req| @ignored_requests.key?(req.number) }
+            @backlog_requests = @backlog_requests.select { |req| !@ignored_requests.key?(req.number) }
+            @backlog_requests_ignored.sort! { |x,y| x.package <=> y.package }
+          else
+            @backlog_requests_ignored = []
+          end
           @backlog_requests.sort! { |x,y| x.package <=> y.package }
           # For the breadcrumbs
           @project = @distribution.project

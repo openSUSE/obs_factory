@@ -245,7 +245,8 @@ ul.color-legend li {
     margin-right: 8px;
 }
 
-.staging_backlog li {
+.staging_backlog li,
+.staging_backlog_ignored li {
     margin-left: 8px;
 }
 

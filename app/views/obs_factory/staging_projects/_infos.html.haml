@@ -26,3 +26,13 @@
         - if counter > 5 && @backlog_requests.size > counter + 1
           %li ... #{@backlog_requests.size - counter} more
           - break
+
+  - if @backlog_requests_ignored.present?
+    %p Ignored:
+    %ul{class: "staging_backlog_ignored"}
+      - @backlog_requests_ignored.each_with_index do |req,counter|
+        %li
+          = link_to elide(req.package, length = 19), main_app.request_show_path(req.number), title: @ignored_requests[req.number]
+        - if counter > 5 && @backlog_requests_ignored.size > counter + 1
+          %li ... #{@backlog_requests_ignored.size - counter} more
+          - break
