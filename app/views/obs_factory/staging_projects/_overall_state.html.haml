@@ -13,3 +13,10 @@
     - elsif project.overall_state == :testing
       = link_to "https://openqa.opensuse.org/tests?hoursfresh=24&#{@distribution.openqa_filter(project)}" do
         = "#{project.testing_percentage}%"
+  - if project.meta['splitter_info']
+    %div{class: 'splitter-info', title: 'strategy information (name, group)'}
+      - splitter_info = project.meta['splitter_info']
+      %div{class: 'splitter-info-strategy'}
+        = "#{splitter_info['strategy']['name']}"
+      %div{class: 'splitter-info-group'}
+        = "#{splitter_info['group']}"
