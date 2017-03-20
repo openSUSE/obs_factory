@@ -18,11 +18,9 @@
       %i Empty
   - else
     %ul{class: "staging_backlog"}
-      - counter = 0
-      - @backlog_requests.each do |req|
+      - @backlog_requests.each_with_index do |req,counter|
         %li
           = link_to elide(req.package, length = 19), main_app.request_show_path(req.number)
-        - counter += 1
         - if counter > 5 && @backlog_requests.size > counter + 1
           %li ... #{@backlog_requests.size - counter} more
           - break
