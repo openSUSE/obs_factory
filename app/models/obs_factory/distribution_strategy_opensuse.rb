@@ -7,12 +7,25 @@ module ObsFactory
       project.name[9..-1]
     end
 
-    def repo_url
-      "http://download.opensuse.org/distribution/#{opensuse_version}/repo/oss/media.1/build"
+    def opensuse_leap_version
+      # Remove the "openSUSE:Leap:" part
+      project.name[14..-1]
     end
 
     def openqa_version
-      opensuse_version
+      opensuse_leap_version
+    end
+
+    def openqa_group
+      "openSUSE Leap #{opensuse_leap_version}"
+    end
+
+    def repo_url
+      "http://download.opensuse.org/distribution/leap/#{opensuse_leap_version}/repo/oss/media.1/build"
+    end
+
+    def url_suffix
+      "distribution/leap/#{opensuse_leap_version}/iso"
     end
 
     def openqa_iso_prefix
