@@ -33,7 +33,7 @@ module ObsFactory
     end
 
     def published_arch
-        'x86_64'
+      'x86_64'
     end
 
     # Version of the published distribution
