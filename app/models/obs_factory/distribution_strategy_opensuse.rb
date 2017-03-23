@@ -32,6 +32,23 @@ module ObsFactory
       "openSUSE-#{opensuse_version}-Staging"
     end
 
+    def published_arch
+        'x86_64'
+    end
+
+    # Version of the published distribution
+    #
+    # @return [String] version string
+    def published_version
+      begin
+        f = open(repo_url)
+      rescue OpenURI::HTTPError => e
+        return 'unknown'
+      end
+      matchdata = %r{openSUSE-#{opensuse_leap_version}-#{published_arch}-Build(.*)}.match(f.read)
+      matchdata[1]
+    end
+
     # URL parameter for 42
     def openqa_filter(project)
       return "match=42:S:#{project.letter}"
