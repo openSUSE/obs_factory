@@ -94,7 +94,7 @@ module ObsFactory
       begin
         d = Xmlhash.parse(ActiveXML::backend.direct_http "/build/#{project.name}:ToTest/#{totest_version_file}")
         d.elements('binary') do |b|
-          matchdata = %r{.*(Snapshot|Build)(.*)-Media\.iso$}}.match(b['filename'])
+          matchdata = %r{.*(Snapshot|Build)(.*)-Media\.iso$}.match(b['filename'])
           return matchdata[2] if matchdata
         end
       rescue
