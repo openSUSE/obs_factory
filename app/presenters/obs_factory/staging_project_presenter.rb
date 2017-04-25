@@ -41,7 +41,7 @@ module ObsFactory
         'users'
       when 'maintenance-team' then
         'medkit'
-      when 'legal-team' then
+      when 'legal-team', 'legal-auto' then
         'graduation-cap'
       when 'leaper' then
         'code-fork'
