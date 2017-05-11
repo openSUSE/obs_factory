@@ -70,7 +70,7 @@ module ObsFactory
     #
     # @return [String] just the letter
     def letter
-      name[prefix.size..-1]
+      name =~ /#{ADI_NAME_PREFIX}/ ? name[prefix.size..-1] : name[prefix.size, 1]
     end
 
     # Id of the staging project, extracted from its name
