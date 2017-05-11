@@ -253,6 +253,8 @@ module ObsFactory
 
     # check openQA jobs for all projects not building right now - or that are known to be broken
     def openqa_state
+      # no openqa result for adi staging project
+      return :acceptable if name =~ /#{ADI_NAME_PREFIX}/
       # the ISOs may still be syncing
       return :testing if openqa_jobs.empty?
 
