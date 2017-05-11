@@ -12,6 +12,7 @@ module ObsFactory
 
     OBSOLETE_STATES = %w(declined superseded revoked)
     NAME_PREFIX = ":Staging:"
+    ADI_NAME_PREFIX = ":Staging:adi:"
 
     def initialize(project, distribution)
       self.project = project
@@ -58,21 +59,29 @@ module ObsFactory
     #
     # @return [String] the name excluding the id
     def prefix
-      "#{distribution.root_project_name}#{NAME_PREFIX}"
+      if name =~ /#{ADI_NAME_PREFIX}/
+        "#{distribution.root_project_name}#{ADI_NAME_PREFIX}"
+      else
+        "#{distribution.root_project_name}#{NAME_PREFIX}"
+      end
     end
 
     # Letter of the staging project, extracted from its name
     #
     # @return [String] just the letter
     def letter
-      name[prefix.size, 1]
+      name[prefix.size..-1]
     end
 
     # Id of the staging project, extracted from its name
     #
     # @return [String] the name excluding the common prefix
     def id
-      name[prefix.size..-1]
+      if name =~ /#{ADI_NAME_PREFIX}/
+        'adi:' + name[prefix.size..-1]
+      else
+        name[prefix.size..-1]
+      end
     end
 
     # Requests that are selected into the project but should be not longer valid

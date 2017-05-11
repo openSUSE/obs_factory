@@ -309,3 +309,67 @@ ul.project-results {
 .project-results li.project-result-failed {
     background-color: #ff4e46
 }
+
+.nav{
+  float : left;
+  width : 100%;
+}
+
+.nav ul {
+    list-style-type: none;
+    text-align: center;
+    padding: 0;
+    margin: 8px;
+}
+
+.nav a {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.nav > input{
+  display : none;
+}
+
+.nav > section > h2{
+  float              : left;
+  box-sizing         : border-box;
+  overflow           : hidden;
+  padding            : 0.3em 0.25em 0;
+  font-size          : 1em;
+}
+
+.nav > input:first-child + section > h2{
+  padding-left : 1em;
+}
+
+.nav > section > h2 > label{
+  display                 : block;
+  padding                 : 0.25em 0.75em;
+  border                  : 1px solid #ccc;
+  border-bottom           : none;
+  border-top-left-radius  : 5px;
+  border-top-right-radius : 5px;
+  background              : #fff;
+  cursor                  : pointer;
+}
+
+.nav > section > div{
+  position      : relative;
+  z-index       : 1;
+  float         : right;
+  box-sizing    : border-box;
+  width         : 100%;
+  margin        : 2.5em 0 0 -100%;
+  background    : #fff;
+}
+
+.nav > input:checked + section > h2{
+  position : relative;
+  z-index  : 2;
+}
+
+.nav > input:not(:checked) + section > div{
+  display : none;
+}
+

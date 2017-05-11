@@ -14,7 +14,7 @@ module ObsFactory
     def index
       respond_to do |format|
         format.html do
-          @staging_projects = StagingProjectPresenter.sort(@distribution.staging_projects)
+          @staging_projects = StagingProjectPresenter.sort(@distribution.staging_projects_all)
           @backlog_requests = Request.with_open_reviews_for(by_group: 'factory-staging', target_project: @distribution.name)
           file = PackageFile.new(
             project_name: "#{params[:project]}:Staging",
