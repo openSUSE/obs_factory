@@ -54,12 +54,22 @@ module ObsFactory
       project.description
     end
 
+    # Checks if the project is adi staging project
+    #
+    # @return [Boolean] true if the project is adi staging project
+    def adi_staging?
+      if name =~ /#{ADI_NAME_PREFIX}/
+        return true
+      end
+      false
+    end
+
     # Part of the name shared by all the staging projects belonging to the same
     # distribution
     #
     # @return [String] the name excluding the id
     def prefix
-      if name =~ /#{ADI_NAME_PREFIX}/
+      if adi_staging?
         "#{distribution.root_project_name}#{ADI_NAME_PREFIX}"
       else
         "#{distribution.root_project_name}#{NAME_PREFIX}"
@@ -70,14 +80,14 @@ module ObsFactory
     #
     # @return [String] just the letter
     def letter
-      name =~ /#{ADI_NAME_PREFIX}/ ? name[prefix.size..-1] : name[prefix.size, 1]
+      adi_staging? ? name[prefix.size..-1] : name[prefix.size, 1]
     end
 
     # Id of the staging project, extracted from its name
     #
     # @return [String] the name excluding the common prefix
     def id
-      if name =~ /#{ADI_NAME_PREFIX}/
+      if adi_staging?
         'adi:' + name[prefix.size..-1]
       else
         name[prefix.size..-1]
@@ -254,7 +264,7 @@ module ObsFactory
     # check openQA jobs for all projects not building right now - or that are known to be broken
     def openqa_state
       # no openqa result for adi staging project
-      return :acceptable if name =~ /#{ADI_NAME_PREFIX}/
+      return :acceptable if adi_staging?
       # the ISOs may still be syncing
       return :testing if openqa_jobs.empty?
 
