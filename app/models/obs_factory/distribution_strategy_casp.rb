@@ -23,5 +23,25 @@ module ObsFactory
       project_iso(project)
     end
 
+    # Name of the ISO file produced by the given staging project's Test-DVD
+    #
+    # Not part of the Strategy API, but useful for subclasses
+    #
+    # @return [String] file name
+    def project_iso(project)
+      arch = self.arch
+      buildresult = Buildresult.find_hashed(project: project.name, package: "CAASP-dvd5-DVD-#{arch}",
+                                            repository: 'images',
+                                            view: 'binarylist')
+      binaries = []
+      # we get multiple architectures, but only one with binaries
+      buildresult.elements('result') do |r|
+        r['binarylist'].elements('binary') do |b|
+          return b['filename'] if /\.iso$/ =~ b['filename']
+        end
+      end
+      nil
+    end
+
   end
 end
