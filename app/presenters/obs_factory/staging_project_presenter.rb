@@ -37,7 +37,7 @@ module ObsFactory
         'search'
       when 'factory-repo-checker' then
         'cog'
-      when 'sle-release-managers', 'leap-reviewers' then
+      when 'sle-release-managers', 'leap-reviewers', 'caasp-release-managers' then
         'users'
       when 'maintenance-team' then
         'medkit'

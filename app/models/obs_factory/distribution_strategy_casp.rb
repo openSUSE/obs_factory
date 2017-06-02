@@ -7,6 +7,9 @@ module ObsFactory
       match[1]
     end
 
+    def staging_manager
+      'caasp-staging-managers'
+    end
 
     def repo_url
       'http://download.opensuse.org/distribution/13.2/repo/oss/media.1/build'

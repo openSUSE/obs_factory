@@ -87,6 +87,10 @@ module ObsFactory
     end
     protected :project_iso
 
+    def staging_manager
+      'factory-staging'
+    end
+
     # Version of the distribution used as ToTest
     #
     # @return [String] version string

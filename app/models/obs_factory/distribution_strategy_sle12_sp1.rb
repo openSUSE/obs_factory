@@ -6,7 +6,10 @@ module ObsFactory
       match = project.name.match(/SLE-12-(.*):GA/)
       match[1]
     end
-
+ 
+    def staging_manager
+      'sle-staging-managers'
+    end
 
     def repo_url
       'http://download.opensuse.org/distribution/13.2/repo/oss/media.1/build'

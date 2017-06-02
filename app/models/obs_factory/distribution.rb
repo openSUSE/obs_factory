@@ -36,7 +36,7 @@ module ObsFactory
 
     def self.attributes
       %w(name description staging_projects openqa_version openqa_group
-      source_version totest_version published_version
+      source_version totest_version published_version staging_manager
       standard_project live_project images_project ring_projects)
     end
 
@@ -45,7 +45,7 @@ module ObsFactory
     end
 
     def_delegators :@strategy, :root_project_name, :url_suffix, :openqa_version,
-                               :openqa_iso, :arch, :openqa_group
+                               :openqa_iso, :arch, :openqa_group, :staging_manager
 
     # Find a distribution by id
     #
