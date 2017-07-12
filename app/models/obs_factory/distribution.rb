@@ -11,7 +11,7 @@ module ObsFactory
     extend ActiveModel::Naming
     extend Forwardable
     
-    SOURCE_VERSION_FILE = "_product/openSUSE.product"
+    SOURCE_VERSION_FILE = "000product/openSUSE.product"
     RINGS_PREFIX = ":Rings"
 
     attr_accessor :project, :strategy

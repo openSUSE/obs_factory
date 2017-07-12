@@ -73,7 +73,7 @@
       - if @versions[:source]
         %li
           Source:
-          = link_to @versions[:source], main_app.package_show_path(project: "#{@distribution.name}", package: '_product')
+          = link_to @versions[:source], main_app.package_show_path(project: "#{@distribution.name}", package: '000product')
 
       - if @versions[:totest]
         %li
