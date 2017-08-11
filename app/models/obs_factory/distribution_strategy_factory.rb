@@ -1,8 +1,6 @@
 module ObsFactory
-
   # this is not a Factory pattern, this is for openSUSE:Factory :/
   class DistributionStrategyFactory
-
     attr_accessor :project
 
     # String to pass as version to filter the openQA jobs
@@ -15,6 +13,7 @@ module ObsFactory
     def openqa_group
       'openSUSE Tumbleweed'
     end
+
     #
     # Name of the project used as top-level for the staging projects and
     # the rings
@@ -22,6 +21,10 @@ module ObsFactory
     # @return [String] project name
     def root_project_name
       project.name
+    end
+
+    def test_dvd_prefix
+      'Test-DVD'
     end
 
     def totest_version_file
@@ -37,7 +40,7 @@ module ObsFactory
     end
 
     def rings
-      %w(Bootstrap MinimalX TestDVD)
+      %w[Bootstrap MinimalX TestDVD]
     end
 
     def repo_url
@@ -52,7 +55,7 @@ module ObsFactory
     #
     # @return [String] e.g. 'openSUSE-Staging'
     def openqa_iso_prefix
-      "openSUSE-Staging"
+      'openSUSE-Staging'
     end
 
     # Name of the ISO file by the given staging project tracked on openqa
@@ -63,7 +66,7 @@ module ObsFactory
       return nil if iso.nil?
       ending = iso[5..-1] # Everything but the initial 'Test-'
       suffix = /DVD$/ =~ project.name ? 'Staging2' : 'Staging'
-      self.openqa_iso_prefix + ":#{project.letter}-#{suffix}-DVD-#{arch}-#{ending}"
+      openqa_iso_prefix + ":#{project.letter}-#{suffix}-DVD-#{arch}-#{ending}"
     end
 
     # Name of the ISO file produced by the given staging project's Test-DVD
@@ -73,13 +76,13 @@ module ObsFactory
     # @return [String] file name
     def project_iso(project)
       arch = self.arch
-      buildresult = Buildresult.find_hashed(project: project.name, package: "Test-DVD-#{arch}",
+      buildresult = Buildresult.find_hashed(project: project.name, package: "#{test_dvd_prefix}-#{arch}",
                                             repository: 'images',
                                             view: 'binarylist')
       binaries = []
       # we get multiple architectures, but only one with binaries
       buildresult.elements('result') do |r|
-        r['binarylist'].elements('binary') do |b|
+        r.get('binarylist').elements('binary') do |b|
           return b['filename'] if /\.iso$/ =~ b['filename']
         end
       end
@@ -95,15 +98,13 @@ module ObsFactory
     #
     # @return [String] version string
     def totest_version
-      begin
-        d = Xmlhash.parse(ActiveXML::backend.direct_http "/build/#{project.name}:ToTest/#{totest_version_file}")
-        d.elements('binary') do |b|
-          matchdata = %r{.*(Snapshot|Build)(.*)-Media\.iso$}.match(b['filename'])
-          return matchdata[2] if matchdata
-        end
-      rescue
-        nil
+      d = Xmlhash.parse(ActiveXML.backend.direct_http("/build/#{project.name}:ToTest/#{totest_version_file}"))
+      d.elements('binary') do |b|
+        matchdata = /.*(Snapshot|Build)(.*)-Media\.iso$/.match(b['filename'])
+        return matchdata[2] if matchdata
       end
+    rescue
+      nil
     end
 
     # Version of the published distribution
@@ -115,13 +116,12 @@ module ObsFactory
       rescue OpenURI::HTTPError => e
         return 'unknown'
       end
-      matchdata = %r{openSUSE-(.*)-#{published_arch}-.*}.match(f.read)
+      matchdata = /openSUSE-(.*)-#{published_arch}-.*/.match(f.read)
       matchdata[1]
     end
 
     def openqa_filter(project)
-      return "match=Staging:#{project.letter}"
+      "match=Staging:#{project.letter}"
     end
-
   end
 end
