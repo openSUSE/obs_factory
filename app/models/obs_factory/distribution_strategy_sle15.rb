@@ -1,7 +1,5 @@
 module ObsFactory
-
   class DistributionStrategySLE15 < DistributionStrategyFactory
-
     def staging_manager
       'sle-staging-managers'
     end
@@ -11,7 +9,11 @@ module ObsFactory
     end
 
     def openqa_version
-      "SLES 15"
+      'SLES 15'
+    end
+
+    def test_dvd_prefix
+      '000product.local:SLES-dvd5-DVD'
     end
 
     # Name of the ISO file by the given staging project tracked on openqa
@@ -21,6 +23,5 @@ module ObsFactory
       ending = project_iso(project)
       "SLE15-Staging:#{project.letter}-#{ending}"
     end
-
   end
 end
