@@ -35,7 +35,7 @@ module ObsFactory
       case reviewer
       when 'opensuse-review-team' then
         'search'
-      when 'factory-repo-checker' then
+      when 'repo-checker' then
         'cog'
       when 'sle-release-managers', 'leap-reviewers', 'caasp-release-managers' then
         'users'
