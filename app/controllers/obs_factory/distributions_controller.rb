@@ -34,8 +34,7 @@ module ObsFactory
       @reviews[:review_team]  = @distribution.requests_with_reviews_for_group('opensuse-review-team').size
       @reviews[:factory_auto] = @distribution.requests_with_reviews_for_group('factory-auto').size
       @reviews[:legal_auto]   = @distribution.requests_with_reviews_for_group('legal-auto').size
-      @reviews[:legal_team]   = @distribution.requests_with_reviews_for_group('legal-team').size
-      @reviews[:repo_checker] = @distribution.requests_with_reviews_for_user('factory-repo-checker').size
+      @reviews[:repo_checker] = @distribution.requests_with_reviews_for_user('repo-checker').size
     end
   end
 end
