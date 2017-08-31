@@ -182,7 +182,8 @@ module ObsFactory
       when :empty
         60000
       else
-        raise "untracked #{overall_state}"
+        Rails.logger.error "untracked #{overall_state}"
+        return
       end
       main + letter.ord()
     end
