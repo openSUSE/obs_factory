@@ -190,7 +190,7 @@ module ObsFactory
         if @live_project.project.nil?
           @live_project = nil
         else
-          @live_project.exclusive_repository = 'standard'
+          @live_project.exclusive_repository = 'images'
         end
       end
       @live_project
