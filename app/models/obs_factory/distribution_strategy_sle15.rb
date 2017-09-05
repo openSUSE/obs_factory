@@ -13,7 +13,7 @@ module ObsFactory
     end
 
     def test_dvd_prefix
-      '000product.local:SLES-dvd5-DVD'
+      '000product.local:leanos-cd-DVD'
     end
 
     # Name of the ISO file by the given staging project tracked on openqa
@@ -23,7 +23,8 @@ module ObsFactory
       ending = project_iso(project)
       return if ending.nil?
       ending.gsub!(/.*-Build/, '')
-      "SLE15-Staging:#{project.letter}-Test-Server-DVD-#{arch}-Build#{project.letter}.#{ending}"
+      "SLE-15-Staging:#{project.letter}-Leanos-DVD-#{arch}-Build#{project.letter}.#{ending}"
     end
+
   end
 end
