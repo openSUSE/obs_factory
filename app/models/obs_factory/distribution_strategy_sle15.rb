@@ -13,7 +13,7 @@ module ObsFactory
     end
 
     def test_dvd_prefix
-      '000product.local:leanos-cd-DVD'
+      '000product:leanos-cd-DVD'
     end
 
     # Name of the ISO file by the given staging project tracked on openqa
