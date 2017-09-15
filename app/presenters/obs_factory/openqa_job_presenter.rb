@@ -5,7 +5,7 @@ module ObsFactory
     #
     # @return [String] the full URL
     def url
-      OpenqaJob.openqa_base_url.chomp('/') + "/tests/#{id}"
+      OpenqaJob.openqa_links_url.chomp('/') + "/tests/#{id}"
     end
 
     # The part of the name that refers to the testsuite
