@@ -14,6 +14,10 @@ module ObsFactory
       CONFIG['openqa_base_url'] || "http://openqa.opensuse.org"
     end
 
+    def self.openqa_links_url
+      CONFIG['openqa_links_url'] || "http://openqa.opensuse.org"
+    end
+
     @@api = ObsFactory::OpenqaApi.new(openqa_base_url)
 
     # Reads jobs from the openQA instance or the cache with an interface similar
