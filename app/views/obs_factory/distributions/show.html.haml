@@ -78,7 +78,7 @@
       - if @versions[:totest]
         %li
           Testing:
-          = link_to @versions[:totest], "https://openqa.opensuse.org/tests/overview?distri=opensuse&version=#{@distribution.openqa_version}&group=#{@distribution.openqa_group}"
+          = link_to @versions[:totest], "#{openqa_links_helper}/tests/overview?distri=opensuse&version=#{@distribution.openqa_version}&group=#{@distribution.openqa_group}"
 
       - if @versions[:published]
         %li
@@ -87,7 +87,7 @@
 
     %h2
       %i{class: "fa fa-2 fa-wrench"}
-      = link_to "openQA results for #{@versions[:totest]}", "https://openqa.opensuse.org/tests/overview?distri=opensuse&version=#{@distribution.openqa_version}&build=#{@versions[:totest]}&group=#{@distribution.openqa_group}"
+      = link_to "openQA results for #{@versions[:totest]}", "#{openqa_links_helper}/tests/overview?distri=opensuse&version=#{@distribution.openqa_version}&build=#{@versions[:totest]}&group=#{@distribution.openqa_group}"
 
     %p
       - @openqa_jobs.group_by(&:result_or_state).each do |label, jobs|
