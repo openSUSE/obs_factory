@@ -15,7 +15,7 @@ module ObsFactory
     end
 
     def self.openqa_links_url
-      CONFIG['openqa_links_url'] || "http://openqa.opensuse.org"
+      CONFIG['openqa_links_url'] || "https://openqa.opensuse.org"
     end
 
     @@api = ObsFactory::OpenqaApi.new(openqa_base_url)
