@@ -23,7 +23,7 @@ module ObsFactory
       ending = project_iso(project)
       return if ending.nil?
       ending.gsub!(/.*-Build/, '')
-      "SLE-15-Staging:#{project.letter}-Leanos-DVD-#{arch}-Build#{project.letter}.#{ending}"
+      "SLE-15-Staging:#{project.letter}-Installer-DVD-#{arch}-Build#{project.letter}.#{ending}"
     end
 
   end
