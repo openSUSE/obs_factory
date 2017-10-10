@@ -41,7 +41,10 @@ module ObsFactory
       uri.query = params.to_query
      
       resp = _get(uri)
-      raise OpenqaFailure, "OpenQA API GET failure: \"#{url}\" with \"#{params.to_query}\"" unless resp.code.to_i == 200
+      unless resp.code.to_i == 200
+        Rails.logger.error "OpenQA API GET failure: \"#{url}\" with \"#{params.to_query}\""
+        return Hash.new
+      end
       ActiveSupport::JSON.decode(resp.body)
     end
   end

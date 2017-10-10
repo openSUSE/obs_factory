@@ -113,7 +113,11 @@ module ObsFactory
         p.parent = self
         @subprojects << p
       end
-      raise 'now we have a problem' if @subprojects.length > 1
+      if @subprojects.length > 1
+        Rails.logger.error 'There too many subprojects, we can not handle this'
+        @subprojects[0] = nil
+        return
+      end
       @subprojects[0] ||= nil
     end
 
