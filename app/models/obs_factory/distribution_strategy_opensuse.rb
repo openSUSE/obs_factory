@@ -21,7 +21,7 @@ module ObsFactory
     end
 
     def repo_url
-      "http://download.opensuse.org/distribution/leap/#{opensuse_leap_version}/repo/oss/media.1/build"
+      "http://download.opensuse.org/distribution/leap/#{opensuse_leap_version}/repo/oss/media.1/media"
     end
 
     def url_suffix
@@ -34,6 +34,14 @@ module ObsFactory
 
     def published_arch
       'x86_64'
+    end
+
+    def test_dvd_prefix
+      '000product:openSUSE-dvd5-dvd'
+    end
+
+    def totest_version_file
+      'images/local/000product:openSUSE-cd-mini-x86_64'
     end
 
     # Version of the published distribution
@@ -49,7 +57,7 @@ module ObsFactory
       matchdata[1]
     end
 
-    # URL parameter for 42
+    # URL parameter for Leap
     def openqa_filter(project)
       return "match=#{opensuse_leap_version}:S:#{project.letter}"
     end
