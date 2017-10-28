@@ -24,7 +24,9 @@ module ObsFactory
     # @return [String] file name
     def openqa_iso(project)
       ending = project_iso(project)
-      "SLE12-#{sp_version}-Staging:#{project.letter}-#{ending}"
+      return if ending.nil?
+      ending.gsub!(/.*-Build/, '')
+      "SLE12-#{sp_version}-Staging:#{project.letter}-Test-Server-DVD-#{arch}-Build#{project.letter}.#{ending}"
     end
 
   end
