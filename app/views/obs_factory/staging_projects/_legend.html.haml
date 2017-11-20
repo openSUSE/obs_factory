@@ -15,7 +15,10 @@
     %li
       %span{class: "untracked"}
       Untracked
-  
+    %li{class: "delete"}
+      %span{class: "delete"}
+      Delete
+
   %p Projects
   %ul{class: "color-legend"}
     %li
@@ -36,7 +39,7 @@
     %li
       %span{class: "staging-project state-failed"}
       Failed
-  
+
   %p Reviews
   %ul{class: "color-legend"}
     %li
@@ -48,4 +51,3 @@
     %li
       %i{class: "fa fa-#{ObsFactory::StagingProjectPresenter.review_icon('legal-team')}"}
       = link_to 'Legal Review', main_app.group_show_path('legal-team')
-  

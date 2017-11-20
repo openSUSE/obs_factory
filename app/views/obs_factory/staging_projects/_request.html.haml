@@ -1,4 +1,4 @@
-%li{class: "#{request[:css]} request"}
+%li{class: "#{request[:css]} #{request[:delete_request]} request"}
   = link_to request[:package], main_app.request_show_path(request[:number])
   - mrs = request[:missing_reviews] || []
   - mrs.each do |mr|
