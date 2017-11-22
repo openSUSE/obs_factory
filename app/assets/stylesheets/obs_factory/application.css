@@ -373,3 +373,37 @@ ul.project-results {
   display : none;
 }
 
+div.factory-summary dt:nth-of-type(even), div.factory-summary dd:nth-of-type(even) {
+  background: #eee;
+}
+
+#staging-detail .request {
+    padding-left: 2px;
+    padding-right: 3px;
+    margin: 3px;
+    border-radius: 3px;
+    float: left;
+    list-style-type: none;
+}
+
+#staging-detail .request a {
+    color: white;
+    margin: 0;
+    line-height: 1em;
+}
+
+#staging-detail .ok {
+    background-color: #53b25f;
+}
+
+#staging-detail .review {
+    background-color: #d9b200;
+}
+
+#staging-detail .obsolete {
+    background-color: #42a2cc;
+}
+
+#staging-detail .untracked {
+    background-color: #666;
+}
