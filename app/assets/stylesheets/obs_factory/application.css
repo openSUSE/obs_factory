@@ -419,3 +419,7 @@ div.factory-summary dt:nth-of-type(even), div.factory-summary dd:nth-of-type(eve
 #staging-detail .untracked {
     background-color: #666;
 }
+
+#staging-detail .delete a {
+    text-decoration: line-through;
+}
