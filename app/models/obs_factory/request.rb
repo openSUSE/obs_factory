@@ -63,6 +63,10 @@ module ObsFactory
       bs_request.bs_request_actions.first.target_package
     end
 
+    def request_type
+      bs_request.bs_request_actions.first.type
+    end
+
     # Name of the original target project
     #
     # return [String] the name

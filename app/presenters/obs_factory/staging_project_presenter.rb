@@ -77,6 +77,7 @@ module ObsFactory
           css = 'obsolete'
         end
         r[:css] = css
+        r[:request_type] = req.request_type
         @classified_requests << r
       end
       # now append untracked reqs
@@ -87,7 +88,7 @@ module ObsFactory
       @classified_requests
     end
 
-    # determine build progress as percentage 
+    # determine build progress as percentage
     # if the project contains subprojects but is complete, the percentage
     # is the subproject's
     def build_progress

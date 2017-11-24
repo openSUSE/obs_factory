@@ -167,6 +167,14 @@ a.openqa-incomplete {
     line-height: 170%;
 }
 
+#staging-dashboard .delete a {
+    text-decoration: line-through;
+}
+
+.color-legend .delete {
+    background-color: #FFFFFF;
+}
+
 .overall-state.staging-project {
     border-radius: 8px;
     margin: 5px;
@@ -246,6 +254,10 @@ ul.color-legend {
 ul.color-legend li {
     margin-left: 8px;
     vertical-align: middle;
+}
+
+li.delete {
+  text-decoration: line-through;
 }
 
 .color-legend span {
@@ -406,4 +418,8 @@ div.factory-summary dt:nth-of-type(even), div.factory-summary dd:nth-of-type(eve
 
 #staging-detail .untracked {
     background-color: #666;
+}
+
+#staging-detail .delete a {
+    text-decoration: line-through;
 }
