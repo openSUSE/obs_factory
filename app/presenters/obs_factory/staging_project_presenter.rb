@@ -77,7 +77,7 @@ module ObsFactory
           css = 'obsolete'
         end
         r[:css] = css
-        r[:delete_request] = req.delete_request
+        r[:request_type] = req.request_type
         @classified_requests << r
       end
       # now append untracked reqs

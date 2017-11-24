@@ -63,7 +63,7 @@ module ObsFactory
       bs_request.bs_request_actions.first.target_package
     end
 
-    def delete_request
+    def request_type
       bs_request.bs_request_actions.first.type
     end
 
