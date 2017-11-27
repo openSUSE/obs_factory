@@ -160,11 +160,13 @@ a.openqa-incomplete {
     text-align: left;
     margin-top: 0px;
     list-style-type: none;
+    word-break: break-all;
 }
 
 #staging-dashboard ul.problem_list li {
     margin-left: 8px;
     line-height: 170%;
+    white-space: normal
 }
 
 #staging-dashboard .delete a {
