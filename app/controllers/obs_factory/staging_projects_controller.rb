@@ -3,7 +3,7 @@ module ObsFactory
     respond_to :json, :html
 
     before_action :require_distribution
-    
+
     def require_distribution
       @distribution = Distribution.find(params[:project])
       unless @distribution
@@ -16,6 +16,7 @@ module ObsFactory
         format.html do
           @staging_projects = StagingProjectPresenter.sort(@distribution.staging_projects_all)
           @backlog_requests = Request.with_open_reviews_for(by_group: @distribution.staging_manager, target_project: @distribution.name)
+          @requests_state_new = Request.in_state_new(by_group: @distribution.staging_manager, target_project: @distribution.name)
           file = PackageFile.new(
             project_name: "#{params[:project]}:Staging",
             package_name: "dashboard",
@@ -26,11 +27,13 @@ module ObsFactory
           if !@ignored_requests.nil? and @ignored_requests
             @backlog_requests_ignored = @backlog_requests.select { |req| @ignored_requests.key?(req.number) }
             @backlog_requests = @backlog_requests.select { |req| !@ignored_requests.key?(req.number) }
+            @requests_state_new = @requests_state_new.select { |req| !@ignored_requests.key?(req.number) }
             @backlog_requests_ignored.sort! { |x,y| x.package <=> y.package }
           else
             @backlog_requests_ignored = []
           end
           @backlog_requests.sort! { |x,y| x.package <=> y.package }
+          @requests_state_new.sort! { |x,y| x.package <=> y.package }
           # For the breadcrumbs
           @project = @distribution.project
         end
