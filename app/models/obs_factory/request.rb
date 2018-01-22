@@ -49,6 +49,17 @@ module ObsFactory
       reviews.map {|r| Request.new(r.bs_request) }
     end
 
+    def self.in_state_new(props)
+      reviews = Review.includes(:bs_request => [:reviews, :bs_request_actions])
+      conds = props.dup
+      target_project = conds.delete(:target_project)
+      reviews = reviews.where(conds.merge("bs_requests.state" => 'new'))
+      if target_project
+        reviews = reviews.where("bs_request_actions.target_project" => target_project)
+      end
+      reviews.map {|r| Request.new(r.bs_request) }
+    end
+
     # Checks if the request is obsolete
     #
     # @return [Boolean] true if the request is declined, superseded or revoked

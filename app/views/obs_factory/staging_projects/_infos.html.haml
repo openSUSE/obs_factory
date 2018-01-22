@@ -14,7 +14,7 @@
 
   %p Backlog:
   - if @backlog_requests.empty?
-    %p 
+    %p
       %i Empty
   - else
     %ul{class: "staging_backlog"}
@@ -23,6 +23,19 @@
           = link_to elide(req.package, length = 19), main_app.request_show_path(req.number)
         - if counter > 5 && @backlog_requests.size > counter + 1
           %li ... #{@backlog_requests.size - counter} more
+          - break
+
+  %p Ready:
+  - if @requests_state_new.empty?
+    %p
+      %i Empty
+  - else
+    %ul{class: "staging_backlog"}
+      - @requests_state_new.each_with_index do |req,counter|
+        %li
+          = link_to elide(req.package, length = 19), main_app.request_show_path(req.number)
+        - if counter > 5 && @requests_state_new.size > counter + 1
+          %li ... #{@requests_state_new.size - counter} more
           - break
 
   - if @backlog_requests_ignored.present?
