@@ -22,7 +22,7 @@
         %li
           = link_to elide(req.package, length = 19), main_app.request_show_path(req.number)
         - if counter > 5 && @backlog_requests.size > counter + 1
-          %li ... #{@backlog_requests.size - counter} more
+          %li ... #{@backlog_requests.size - (counter + 1)} more
           - break
 
   %p Ready:
@@ -35,7 +35,7 @@
         %li
           = link_to elide(req.package, length = 19), main_app.request_show_path(req.number)
         - if counter > 5 && @requests_state_new.size > counter + 1
-          %li ... #{@requests_state_new.size - counter} more
+          %li ... #{@requests_state_new.size - (counter + 1)} more
           - break
 
   - if @backlog_requests_ignored.present?
@@ -45,5 +45,5 @@
         %li
           = link_to elide(req.package, length = 19), main_app.request_show_path(req.number), title: @ignored_requests[req.number]
         - if counter > 5 && @backlog_requests_ignored.size > counter + 1
-          %li ... #{@backlog_requests_ignored.size - counter} more
+          %li ... #{@backlog_requests_ignored.size - (counter + 1)} more
           - break
