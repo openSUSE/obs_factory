@@ -12,7 +12,7 @@
       = empties.sort.join(' &ndash; ').html_safe
 
 
-  %p Backlog:
+  %p=  link_to "Backlog:", main_app.group_show_path(title: "factory-staging")
   - if @backlog_requests.empty?
     %p
       %i Empty
@@ -25,7 +25,7 @@
           %li ... #{@backlog_requests.size - counter} more
           - break
 
-  %p Ready:
+  %p= link_to "Ready:", "/project/requests/#{@distribution.project}?state=new"
   - if @requests_state_new.empty?
     %p
       %i Empty
@@ -39,7 +39,7 @@
           - break
 
   - if @backlog_requests_ignored.present?
-    %p Ignored:
+    %p= link_to "Ignored:", "/package/view_file/#{@distribution.project}:Staging/dashboard/ignored_requests?expand=1"
     %ul{class: "staging_backlog_ignored"}
       - @backlog_requests_ignored.each_with_index do |req,counter|
         %li
