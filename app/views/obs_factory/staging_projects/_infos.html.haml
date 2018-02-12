@@ -11,8 +11,11 @@
     - else
       = empties.sort.join(' &ndash; ').html_safe
 
-
-  %p=  link_to "Backlog:", main_app.group_show_path(title: "factory-staging")
+  - case @distribution.name
+    - when /^openSUSE:.*/
+      %p=  link_to "Backlog:", main_app.group_show_path(title: "factory-staging")
+    - else
+      %p Backlog:
   - if @backlog_requests.empty?
     %p
       %i Empty
