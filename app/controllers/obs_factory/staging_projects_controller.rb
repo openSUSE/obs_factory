@@ -3,6 +3,7 @@ module ObsFactory
     respond_to :json, :html
 
     before_action :require_distribution
+    helper_method :backlog_links_opensuse
 
     def require_distribution
       @distribution = Distribution.find(params[:project])
@@ -60,5 +61,15 @@ module ObsFactory
         format.json { render json: @staging_project }
       end
     end
+
+    def backlog_links_opensuse
+      case @distribution.name
+      when /^openSUSE:.*/
+        @backlog_links_opensuse = view_context.link_to "Backlog:", main_app.group_show_path(title: "factory-staging")
+      else
+        @backlog_links_opensuse = "Backlog:"
+      end
+    end
+
   end
 end
