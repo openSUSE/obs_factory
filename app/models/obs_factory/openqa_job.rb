@@ -85,8 +85,11 @@ module ObsFactory
         get_params.merge!(filter)
         jobs = @@api.get('jobs', get_params)['jobs']
       end
-
-      jobs.map { |j| OpenqaJob.new(j.slice(*attributes)) }
+      unless jobs.nil?
+        jobs.map { |j| OpenqaJob.new(j.slice(*attributes)) }
+      else
+        return Hash.new
+      end
     end
 
     # Name of the modules which failed during openQA execution
