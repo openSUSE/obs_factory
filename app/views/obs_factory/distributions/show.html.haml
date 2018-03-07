@@ -90,6 +90,9 @@
       = link_to "openQA results for #{@versions[:totest]}", "#{openqa_links_helper}/tests/overview?distri=opensuse&version=#{@distribution.openqa_version}&build=#{@versions[:totest]}&group=#{@distribution.openqa_group}"
 
     %p
-      - @openqa_jobs.group_by(&:result_or_state).each do |label, jobs|
-        %b= "#{label}:"
-        = jobs.size
+      - unless @openqa_jobs.empty?
+        - @openqa_jobs.group_by(&:result_or_state).each do |label, jobs|
+          %b= "#{label}:"
+          = jobs.size
+      - else
+        OpenQA currently not reachable or failure in GET request

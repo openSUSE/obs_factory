@@ -13,14 +13,18 @@ module ObsFactory
     end
 
     # A get that follows redirects - openqa redirects to https
-    def _get(uri)
+    def _get(uri, counter_redirects)
       req_path = uri.path
       req_path << "?" + uri.query unless uri.query.empty?
       req = Net::HTTP::Get.new(req_path)
       resp = Net::HTTP.start(uri.host, use_ssl: uri.scheme == "https") { |http| http.request(req) }
-      if resp.code.to_i == 302 or resp.code.to_i == 301
-        Rails.logger.debug "following to #{resp.header['location']}"
-        return _get(URI.parse(resp.header['location']))
+      # Prevent endless loop in case response is always 301 or 302
+      unless counter_redirects >= 5
+        if resp.code.to_i == 302 or resp.code.to_i == 301
+          counter_redirects =+ 1
+          Rails.logger.debug "following to #{resp.header['location']}"
+          return _get(URI.parse(resp.header['location']), counter_redirects)
+        end
       end
       return resp
     end
@@ -33,14 +37,22 @@ module ObsFactory
     #                   overwrite the default one
     # @return [Object]  the response decoded (usually a Hash)
     def get(url, params = {}, options = {})
+      # Check if params for GET request are completely to prevent overhead for openQA
+      # and timeouts for the dashboard
+      params.each do |key, value|
+        if value.nil?
+          Rails.logger.error "OpenQA API GET failure: Missing parameters for #{key}"
+          return Hash.new
+        end
+      end
+
       if options[:base_url]
         uri = URI.join(options[:base_url].chomp('/')+'/', url)
       else
         uri = URI.join(@base_url, url)
       end
       uri.query = params.to_query
-     
-      resp = _get(uri)
+      resp = _get(uri, 0)
       unless resp.code.to_i == 200
         Rails.logger.error "OpenQA API GET failure: \"#{url}\" with \"#{params.to_query}\""
         return Hash.new
