@@ -3,7 +3,7 @@ module ObsFactory
 
     # Catch some url helpers used in the OBS layout and forward them to
     # the main application
-    %w(root_path project_show_path search_path user_show_url user_show_path user_logout_path
+    %w(home_path user_tasks_path root_path project_show_path search_path user_show_url user_show_path user_logout_path
        user_login_path user_register_user_path user_do_login_path news_feed_path project_toggle_watch_path
        project_list_public_path monitor_path projects_path new_project_path
        user_rss_notifications_url).each do |m|
