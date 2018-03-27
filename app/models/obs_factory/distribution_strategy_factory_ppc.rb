@@ -8,7 +8,7 @@ module ObsFactory
     end
 
     def totest_version_file
-      'images/local/_product:openSUSE-cd-mini-ppc64le'
+      'images/local/000product:openSUSE-cd-mini-ppc64le'
     end
 
     def arch
