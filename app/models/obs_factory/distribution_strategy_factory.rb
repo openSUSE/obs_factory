@@ -44,7 +44,7 @@ module ObsFactory
     end
 
     def repo_url
-      'http://download.opensuse.org/factory/repo/oss/media.1/build'
+      'http://download.opensuse.org/tumbleweed/repo/oss/media.1/media'
     end
 
     def published_arch
