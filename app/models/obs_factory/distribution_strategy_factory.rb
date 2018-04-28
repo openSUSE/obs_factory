@@ -36,7 +36,7 @@ module ObsFactory
     end
 
     def url_suffix
-      'factory/iso'
+      'tumbleweed/iso'
     end
 
     def rings
