@@ -4,6 +4,15 @@ module ObsFactory
       'sle-staging-managers'
     end
 
+    def sp_version(name)
+      if name.start_with? 'SUSE:SLE-15:GA'
+          nil
+      else
+          match = name.match(/SUSE:SLE-15-(.*):GA/)
+          match[1]
+      end
+    end
+
     def repo_url
       'http://download.opensuse.org/distribution/13.2/repo/oss/media.1/build'
     end
@@ -23,7 +32,9 @@ module ObsFactory
       ending = project_iso(project)
       return if ending.nil?
       ending.gsub!(/.*-Build/, '')
-      "SLE-15-Staging:#{project.letter}-Installer-DVD-#{arch}-Build#{project.letter}.#{ending}"
+      sp = sp_version(project.name)
+      version = sp ? ('15-' + sp) : '15'
+      "SLE-#{version}-Staging:#{project.letter}-Installer-DVD-#{arch}-Build#{project.letter}.#{ending}"
     end
 
   end
